@@ -1,0 +1,115 @@
+{
+  "bsonType": "object",
+  "required": ["name", "scientificName", "protectionLevel"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "鸟类唯一ID，自动生成"
+    },
+    "name": {
+      "bsonType": "string",
+      "title": "中文名",
+      "description": "鸟类中文名称，如：朱鹮",
+      "minLength": 1,
+      "maxLength": 30,
+      "errorMessage": "中文名不能为空，最长30字"
+    },
+    "scientificName": {
+      "bsonType": "string",
+      "title": "学名",
+      "description": "鸟类拉丁学名，如：Nipponia nippon",
+      "maxLength": 100
+    },
+    "protectionLevel": {
+      "bsonType": "string",
+      "title": "保护等级",
+      "description": "国家保护等级或濒危程度",
+      "enum": ["一级", "二级", "三有", "极危", "濒危", "易危"],
+      "errorMessage": "保护等级不合法"
+    },
+    "habitat": {
+      "bsonType": "string",
+      "title": "栖息地",
+      "description": "主要栖息环境，如：湿地、森林、草原",
+      "maxLength": 50
+    },
+    "size": {
+      "bsonType": "string",
+      "title": "体型",
+      "description": "体型大小分类",
+      "enum": ["小型", "中型", "大型"],
+      "errorMessage": "体型只能是：小型、中型、大型"
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "物种描述",
+      "description": "鸟类详细描述，支持富文本HTML"
+    },
+    "distribution": {
+      "bsonType": "string",
+      "title": "地理分布",
+      "description": "该鸟类在中国或全球的分布区域"
+    },
+    "habits": {
+      "bsonType": "string",
+      "title": "生活习性",
+      "description": "该鸟类的行为习性描述"
+    },
+    "images": {
+      "bsonType": "array",
+      "title": "图片列表",
+      "description": "鸟类图片的云存储 fileID 列表",
+      "items": {
+        "bsonType": "string"
+      }
+    },
+    "features": {
+      "bsonType": "array",
+      "title": "识别特征",
+      "description": "便于公众识别的外形特征标签，如：白色羽毛、红色头冠",
+      "items": {
+        "bsonType": "string",
+        "maxLength": 20
+      }
+    },
+    "category": {
+      "bsonType": "string",
+      "title": "分类",
+      "description": "鸟类分类目科，如：鹳形目·鹮科",
+      "maxLength": 50
+    },
+    "isHot": {
+      "bsonType": "bool",
+      "title": "是否热门",
+      "description": "是否在识鸟页面热门展示，true: 展示",
+      "defaultValue": false
+    },
+    "favoriteCount": {
+      "bsonType": "int",
+      "title": "收藏数量",
+      "description": "被用户收藏的总次数",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "description": "数据录入时间，自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

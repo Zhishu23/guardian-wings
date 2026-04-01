@@ -1,0 +1,219 @@
+/**
+ * Guardian Wings - 全局样式变量
+ * 适配 uni-app Vue2 项目
+ */
+
+/* 主题色 */
+$uni-primary: #1B4B8C;
+$uni-primary-dark: #164CA8;
+$uni-primary-light: #3B82F6;
+
+$uni-success: #2D8F47;
+$uni-success-light: #10B981;
+$uni-success-dark: #059669;
+
+$uni-warning: #FF7A00;
+$uni-warning-light: #F59E0B;
+$uni-warning-dark: #D97706;
+
+$uni-error: #DC2626;
+$uni-error-light: #EF4444;
+$uni-error-dark: #991B1B;
+
+$uni-info: #3B82F6;
+$uni-info-light: #60A5FA;
+$uni-info-dark: #2563EB;
+
+/* 中性色 */
+$uni-bg-color: #0F172A;
+$uni-bg-color-grey: #1E293B;
+$uni-bg-color-hover: #334155;
+$uni-bg-color-mask: rgba(0, 0, 0, 0.4);
+
+$uni-border-color: rgba(255, 255, 255, 0.1);
+$uni-border-color-light: rgba(255, 255, 255, 0.05);
+$uni-border-color-dark: rgba(255, 255, 255, 0.2);
+
+/* 文字颜色 */
+$uni-text-color: #FFFFFF;
+$uni-text-color-grey: rgba(255, 255, 255, 0.7);
+$uni-text-color-placeholder: rgba(255, 255, 255, 0.5);
+$uni-text-color-disable: rgba(255, 255, 255, 0.3);
+
+/* 字体大小 */
+$uni-font-size-xs: 20rpx;
+$uni-font-size-sm: 24rpx;
+$uni-font-size-base: 28rpx;
+$uni-font-size-lg: 32rpx;
+$uni-font-size-xl: 36rpx;
+$uni-font-size-xxl: 44rpx;
+
+/* 间距 */
+$uni-spacing-xs: 8rpx;
+$uni-spacing-sm: 16rpx;
+$uni-spacing-base: 24rpx;
+$uni-spacing-lg: 32rpx;
+$uni-spacing-xl: 48rpx;
+
+/* 圆角 */
+$uni-border-radius-sm: 8rpx;
+$uni-border-radius-base: 12rpx;
+$uni-border-radius-lg: 16rpx;
+$uni-border-radius-xl: 20rpx;
+$uni-border-radius-circle: 50%;
+
+/* 阴影 */
+$uni-shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+$uni-shadow-base: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+$uni-shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+$uni-shadow-xl: 0 12rpx 48rpx rgba(0, 0, 0, 0.25);
+
+/* 渐变色 */
+$uni-gradient-primary: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+$uni-gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+$uni-gradient-warning: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+$uni-gradient-error: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+$uni-gradient-dark: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+
+/* 动画时长 */
+$uni-animation-duration-fast: 0.2s;
+$uni-animation-duration-base: 0.3s;
+$uni-animation-duration-slow: 0.5s;
+
+/* 层级 */
+$uni-z-index-toast: 10000;
+$uni-z-index-modal: 9999;
+$uni-z-index-popup: 9998;
+$uni-z-index-navbar: 1000;
+$uni-z-index-tabbar: 1000;
+$uni-z-index-fixed: 999;
+
+/* 页面布局 */
+$uni-navbar-height: 44px;
+$uni-tabbar-height: 50px;
+$uni-page-padding: 24rpx;
+
+/* 警务专用色 */
+$police-primary: #1E3A8A;
+$police-accent: #DC2626;
+$police-success: #10B981;
+$police-warning: #F59E0B;
+
+/* 公众版专用色 */
+$public-primary: #1B4B8C;
+$public-accent: #2D8F47;
+$public-info: #3B82F6;
+
+/* 状态栏高度变量 */
+$status-bar-height: var(--status-bar-height);
+
+/* 安全区域 */
+$safe-area-inset-bottom: env(safe-area-inset-bottom);
+$safe-area-inset-top: env(safe-area-inset-top);
+
+/* 全局重置样式 */
+page {
+  background-color: $uni-bg-color;
+  font-size: $uni-font-size-base;
+  color: $uni-text-color;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* 清除按钮默认样式 */
+button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  line-height: inherit;
+  font-size: inherit;
+  
+  &::after {
+    border: none;
+  }
+}
+
+/* 输入框样式 */
+input,
+textarea {
+  font-family: inherit;
+}
+
+/* 图片默认样式 */
+image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* 通用工具类 */
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 间距工具类 */
+.m-0 { margin: 0; }
+.mt-sm { margin-top: $uni-spacing-sm; }
+.mt-base { margin-top: $uni-spacing-base; }
+.mt-lg { margin-top: $uni-spacing-lg; }
+
+.mb-sm { margin-bottom: $uni-spacing-sm; }
+.mb-base { margin-bottom: $uni-spacing-base; }
+.mb-lg { margin-bottom: $uni-spacing-lg; }
+
+.p-0 { padding: 0; }
+.pt-sm { padding-top: $uni-spacing-sm; }
+.pt-base { padding-top: $uni-spacing-base; }
+.pt-lg { padding-top: $uni-spacing-lg; }
+
+.pb-sm { padding-bottom: $uni-spacing-sm; }
+.pb-base { padding-bottom: $uni-spacing-base; }
+.pb-lg { padding-bottom: $uni-spacing-lg; }

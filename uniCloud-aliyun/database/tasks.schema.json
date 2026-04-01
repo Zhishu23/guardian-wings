@@ -1,0 +1,109 @@
+{
+  "bsonType": "object",
+  "required": ["title", "priority", "status"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "update": "doc.reporter == auth.uid || auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "任务唯一ID，自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "任务标题",
+      "description": "任务名称简述",
+      "minLength": 2,
+      "maxLength": 80,
+      "errorMessage": "任务标题长度2-80字"
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "任务描述",
+      "description": "任务详细说明和要求",
+      "maxLength": 2000
+    },
+    "priority": {
+      "bsonType": "string",
+      "title": "优先级",
+      "description": "high: 紧急, medium: 重要, low: 一般",
+      "enum": ["high", "medium", "low"],
+      "defaultValue": "medium",
+      "errorMessage": "优先级只能是 high/medium/low"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "任务状态",
+      "description": "pending: 待处理, processing: 处理中, completed: 已完成",
+      "enum": ["pending", "processing", "completed"],
+      "defaultValue": "pending"
+    },
+    "location": {
+      "bsonType": "object",
+      "title": "任务地点",
+      "description": "任务执行地点，含地址和坐标",
+      "properties": {
+        "address": {
+          "bsonType": "string",
+          "title": "地址",
+          "maxLength": 200
+        },
+        "lat": {
+          "bsonType": "double",
+          "title": "纬度"
+        },
+        "lng": {
+          "bsonType": "double",
+          "title": "经度"
+        }
+      }
+    },
+    "reporter": {
+      "bsonType": "string",
+      "title": "负责人",
+      "description": "任务负责警务人员的用户 _id（关联 uni-id-users）",
+      "foreignKey": "uni-id-users._id"
+    },
+    "deadline": {
+      "bsonType": "timestamp",
+      "title": "截止时间",
+      "description": "任务完成截止时间（时间戳）"
+    },
+    "attachments": {
+      "bsonType": "array",
+      "title": "附件",
+      "description": "任务相关附件的云存储 fileID 列表（可选）",
+      "items": {
+        "bsonType": "string"
+      }
+    },
+    "relatedReportId": {
+      "bsonType": "string",
+      "title": "关联举报ID",
+      "description": "关联公众端举报线索的 _id（可选，一对一）",
+      "foreignKey": "reports._id"
+    },
+    "relatedEventId": {
+      "bsonType": "string",
+      "title": "关联事件ID",
+      "description": "关联事件记录表的 _id（可选，一对一）",
+      "foreignKey": "events._id"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "bsonType": "object",
+  "required": ["title", "description", "location", "startTime", "endTime", "maxParticipants"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "活动唯一ID，自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "活动标题",
+      "description": "活动名称，如：朱鹮保护区巡护志愿活动",
+      "minLength": 2,
+      "maxLength": 60,
+      "errorMessage": "活动标题长度2-60字"
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "活动描述",
+      "description": "活动详情介绍，支持富文本"
+    },
+    "location": {
+      "bsonType": "string",
+      "title": "活动地点",
+      "description": "活动举办地点文本描述",
+      "maxLength": 100
+    },
+    "startTime": {
+      "bsonType": "timestamp",
+      "title": "开始时间",
+      "description": "活动开始时间（时间戳）"
+    },
+    "endTime": {
+      "bsonType": "timestamp",
+      "title": "结束时间",
+      "description": "活动结束时间（时间戳）"
+    },
+    "maxParticipants": {
+      "bsonType": "int",
+      "title": "最大参与人数",
+      "description": "活动招募上限人数",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "currentParticipants": {
+      "bsonType": "int",
+      "title": "当前参与人数",
+      "description": "已报名参与的人数，由云函数更新",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "cover": {
+      "bsonType": "string",
+      "title": "封面图片",
+      "description": "活动封面图云存储 fileID"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "活动状态",
+      "description": "upcoming: 即将开始, ongoing: 进行中, ended: 已结束",
+      "enum": ["upcoming", "ongoing", "ended"],
+      "defaultValue": "upcoming"
+    },
+    "pointsReward": {
+      "bsonType": "int",
+      "title": "积分奖励",
+      "description": "参与活动完成后可获得的积分数量",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

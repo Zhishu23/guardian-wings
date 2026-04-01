@@ -1,0 +1,90 @@
+[
+  {
+    "_id": "bird_001",
+    "name": "朱鹮",
+    "scientificName": "Nipponia nippon",
+    "protectionLevel": "极危",
+    "habitat": "湿地",
+    "size": "中型",
+    "description": "<p>朱鹮（学名：Nipponia nippon）是鹮科朱鹮属鸟类，被誉为被誉为'东方宝石'，曾经广泛分布于中国、日本、朝鲜半岛和俄罗斯，后因人类活动而急剧减少，目前主要分布于中国陕西秦岭山区。</p><p>全身羽毛白色，嘴细长稍向下弯曲，嘴端红色，面部裸露皮肤朱红色，故名朱鹮。</p>",
+    "distribution": "主要分布在陕西汉中、洋县一带，部分种群扩散至甘肃、河南、浙江等地",
+    "habits": "栖息于山地丘陵的疏林中，喜在水田、河滩觅食，以小鱼、泥鳅、蛙、螃蟹等为食",
+    "images": [],
+    "features": [
+      "白色羽毛",
+      "红色裸面",
+      "粉红色颈部",
+      "弯曲细长嘴"
+    ],
+    "category": "鹳形目·鹮科",
+    "isHot": true,
+    "favoriteCount": 0,
+    "createTime": 1735200000000
+  },
+  {
+    "_id": "bird_002",
+    "name": "丹顶鹤",
+    "scientificName": "Grus japonensis",
+    "protectionLevel": "濒危",
+    "habitat": "湿地",
+    "size": "大型",
+    "description": "<p>丹顶鹤（学名：Grus japonensis），是鹤科鹤属大型涉禽，因头顶有被誉为'丹顶'，（鲜红色裸露皮肤）而得名，是中国的吉祥鸟之一。</p>",
+    "distribution": "繁殖于黑龙江、吉林的湿地，越冬于江苏盐城、鄱阳湖等地",
+    "habits": "栖息于开阔平原、沼泽、浅水湿地，杂食性，以鱼、虾、昆虫及植物为食",
+    "images": [],
+    "features": [
+      "白色身体",
+      "黑色颈部",
+      "红色头顶",
+      "大型涉禽"
+    ],
+    "category": "鹤形目·鹤科",
+    "isHot": true,
+    "favoriteCount": 0,
+    "createTime": 1735200000000
+  },
+  {
+    "_id": "bird_003",
+    "name": "中华秋沙鸭",
+    "scientificName": "Mergus squamatus",
+    "protectionLevel": "濒危",
+    "habitat": "湿地",
+    "size": "中型",
+    "description": "<p>中华秋沙鸭是第三纪冰川期后残存下来的物种，距今已有一千多万年的历史，是中国国家一级保护动物，被称为鸟类中的'活化石'。</p>",
+    "distribution": "繁殖于长白山、小兴安岭，越冬于华南地区的河流湖泊",
+    "habits": "栖息于山地森林中的河流，善潜水，以鱼类为主食",
+    "images": [],
+    "features": [
+      "绿色头部",
+      "白色翅斑",
+      "锯齿状嘴",
+      "鳞状腹部"
+    ],
+    "category": "雁形目·鸭科",
+    "isHot": true,
+    "favoriteCount": 0,
+    "createTime": 1735200000000
+  },
+  {
+    "_id": "bird_004",
+    "name": "黄胸鹀",
+    "scientificName": "Emberiza aureola",
+    "protectionLevel": "极危",
+    "habitat": "草地",
+    "size": "小型",
+    "description": "<p>黄胸鹀（禾花雀）曾广泛分布于东亚，由于非法猎杀食用，种群数量急剧下降，在约30年内减少了约90%，被列为极危物种。</p>",
+    "distribution": "繁殖于西伯利亚至中国东北，迁徙经过中国，越冬于东南亚",
+    "habits": "栖息于开阔的草地、农田，迁徙期结大群，以草籽为主食",
+    "images": [],
+    "features": [
+      "黄色胸部",
+      "黑色头部（雄性）",
+      "栗色背部",
+      "小型鸣禽"
+    ],
+    "category": "雀形目·鹀科",
+    "isHot": true,
+    "favoriteCount": 0,
+    "createTime": 1735200000000
+  }
+]

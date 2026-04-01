@@ -1,0 +1,86 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+unpackage/
+dist/
+build/
+
+# IDE files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local config files
+config/local.*
+*.local
+
+# Log files
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Testing
+coverage/
+.nyc_output/
+
+# Production
+build/
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Cloud function node_modules
+uniCloud-aliyun/cloudfunctions/*/node_modules/
+uniCloud-aliyun/cloudfunctions/*/package-lock.json
+uniCloud-aliyun/cloudfunctions/*/yarn.lock
+
+# Local settings
+.hbuilderx/
+.project
+.eslintcache
+
+# System files
+*.sys
+*.bak
+*.old
+*.swp
+*.swo
+
+# User files
+.userdata
+.userstate
+.settings/
+
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea

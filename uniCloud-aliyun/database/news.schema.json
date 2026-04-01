@@ -1,0 +1,68 @@
+{
+  "bsonType": "object",
+  "required": ["title", "content"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "新闻唯一ID，自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "标题",
+      "description": "新闻标题",
+      "minLength": 2,
+      "maxLength": 100,
+      "errorMessage": "标题长度为2-100字"
+    },
+    "content": {
+      "bsonType": "string",
+      "title": "内容",
+      "description": "新闻正文，支持富文本HTML"
+    },
+    "source": {
+      "bsonType": "string",
+      "title": "来源",
+      "description": "新闻来源媒体，如：新华网、中国新闻网",
+      "maxLength": 50
+    },
+    "time": {
+      "bsonType": "string",
+      "title": "发布时间",
+      "description": "发布时间字符串（用于前端展示），格式：YYYY-MM-DD",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "errorMessage": "时间格式应为 YYYY-MM-DD"
+    },
+    "cover": {
+      "bsonType": "string",
+      "title": "封面图",
+      "description": "封面图片云存储 fileID"
+    },
+    "tag": {
+      "bsonType": "string",
+      "title": "标签",
+      "description": "新闻分类标签，如：新闻、科普、通知",
+      "enum": ["新闻", "科普", "通知", "活动"],
+      "defaultValue": "新闻"
+    },
+    "viewCount": {
+      "bsonType": "int",
+      "title": "阅读量",
+      "description": "新闻被浏览次数",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "description": "后台录入时间，自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

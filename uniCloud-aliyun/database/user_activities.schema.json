@@ -1,0 +1,53 @@
+{
+  "bsonType": "object",
+  "required": ["userId", "activityId"],
+  "permission": {
+    "read": "doc.userId == auth.uid || auth.role.indexOf('admin') > -1",
+    "create": "auth.uid != null",
+    "update": "doc.userId == auth.uid || auth.role.indexOf('admin') > -1",
+    "delete": "doc.userId == auth.uid || auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "参与记录唯一ID，自动生成"
+    },
+    "userId": {
+      "bsonType": "string",
+      "title": "用户ID",
+      "description": "关联 uni-id-users 表的 _id",
+      "foreignKey": "uni-id-users._id"
+    },
+    "activityId": {
+      "bsonType": "string",
+      "title": "活动ID",
+      "description": "关联 volunteer_activities 表的 _id",
+      "foreignKey": "volunteer_activities._id"
+    },
+    "joinTime": {
+      "bsonType": "timestamp",
+      "title": "报名时间",
+      "description": "用户提交报名的时间，自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "参与状态",
+      "description": "joined: 已报名, completed: 已完成, cancelled: 已取消",
+      "enum": ["joined", "completed", "cancelled"],
+      "defaultValue": "joined"
+    },
+    "checkInTime": {
+      "bsonType": "timestamp",
+      "title": "签到时间",
+      "description": "用户现场签到时间（可选）"
+    },
+    "pointsAwarded": {
+      "bsonType": "bool",
+      "title": "积分是否已发放",
+      "description": "活动完成后积分是否已奖励给用户",
+      "defaultValue": false
+    }
+  }
+}

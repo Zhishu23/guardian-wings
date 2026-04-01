@@ -1,0 +1,23 @@
+{
+  "name": "guardian-wings",
+  "version": "1.0.0",
+  "description": "守护之翼 - 野生动物保护与管理系统",
+  "main": "main.js",
+  "scripts": {
+    "dev:h5": "uni serve",
+    "build:h5": "uni build",
+    "dev:mp-weixin": "uni serve --platform mp-weixin",
+    "build:mp-weixin": "uni build --platform mp-weixin"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^2.0.0",
+    "@dcloudio/uni-app-plus": "^2.0.0",
+    "@dcloudio/uni-components": "^2.0.0",
+    "@dcloudio/uni-h5": "^2.0.0",
+    "@dcloudio/uni-mp-weixin": "^2.0.0",
+    "vue": "^2.6.14"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "^2.0.0"
+  }
+}

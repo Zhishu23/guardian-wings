@@ -1,0 +1,131 @@
+{
+  "bsonType": "object",
+  "required": ["type", "location", "time", "description"],
+  "permission": {
+    "read": "doc.userId == auth.uid || auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": true,
+    "update": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "举报唯一ID，自动生成"
+    },
+    "userId": {
+      "bsonType": "string",
+      "title": "举报人ID",
+      "description": "关联 uni-id-users 表的 _id，匿名举报时可为空",
+      "foreignKey": "uni-id-users._id"
+    },
+    "type": {
+      "bsonType": "string",
+      "title": "事件类型",
+      "description": "举报事件分类",
+      "enum": ["非法捕鸟", "非法贩卖", "栖息地破坏", "其他违法"],
+      "errorMessage": "事件类型不合法"
+    },
+    "location": {
+      "bsonType": "object",
+      "title": "地点信息",
+      "description": "事件发生地点，含地址文本和经纬度坐标",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "bsonType": "string",
+          "title": "地址",
+          "description": "可读地址描述，如：北京市海淀区XX路",
+          "maxLength": 200
+        },
+        "lat": {
+          "bsonType": "double",
+          "title": "纬度",
+          "description": "GPS纬度坐标"
+        },
+        "lng": {
+          "bsonType": "double",
+          "title": "经度",
+          "description": "GPS经度坐标"
+        }
+      }
+    },
+    "time": {
+      "bsonType": "string",
+      "title": "事件时间",
+      "description": "事件发生时间，格式：YYYY-MM-DD HH:mm",
+      "maxLength": 20
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "详细描述",
+      "description": "举报人对事件的详细文字描述",
+      "minLength": 10,
+      "maxLength": 2000,
+      "errorMessage": "描述至少10字，最多2000字"
+    },
+    "images": {
+      "bsonType": "array",
+      "title": "现场照片",
+      "description": "举报现场照片的云存储 fileID 列表，最多9张",
+      "maxLength": 9,
+      "items": {
+        "bsonType": "string"
+      }
+    },
+    "isAnonymous": {
+      "bsonType": "bool",
+      "title": "是否匿名",
+      "description": "true: 匿名举报，警务端不显示联系方式",
+      "defaultValue": false
+    },
+    "contact": {
+      "bsonType": "object",
+      "title": "联系方式",
+      "description": "举报人联系信息（isAnonymous 为 true 时此字段为空）",
+      "properties": {
+        "phone": {
+          "bsonType": "string",
+          "title": "联系电话",
+          "pattern": "^1[3-9]\\d{9}$"
+        },
+        "email": {
+          "bsonType": "string",
+          "title": "联系邮箱",
+          "maxLength": 100
+        }
+      }
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "处理状态",
+      "description": "pending: 待处理, processing: 处理中, resolved: 已处理",
+      "enum": ["pending", "processing", "resolved"],
+      "defaultValue": "pending"
+    },
+    "result": {
+      "bsonType": "string",
+      "title": "处理结果",
+      "description": "警务端填写的处理结果说明（可选）",
+      "maxLength": 500
+    },
+    "handledBy": {
+      "bsonType": "string",
+      "title": "处理人",
+      "description": "处理该举报的警务人员 policeId"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "提交时间",
+      "description": "举报提交时间，自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

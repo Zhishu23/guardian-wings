@@ -1,0 +1,30 @@
+{
+  "passwordSecret": "gw-pwd-s3cr3t-guardian-wings-2026",
+  "tokenSecret": "gw-tok-s3cr3t-guardian-wings-2026",
+  "tokenExpiresIn": 7200,
+  "tokenExpiresThreshold": 600,
+  "bindTokenToDevice": false,
+  "passwordErrorLimit": 6,
+  "passwordErrorRetryTime": 3600,
+  "mobileVerifyMaxMinutes": 5,
+  "app": {
+    "tokenExpiresIn": 2592000,
+    "tokenExpiresThreshold": 864000,
+    "oauth": {
+      "weixin": {
+        "appid": "请填写微信AppID",
+        "appsecret": "请填写微信AppSecret"
+      }
+    }
+  },
+  "mp-weixin": {
+    "tokenExpiresIn": 2592000,
+    "tokenExpiresThreshold": 864000,
+    "oauth": {
+      "weixin": {
+        "appid": "请填写微信AppID",
+        "appsecret": "请填写微信AppSecret"
+      }
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "bsonType": "object",
+  "required": ["type", "title", "description", "time", "location", "createdBy"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "update": "doc.createdBy == auth.uid || auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "事件唯一ID，自动生成"
+    },
+    "taskId": {
+      "bsonType": "string",
+      "title": "关联任务ID",
+      "description": "关联 tasks 表的 _id（可选）",
+      "foreignKey": "tasks._id"
+    },
+    "type": {
+      "bsonType": "string",
+      "title": "事件类型",
+      "description": "与举报类型保持一致",
+      "enum": ["非法捕鸟", "非法贩卖", "栖息地破坏", "其他违法"],
+      "errorMessage": "事件类型不合法"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "事件标题",
+      "description": "事件名称简述",
+      "minLength": 2,
+      "maxLength": 80
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "详细描述",
+      "description": "事件详细情况描述",
+      "maxLength": 5000
+    },
+    "time": {
+      "bsonType": "timestamp",
+      "title": "事件发生时间",
+      "description": "事件实际发生时间（时间戳）"
+    },
+    "location": {
+      "bsonType": "object",
+      "title": "事件地点",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "bsonType": "string",
+          "title": "地址",
+          "maxLength": 200
+        },
+        "lat": {
+          "bsonType": "double",
+          "title": "纬度"
+        },
+        "lng": {
+          "bsonType": "double",
+          "title": "经度"
+        }
+      }
+    },
+    "birds": {
+      "bsonType": "array",
+      "title": "涉案鸟类",
+      "description": "涉及的鸟类信息列表（直接存储名称和等级，无需关联ID）",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "name": {
+            "bsonType": "string",
+            "title": "鸟类名称"
+          },
+          "protectionLevel": {
+            "bsonType": "string",
+            "title": "保护等级",
+            "enum": ["一级", "二级", "三有", "极危", "濒危", "易危"]
+          },
+          "count": {
+            "bsonType": "int",
+            "title": "数量",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "evidence": {
+      "bsonType": "object",
+      "title": "物证信息",
+      "description": "现场查获的物证记录",
+      "properties": {
+        "tools": {
+          "bsonType": "array",
+          "title": "作案工具",
+          "description": "查获工具列表，如：捕鸟网、猎夹",
+          "items": { "bsonType": "string" }
+        },
+        "vehicle": {
+          "bsonType": "string",
+          "title": "涉案车辆",
+          "description": "车牌号码（如有）",
+          "maxLength": 20
+        },
+        "other": {
+          "bsonType": "string",
+          "title": "其他物证",
+          "maxLength": 500
+        }
+      }
+    },
+    "videos": {
+      "bsonType": "array",
+      "title": "现场视频",
+      "description": "现场拍摄视频的云存储 fileID 列表",
+      "items": { "bsonType": "string" }
+    },
+    "photos": {
+      "bsonType": "array",
+      "title": "现场照片",
+      "description": "带水印的现场照片云存储 fileID 列表",
+      "items": { "bsonType": "string" }
+    },
+    "audio": {
+      "bsonType": "string",
+      "title": "录音文件",
+      "description": "现场录音的云存储 fileID（可选）"
+    },
+    "transcript": {
+      "bsonType": "string",
+      "title": "笔录内容",
+      "description": "现场询问笔录全文",
+      "maxLength": 10000
+    },
+    "suspects": {
+      "bsonType": "array",
+      "title": "涉案人员",
+      "description": "记录涉案嫌疑人基本信息",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "name": { "bsonType": "string", "title": "姓名" },
+          "idCard": { "bsonType": "string", "title": "身份证号（脱敏）" },
+          "phone": { "bsonType": "string", "title": "联系电话" }
+        }
+      }
+    },
+    "createdBy": {
+      "bsonType": "string",
+      "title": "创建人",
+      "description": "创建该事件记录的警务人员用户 _id",
+      "foreignKey": "uni-id-users._id"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}
