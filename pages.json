@@ -10,7 +10,7 @@
     },
     {
       "path": "pages/login/public-login",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "登录" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "公众登录" }
     },
     {
       "path": "pages/login/register",
@@ -34,7 +34,7 @@
     },
     {
       "path": "pages/public/bird/bird",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "鸟类百科" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "识鸟百科" }
     },
     {
       "path": "pages/public/volunteer/index",
@@ -46,7 +46,11 @@
     },
     {
       "path": "pages/public/home/news-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "资讯详情" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "新闻详情" }
+    },
+    {
+      "path": "pages/public/home/all-news",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "全部新闻" }
     },
     {
       "path": "pages/public/report/my-reports",
@@ -86,7 +90,7 @@
     },
     {
       "path": "pages/public/mine/account-security",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "账号安全" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "账户安全" }
     },
     {
       "path": "pages/public/mine/change-password",
@@ -114,7 +118,7 @@
     },
     {
       "path": "pages/public/emergency/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "紧急救助" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "应急救助" }
     },
     {
       "path": "pages/public/science/biodiversity",
@@ -196,22 +200,22 @@
       "path": "pages/police/task-center/create-task",
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "新建任务" }
     },
-	{
-	  "path": "pages/police/workplace/bird-query",
-	  "style": { "navigationStyle": "custom", "navigationBarTitleText": "识鸟百科" }
-	},
-	{
-	  "path": "pages/police/workplace/police-settings",
-	  "style": { "navigationStyle": "custom", "navigationBarTitleText": "个人设置" }
-	},
-	{
-	  "path": "pages/police/new-case/index",
-	  "style": { "navigationStyle": "custom", "navigationBarTitleText": "创建任务" }
-	},
-	{
-	  "path": "pages/admin/news-manage",
-	  "style": { "navigationStyle": "custom", "navigationBarTitleText": "新闻管理" }
-	}
+    {
+      "path": "pages/police/workplace/bird-query",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "识鸟百科" }
+    },
+    {
+      "path": "pages/police/workplace/police-settings",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "个人设置" }
+    },
+    {
+      "path": "pages/police/new-case/index",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "创建任务" }
+    },
+    {
+      "path": "pages/admin/news-manage",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "新闻管理" }
+    }
   ],
   "tabBar": {
     "custom": true,
@@ -223,7 +227,7 @@
       { "pagePath": "pages/public/home/home", "text": "首页" },
       { "pagePath": "pages/public/report/report", "text": "举报" },
       { "pagePath": "pages/public/bird/bird", "text": "识鸟" },
-      { "pagePath": "pages/public/volunteer/index", "text": "志愿" },
+      { "pagePath": "pages/public/volunteer/index", "text": "活动" },
       { "pagePath": "pages/public/mine/mine", "text": "我的" }
     ]
   },

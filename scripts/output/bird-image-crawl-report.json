@@ -1,0 +1,2601 @@
+[
+  {
+    "birdId": "bird_import_0001",
+    "name": "栗树鸭",
+    "query": "栗树鸭 Dendrocygna javanica 鸟类",
+    "source": "acjson",
+    "candidateCount": 109,
+    "saved": [
+      "/static/birds/bird_import_0001/01.jpg",
+      "/static/birds/bird_import_0001/02.jpg",
+      "/static/birds/bird_import_0001/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E6%A0%97%E6%A0%91%E9%B8%AD/1716063",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0002",
+    "name": "黑雁",
+    "query": "黑雁 Branta bernicla 鸟类",
+    "source": "acjson",
+    "candidateCount": 114,
+    "saved": [
+      "/static/birds/bird_import_0002/01.jpg",
+      "/static/birds/bird_import_0002/02.jpg",
+      "/static/birds/bird_import_0002/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E9%BB%91%E9%9B%81%E5%A4%A7%E8%A5%BF%E6%B4%8B%E4%BA%9A%E7%A7%8D/13384287",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0003",
+    "name": "红胸黑雁",
+    "query": "红胸黑雁 Branta ruficollis 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0003/01.jpg",
+      "/static/birds/bird_import_0003/02.jpg",
+      "/static/birds/bird_import_0003/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1821742051934262005&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0004",
+    "name": "加拿大黑雁",
+    "query": "加拿大黑雁 Branta canadensis 鸟类",
+    "source": "acjson",
+    "candidateCount": 124,
+    "saved": [
+      "/static/birds/bird_import_0004/01.jpg",
+      "/static/birds/bird_import_0004/02.jpg",
+      "/static/birds/bird_import_0004/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%8A%A0%E6%8B%BF%E5%A4%A7%E9%BB%91%E9%9B%81%E5%A4%A7%E7%9B%86%E5%9C%B0%E4%BA%9A%E7%A7%8D/13785897",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0005",
+    "name": "白颊黑雁",
+    "query": "白颊黑雁 Branta leucopsis 鸟类",
+    "source": "acjson",
+    "candidateCount": 138,
+    "saved": [
+      "/static/birds/bird_import_0005/01.jpg",
+      "/static/birds/bird_import_0005/02.jpg",
+      "/static/birds/bird_import_0005/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1827959379554678001&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0006",
+    "name": "小美洲黑雁",
+    "query": "小美洲黑雁 Branta hutchinsii 鸟类",
+    "source": "acjson",
+    "candidateCount": 125,
+    "saved": [
+      "/static/birds/bird_import_0006/01.jpg",
+      "/static/birds/bird_import_0006/02.jpg",
+      "/static/birds/bird_import_0006/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%B0%8F%E7%BE%8E%E6%B4%B2%E9%BB%91%E9%9B%81/53285360",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0007",
+    "name": "斑头雁",
+    "query": "斑头雁 Anser indicus 鸟类",
+    "source": "acjson",
+    "candidateCount": 138,
+    "saved": [
+      "/static/birds/bird_import_0007/01.jpg",
+      "/static/birds/bird_import_0007/02.jpeg",
+      "/static/birds/bird_import_0007/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oAlJ9OiEnIDAAAA02ChFeEyEQxDAOqA0NgfQRq~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7459347474218519844",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://news.sohu.com/a/874238775_381442",
+        "message": "not image content-type: text/html;charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0008",
+    "name": "雪雁",
+    "query": "雪雁 Anser caerulescens 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0008/01.jpg",
+      "/static/birds/bird_import_0008/02.jpg",
+      "/static/birds/bird_import_0008/03.webp"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E9%9B%AA%E9%9B%81%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/2495632",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0009",
+    "name": "灰雁",
+    "query": "灰雁 Anser anser 鸟类",
+    "source": "acjson",
+    "candidateCount": 141,
+    "saved": [
+      "/static/birds/bird_import_0009/01.png",
+      "/static/birds/bird_import_0009/02.jpg",
+      "/static/birds/bird_import_0009/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4176883965518290464",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4652614940356980393",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0010",
+    "name": "鸿雁",
+    "query": "鸿雁 Anser cygnoides 鸟类",
+    "source": "acjson",
+    "candidateCount": 116,
+    "saved": [
+      "/static/birds/bird_import_0010/01.webp",
+      "/static/birds/bird_import_0010/02.jpg",
+      "/static/birds/bird_import_0010/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.meipian.cn/58uyi1yo",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0011",
+    "name": "豆雁",
+    "query": "豆雁 Anser fabalis 鸟类",
+    "source": "acjson",
+    "candidateCount": 134,
+    "saved": [
+      "/static/birds/bird_import_0011/01.jpg",
+      "/static/birds/bird_import_0011/02.jpg",
+      "/static/birds/bird_import_0011/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/og3KEe4m9BAvCqATAAiwEezADAzwzEieIpPFgi~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7484995084295998777",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E8%B1%86%E9%9B%81%E6%96%B0%E7%96%86%E4%BA%9A%E7%A7%8D/2495810",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0012",
+    "name": "短嘴豆雁",
+    "query": "短嘴豆雁 Anser serrirostris 鸟类",
+    "source": "acjson",
+    "candidateCount": 132,
+    "saved": [
+      "/static/birds/bird_import_0012/01.jpg",
+      "/static/birds/bird_import_0012/02.png",
+      "/static/birds/bird_import_0012/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-dy/f968fa2032b94e83b28234f2c57ffe94~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7431376616464370981",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_3015442104769908000",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0013",
+    "name": "白额雁",
+    "query": "白额雁 Anser albifrons 鸟类",
+    "source": "acjson",
+    "candidateCount": 131,
+    "saved": [
+      "/static/birds/bird_import_0013/01.jpg",
+      "/static/birds/bird_import_0013/02.jpg",
+      "/static/birds/bird_import_0013/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%99%BD%E9%A2%9D%E9%9B%81%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/2495425",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0014",
+    "name": "小白额雁",
+    "query": "小白额雁 Anser erythropus 鸟类",
+    "source": "acjson",
+    "candidateCount": 127,
+    "saved": [
+      "/static/birds/bird_import_0014/01.png",
+      "/static/birds/bird_import_0014/02.jpg",
+      "/static/birds/bird_import_0014/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5080300125582087918",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0015",
+    "name": "疣鼻天鹅",
+    "query": "疣鼻天鹅 Cygnus olor 鸟类",
+    "source": "acjson",
+    "candidateCount": 118,
+    "saved": [
+      "/static/birds/bird_import_0015/01.jpg",
+      "/static/birds/bird_import_0015/02.jpg",
+      "/static/birds/bird_import_0015/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/og3tEecWpDA2WbAmAVFeE9nAAAAwmELOI5fh5E~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1754902800&x-signature=akq0jcUMtvEoWNRa6XPAaoGI5T8%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7438076752536161593",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oQfpsr3NCCAFpmBEAICAgAAc6fIgjoysDA9KEA~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7497001215004314920",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/ooB9DEgfEuoADmA1IC2AWCFADd7GHAfhq7Aj9Y~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1766001600&x-signature=D1Wnxy29JEqCOevMuGUhJCyXL30%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7527240094504455451",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0016",
+    "name": "小天鹅",
+    "query": "小天鹅 Cygnus columbianus 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0016/01.jpg",
+      "/static/birds/bird_import_0016/02.jpg",
+      "/static/birds/bird_import_0016/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%B0%8F%E5%A4%A9%E9%B9%85%E4%B9%8C%E8%8B%8F%E9%87%8C%E4%BA%9A%E7%A7%8D/2496690",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0017",
+    "name": "大天鹅",
+    "query": "大天鹅 Cygnus cygnus 鸟类",
+    "source": "acjson",
+    "candidateCount": 108,
+    "saved": [
+      "/static/birds/bird_import_0017/01.jpg",
+      "/static/birds/bird_import_0017/02.jpg",
+      "/static/birds/bird_import_0017/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%A4%A9%E4%B9%8B%E9%AA%84%E5%AD%90%E2%80%94%E5%A4%A7%E5%A4%A9%E9%B9%85/15093178",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0018",
+    "name": "瘤鸭",
+    "query": "瘤鸭 Sarkidiornis melanotos 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0018/01.jpg",
+      "/static/birds/bird_import_0018/02.jpg",
+      "/static/birds/bird_import_0018/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4730460599568653824",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0019",
+    "name": "翘鼻麻鸭",
+    "query": "翘鼻麻鸭 Tadorna tadorna 鸟类",
+    "source": "acjson",
+    "candidateCount": 135,
+    "saved": [
+      "/static/birds/bird_import_0019/01.jpg",
+      "/static/birds/bird_import_0019/02.jpg",
+      "/static/birds/bird_import_0019/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://www.zhangye.gov.cn/sdj/ztzl/sdwyfgkp/202504/t20250430_1395950_ghb.html",
+        "message": "not image content-type: text/html"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oY2jVYBSEiAZIUCB0AiNATAAA4q5feaN0QKAgD~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772931600&x-signature=07h21fcFUIdX7hjUEqfbzAaMRNw%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7497733178375933221",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0020",
+    "name": "赤麻鸭",
+    "query": "赤麻鸭 Tadorna ferruginea 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0020/01.png",
+      "/static/birds/bird_import_0020/02.jpg",
+      "/static/birds/bird_import_0020/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4709238045323149916",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0021",
+    "name": "冠麻鸭",
+    "query": "冠麻鸭 Tadorna cristata 鸟类",
+    "source": "acjson",
+    "candidateCount": 119,
+    "saved": [
+      "/static/birds/bird_import_0021/01.png",
+      "/static/birds/bird_import_0021/02.jpg",
+      "/static/birds/bird_import_0021/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1825723588956335550&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0022",
+    "name": "白翅栖鸭",
+    "query": "白翅栖鸭 Asarcornis scutulata 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0022/01.jpg",
+      "/static/birds/bird_import_0022/02.jpg",
+      "/static/birds/bird_import_0022/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%99%BD%E7%BF%85%E6%A0%96%E9%B8%AD/8423405",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://dongniao.net/uimg/m/128_DN_20240320202102_3292696522_0.webp",
+        "message": "not image content-type: "
+      },
+      {
+        "url": "http://dongniao.net/nd/128",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0023",
+    "name": "鸳鸯",
+    "query": "鸳鸯 Aix galericulata 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0024",
+    "name": "棉凫",
+    "query": "棉凫 Nettapus coromandelianus 鸟类",
+    "source": "acjson",
+    "candidateCount": 135,
+    "saved": [
+      "/static/birds/bird_import_0024/01.jpg",
+      "/static/birds/bird_import_0024/02.jpg",
+      "/static/birds/bird_import_0024/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4696032536878084726",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0025",
+    "name": "花脸鸭",
+    "query": "花脸鸭 Sibirionetta formosa 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0025/01.jpg",
+      "/static/birds/bird_import_0025/02.jpg",
+      "/static/birds/bird_import_0025/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_3891288165236956437",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_3829129126639716231",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0026",
+    "name": "白眉鸭",
+    "query": "白眉鸭 Spatula querquedula 鸟类",
+    "source": "acjson",
+    "candidateCount": 126,
+    "saved": [
+      "/static/birds/bird_import_0026/01.jpg",
+      "/static/birds/bird_import_0026/02.jpg",
+      "/static/birds/bird_import_0026/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/o0DAgCObBewQHSA93TEmbA8PAAHnxBgAAvqfAC~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7354400123356597556",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4918401711311376643",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0027",
+    "name": "琵嘴鸭",
+    "query": "琵嘴鸭 Spatula clypeata 鸟类",
+    "source": "acjson",
+    "candidateCount": 131,
+    "saved": [
+      "/static/birds/bird_import_0027/01.jpg",
+      "/static/birds/bird_import_0027/02.png",
+      "/static/birds/bird_import_0027/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o0A4AfXaDEDnFAAACbEu7pE42EeIfTAwoJ9SuA~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7483781715639487803",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1825997963608850920&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0028",
+    "name": "赤膀鸭",
+    "query": "赤膀鸭 Mareca strepera 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0028/01.jpg",
+      "/static/birds/bird_import_0028/02.jpg",
+      "/static/birds/bird_import_0028/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.zhangye.gov.cn/sdj/ztzl/sdwyfgkp/202506/t20250606_1411125_ghb.html",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0029",
+    "name": "罗纹鸭",
+    "query": "罗纹鸭 Mareca falcata 鸟类",
+    "source": "acjson",
+    "candidateCount": 125,
+    "saved": [
+      "/static/birds/bird_import_0029/01.jpg",
+      "/static/birds/bird_import_0029/02.jpg",
+      "/static/birds/bird_import_0029/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/ogeBufEYKAZ7DhAQALpEAmEaTBmFIsbkPrfaAG~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1774839600&x-signature=FhTURvqJg8cnnVLm1wvYH49VY0s%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7479396906389556490",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4708474837964866030",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0030",
+    "name": "赤颈鸭",
+    "query": "赤颈鸭 Mareca penelope 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0030/01.jpg",
+      "/static/birds/bird_import_0030/02.jpg",
+      "/static/birds/bird_import_0030/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4870719671547625296",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oo519PcKAScAiYDAMEwAZAOPgsAII6iBi3LPj~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772377200&x-signature=cpe%2B4zh%2F%2FI77JnDz0mFRFlHtj44%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7482973547632004406",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0031",
+    "name": "绿眉鸭",
+    "query": "绿眉鸭 Mareca americana 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0032",
+    "name": "棕颈鸭",
+    "query": "棕颈鸭 Anas luzonica 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0032/01.jpg",
+      "/static/birds/bird_import_0032/02.jpg",
+      "/static/birds/bird_import_0032/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E6%A3%95%E9%A2%88%E9%B8%AD/3250038",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0033",
+    "name": "印缅斑嘴鸭",
+    "query": "印缅斑嘴鸭 Anas poecilorhyncha 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0033/01.jpg",
+      "/static/birds/bird_import_0033/02.jpg",
+      "/static/birds/bird_import_0033/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4274096100876255791",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E5%8D%B0%E7%BC%85%E6%96%91%E5%98%B4%E9%B8%AD/22309805",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0034",
+    "name": "斑嘴鸭",
+    "query": "斑嘴鸭 Anas zonorhyncha 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0034/01.png",
+      "/static/birds/bird_import_0034/02.jpg",
+      "/static/birds/bird_import_0034/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4996070529775657681",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0035",
+    "name": "绿头鸭",
+    "query": "绿头鸭 Anas platyrhynchos 鸟类",
+    "source": "acjson",
+    "candidateCount": 142,
+    "saved": [
+      "/static/birds/bird_import_0035/01.png",
+      "/static/birds/bird_import_0035/02.jpg",
+      "/static/birds/bird_import_0035/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1825520583514597817&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0036",
+    "name": "针尾鸭",
+    "query": "针尾鸭 Anas acuta 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0036/01.jpg",
+      "/static/birds/bird_import_0036/02.jpg",
+      "/static/birds/bird_import_0036/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4850340438322083191",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4952112862507133527",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0037",
+    "name": "绿翅鸭",
+    "query": "绿翅鸭 Anas crecca 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0037/01.jpg",
+      "/static/birds/bird_import_0037/02.jpg",
+      "/static/birds/bird_import_0037/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o4AEAr3ytTnIfEbA8DBULEdneek9iliwA1yAya~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7490210824649231673",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E7%BB%BF%E7%BF%85%E9%B8%AD%E9%98%BF%E7%95%99%E7%94%B3%E4%BA%9A%E7%A7%8D/12741289",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0038",
+    "name": "美洲绿翅鸭",
+    "query": "美洲绿翅鸭 Anas carolinensis 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0038/01.jpg",
+      "/static/birds/bird_import_0038/02.jpg",
+      "/static/birds/bird_import_0038/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o4AEAr3ytTnIfEbA8DBULEdneek9iliwA1yAya~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7490210824649231673",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5083664004235343145",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0039",
+    "name": "云石斑鸭",
+    "query": "云石斑鸭 Marmaronetta angustirostris 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0040",
+    "name": "赤嘴潜鸭",
+    "query": "赤嘴潜鸭 Netta rufina 鸟类",
+    "source": "acjson",
+    "candidateCount": 125,
+    "saved": [
+      "/static/birds/bird_import_0040/01.jpg",
+      "/static/birds/bird_import_0040/02.jpg",
+      "/static/birds/bird_import_0040/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.douyin.com/note/7476090015739563273",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5083938689028198346",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0041",
+    "name": "帆背潜鸭",
+    "query": "帆背潜鸭 Aythya valisineria 鸟类",
+    "source": "acjson",
+    "candidateCount": 116,
+    "saved": [
+      "/static/birds/bird_import_0041/01.jpg",
+      "/static/birds/bird_import_0041/02.jpg",
+      "/static/birds/bird_import_0041/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://pic1.arkoo.com/8724E39E2BFB4E188BDFF3CF9F02457F/picture/o_1i7ckseefsvf1gvh1jms19e4eioo.jpg",
+        "message": "image too small: 675 bytes"
+      },
+      {
+        "url": "http://yrys.riyuexia.com/default.aspx?uid=8724E39E2BFB4E188BDFF3CF9F02457F&aid=E612F492558A4511BC4E7E91484DC673&typeid=126856",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimage109.360doc.com%2FDownloadImg%2F2024%2F08%2F2720%2F287752132_8_20240827085413683.jpeg&refer=http%3A%2F%2Fimage109.360doc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1777771557&t=02abc4eb3fbfea7f976ecfd1bb49304b",
+        "message": "image too small: 52 bytes"
+      },
+      {
+        "url": "http://www.360doc.com/content/24/0827/20/15604356_1132466733.shtml",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimage109.360doc.com%2FDownloadImg%2F2024%2F08%2F2720%2F287752132_5_20240827085412933.jpeg&refer=http%3A%2F%2Fimage109.360doc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1777771557&t=01edcd599f1cab840fb98c6f0d558aee",
+        "message": "image too small: 52 bytes"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0042",
+    "name": "红头潜鸭",
+    "query": "红头潜鸭 Aythya ferina 鸟类",
+    "source": "acjson",
+    "candidateCount": 128,
+    "saved": [
+      "/static/birds/bird_import_0042/01.jpg",
+      "/static/birds/bird_import_0042/02.jpg",
+      "/static/birds/bird_import_0042/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4467145251633757140",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oABvEAongxOP4AA5JAOcLDAgiAZPvcISyi8IP~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7480042106044550463",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0043",
+    "name": "青头潜鸭",
+    "query": "青头潜鸭 Aythya baeri 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0044",
+    "name": "白眼潜鸭",
+    "query": "白眼潜鸭 Aythya nyroca 鸟类",
+    "source": "acjson",
+    "candidateCount": 125,
+    "saved": [
+      "/static/birds/bird_import_0044/01.jpg",
+      "/static/birds/bird_import_0044/02.jpg",
+      "/static/birds/bird_import_0044/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/ok5EvT3UAB1vhNm4hQiBgtIieA1mAR8fAACzAG~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7455945681451158834",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o0LkAcPAAAMA5HudfE2E7FaXWZrfHsBDAHBgfh~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1724011200&x-signature=gdXydblh9YrnThZCeqt%2F6QtsYZ8%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7366028196149611814",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0045",
+    "name": "环颈潜鸭",
+    "query": "环颈潜鸭 Aythya collaris 鸟类",
+    "source": "acjson",
+    "candidateCount": 119,
+    "saved": [
+      "/static/birds/bird_import_0045/01.jpg",
+      "/static/birds/bird_import_0045/02.jpg",
+      "/static/birds/bird_import_0045/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/ring-necked+duck/11188376",
+        "message": "download failed: HTTP 404"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0046",
+    "name": "凤头潜鸭",
+    "query": "凤头潜鸭 Aythya fuligula 鸟类",
+    "source": "acjson",
+    "candidateCount": 126,
+    "saved": [
+      "/static/birds/bird_import_0046/01.jpg",
+      "/static/birds/bird_import_0046/02.jpg",
+      "/static/birds/bird_import_0046/03.png"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/ok7pRltiAyeLAIMEiEi0AFABwDedAEEqfIFAHz~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1756188000&x-signature=5CpliFD%2B4mjvChJzX63yS4MVR5A%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7505555409383984442",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/c01FUUhwyBSrtTJtAhgvMVZ3p1XQjTvnC0sup5duy8gLWofy4TexD7c42vMom2h9NfXRR9GuyQ9xpWiadtsiaXNQ/640?wx_fmt=jpeg&from=appmsg&wxfrom=13&tp=wxpic",
+        "message": "image too small: 2086 bytes"
+      },
+      {
+        "url": "http://www.ytcutv.com/folder700/folder717/folder873/2025-02-18/P0jgkDkSVYJO1YPi.html",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0047",
+    "name": "斑背潜鸭",
+    "query": "斑背潜鸭 Aythya marila 鸟类",
+    "source": "acjson",
+    "candidateCount": 114,
+    "saved": [
+      "/static/birds/bird_import_0047/01.jpg",
+      "/static/birds/bird_import_0047/02.jpg",
+      "/static/birds/bird_import_0047/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E6%96%91%E8%83%8C%E6%BD%9C%E9%B8%AD%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/13383476",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0048",
+    "name": "小潜鸭",
+    "query": "小潜鸭 Aythya affinis 鸟类",
+    "source": "acjson",
+    "candidateCount": 116,
+    "saved": [
+      "/static/birds/bird_import_0048/01.jpg",
+      "/static/birds/bird_import_0048/02.jpg",
+      "/static/birds/bird_import_0048/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%B0%8F%E6%BD%9C%E9%B8%AD/7543744",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://bird.art/uimg/m/205_DN_20230727164327_58110544_0.webp",
+        "message": "not image content-type: "
+      },
+      {
+        "url": "http://bird.art/nd/205/%D0%A1%C7%B1%D1%BC/Lesser+Scaup/Lesser+Scaup",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0049",
+    "name": "小绒鸭",
+    "query": "小绒鸭 Polysticta stelleri 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0050",
+    "name": "丑鸭",
+    "query": "丑鸭 Histrionicus histrionicus 鸟类",
+    "source": "acjson",
+    "candidateCount": 116,
+    "saved": [
+      "/static/birds/bird_import_0050/01.jpg",
+      "/static/birds/bird_import_0050/02.jpg",
+      "/static/birds/bird_import_0050/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.bilibili.com/video/BV1FYMRzZErp",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E4%B8%91%E9%B8%AD/3250328",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0051",
+    "name": "丝绒海番鸭",
+    "query": "丝绒海番鸭 Melanitta fusca 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0051/01.jpg",
+      "/static/birds/bird_import_0051/02.jpg",
+      "/static/birds/bird_import_0051/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1844209315049544627&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0052",
+    "name": "斑脸海番鸭",
+    "query": "斑脸海番鸭 Melanitta stejnegeri 鸟类",
+    "source": "acjson",
+    "candidateCount": 118,
+    "saved": [
+      "/static/birds/bird_import_0052/01.jpg",
+      "/static/birds/bird_import_0052/02.jpg",
+      "/static/birds/bird_import_0052/03.jpeg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E6%96%91%E8%84%B8%E6%B5%B7%E7%95%AA%E9%B8%AD%E8%A5%BF%E4%BC%AF%E5%88%A9%E4%BA%9A%E4%BA%9A%E7%A7%8D/19495179",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0053",
+    "name": "黑海番鸭",
+    "query": "黑海番鸭 Melanitta americana 鸟类",
+    "source": "acjson",
+    "candidateCount": 128,
+    "saved": [
+      "/static/birds/bird_import_0053/01.jpg",
+      "/static/birds/bird_import_0053/02.jpg",
+      "/static/birds/bird_import_0053/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E9%BB%91%E6%B5%B7%E7%95%AA%E9%B8%AD%E5%8C%97%E6%96%B9%E4%BA%9A%E7%A7%8D/2496812",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0054",
+    "name": "长尾鸭",
+    "query": "长尾鸭 Clangula hyemalis 鸟类",
+    "source": "acjson",
+    "candidateCount": 108,
+    "saved": [
+      "/static/birds/bird_import_0054/01.jpg",
+      "/static/birds/bird_import_0054/02.jpg",
+      "/static/birds/bird_import_0054/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/Clangula+hyemalis/11202198",
+        "message": "download failed: HTTP 404"
+      },
+      {
+        "url": "https://image109.360doc.cn/DownloadImg/2024/01/0413/277821170_3_20240104014007351.jpeg",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.360doc.cn/article/10240337_1109823047.html",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0055",
+    "name": "鹊鸭",
+    "query": "鹊鸭 Bucephala clangula 鸟类",
+    "source": "acjson",
+    "candidateCount": 115,
+    "saved": [
+      "/static/birds/bird_import_0055/01.jpg",
+      "/static/birds/bird_import_0055/02.jpg",
+      "/static/birds/bird_import_0055/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/Bucephala+clangula/11202046",
+        "message": "download failed: HTTP 404"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0056",
+    "name": "斑头秋沙鸭",
+    "query": "斑头秋沙鸭 Mergellus albellus 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0056/01.jpg",
+      "/static/birds/bird_import_0056/02.jpg",
+      "/static/birds/bird_import_0056/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/Mergellus+albellus/11202544",
+        "message": "download failed: HTTP 404"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o4VAe0ADMFd8ACNA1n809UgAEEEzfAdDIRUTSY~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7480849875047828774",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0057",
+    "name": "普通秋沙鸭",
+    "query": "普通秋沙鸭 Mergus merganser 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0057/01.jpg",
+      "/static/birds/bird_import_0057/02.jpg",
+      "/static/birds/bird_import_0057/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4443518421593641654",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0058",
+    "name": "红胸秋沙鸭",
+    "query": "红胸秋沙鸭 Mergus serrator 鸟类",
+    "source": "acjson",
+    "candidateCount": 128,
+    "saved": [
+      "/static/birds/bird_import_0058/01.jpg",
+      "/static/birds/bird_import_0058/02.jpg",
+      "/static/birds/bird_import_0058/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4757105051927611951",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5274201926313671763",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0059",
+    "name": "中华秋沙鸭",
+    "query": "中华秋沙鸭 Mergus squamatus 鸟类",
+    "source": "acjson",
+    "candidateCount": 143,
+    "saved": [
+      "/static/birds/bird_import_0059/01.jpg",
+      "/static/birds/bird_import_0059/02.jpg",
+      "/static/birds/bird_import_0059/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oEI7sGLATjHH4e84nBEfUceCTAAEiAbODnBAIZ~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1771790400&x-signature=sTvhNZvAG1KkT0mG5zJTYGhuJpE%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7329781257246674186",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o0jryAf2NyIAIseCAJgMEDii9NAwAzQZBEAFCh~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7462663482832375050",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oUeEjEeACaODAGvyAAA9VZflASEFNqEnwEhIzl~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7461806372493987131",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0060",
+    "name": "白头硬尾鸭",
+    "query": "白头硬尾鸭 Oxyura leucocephala 鸟类",
+    "source": "acjson",
+    "candidateCount": 124,
+    "saved": [
+      "/static/birds/bird_import_0060/01.jpg",
+      "/static/birds/bird_import_0060/02.jpg",
+      "/static/birds/bird_import_0060/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.zhihu.com/pin/1726326833883299841",
+        "message": "download failed: HTTP 403"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0061",
+    "name": "雉科",
+    "query": "雉科 Phasianidae 鸟类",
+    "source": "acjson",
+    "candidateCount": 113,
+    "saved": [
+      "/static/birds/bird_import_0061/01.jpg",
+      "/static/birds/bird_import_0061/02.jpg",
+      "/static/birds/bird_import_0061/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E8%93%9D%E8%83%B8%E9%B9%91/1716726",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://veer01.cfp.cn/creative/vcg/veer/1600water/veer-481655311.jpg",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.veer.com/photo/481655311.html",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0062",
+    "name": "环颈山鹧鸪",
+    "query": "环颈山鹧鸪 Arborophila torqueola 鸟类",
+    "source": "acjson",
+    "candidateCount": 128,
+    "saved": [
+      "/static/birds/bird_import_0062/01.jpg",
+      "/static/birds/bird_import_0062/02.jpg",
+      "/static/birds/bird_import_0062/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://v.qq.com/x/page/e3085fxyysq.html",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0063",
+    "name": "四川山鹧鸪",
+    "query": "四川山鹧鸪 Arborophila rufipectus 鸟类",
+    "source": "acjson",
+    "candidateCount": 143,
+    "saved": [
+      "/static/birds/bird_import_0063/01.png",
+      "/static/birds/bird_import_0063/02.jpg",
+      "/static/birds/bird_import_0063/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1826812567803408310&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/ogGJAIYA0gmKHLEBtEfeJI5geoAUE7AkXNQ8AB~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1769482800&x-signature=EtYfkvRcfmsas7RrZ8sLOtIUKw4%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7392067794965155113",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0064",
+    "name": "红胸山鹧鸪",
+    "query": "红胸山鹧鸪 Arborophila mandellii 鸟类",
+    "source": "acjson",
+    "candidateCount": 131,
+    "saved": [
+      "/static/birds/bird_import_0064/01.jpg",
+      "/static/birds/bird_import_0064/02.jpg",
+      "/static/birds/bird_import_0064/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%BA%A2%E8%83%B8%E5%B1%B1%E9%B9%A7%E9%B8%AA/3220756",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://www.dongniao.net/images/p/p28.jpg",
+        "message": "fetch failed"
+      },
+      {
+        "url": "http://www.dongniao.net/nd/460",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0065",
+    "name": "白眉山鹧鸪",
+    "query": "白眉山鹧鸪 Arborophila gingica 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0065/01.jpg",
+      "/static/birds/bird_import_0065/02.jpg",
+      "/static/birds/bird_import_0065/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oUAArF7mYqqiDdmA9fZE3YAfweEcECAIRnXkE4~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7470194918548426044",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E7%99%BD%E7%9C%89%E5%B1%B1%E9%B9%A7%E9%B8%AA/3221195",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0066",
+    "name": "红喉山鹧鸪",
+    "query": "红喉山鹧鸪 Arborophila rufogularis 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0066/01.jpg",
+      "/static/birds/bird_import_0066/02.jpg",
+      "/static/birds/bird_import_0066/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5141550061767039594",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0067",
+    "name": "海南山鹧鸪",
+    "query": "海南山鹧鸪 Arborophila ardens 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0067/01.jpg",
+      "/static/birds/bird_import_0067/02.jpg",
+      "/static/birds/bird_import_0067/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5093708377909898003",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p9-pc-sign.douyinpic.com/tos-cn-i-0813/oghNIrMQAAAGA7fBAILsOsEGDe1AewLIBBEE4Q~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1760781600&x-signature=HHsppMimI8pPITa%2BpVX4OaZJs2A%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7393883049722727691",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0068",
+    "name": "台湾山鹧鸪",
+    "query": "台湾山鹧鸪 Arborophila crudigularis 鸟类",
+    "source": "acjson",
+    "candidateCount": 131,
+    "saved": [
+      "/static/birds/bird_import_0068/01.jpg",
+      "/static/birds/bird_import_0068/02.jpg",
+      "/static/birds/bird_import_0068/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E5%8F%B0%E6%B9%BE%E5%B1%B1%E9%B9%A7%E9%B8%AA/3220683",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0069",
+    "name": "白颊山鹧鸪",
+    "query": "白颊山鹧鸪 Arborophila atrogularis 鸟类",
+    "source": "acjson",
+    "candidateCount": 124,
+    "saved": [
+      "/static/birds/bird_import_0069/01.jpg",
+      "/static/birds/bird_import_0069/02.jpg",
+      "/static/birds/bird_import_0069/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.zhihu.com/pin/1983341795661334039",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "https://pic2.arkoo.com/55C3E84F803E41D0B7173DB01B53712D/picture/o_1hi7tj4popufjjbk3g1kfgb1sl.jpg",
+        "message": "fetch failed"
+      },
+      {
+        "url": "http://www.isenlin.cn/sf_B8E25ABE1DDB49868245090359CAC4F9_209_44DC488F555.html",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0070",
+    "name": "褐胸山鹧鸪",
+    "query": "褐胸山鹧鸪 Arborophila brunneopectus 鸟类",
+    "source": "acjson",
+    "candidateCount": 134,
+    "saved": [
+      "/static/birds/bird_import_0070/01.jpg",
+      "/static/birds/bird_import_0070/02.jpg",
+      "/static/birds/bird_import_0070/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oA9yhAA0NCBsZvLZEfLIAQGtBMA7kZAIE5eeE5~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7393162446128696595",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1827951966337240039&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0071",
+    "name": "雪鹑",
+    "query": "雪鹑 Lerwa lerwa 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0071/01.png",
+      "/static/birds/bird_import_0071/02.jpg",
+      "/static/birds/bird_import_0071/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4196657647208704919",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0072",
+    "name": "血雉",
+    "query": "血雉 Ithaginis cruentus 鸟类",
+    "source": "acjson",
+    "candidateCount": 126,
+    "saved": [
+      "/static/birds/bird_import_0072/01.jpg",
+      "/static/birds/bird_import_0072/02.jpg",
+      "/static/birds/bird_import_0072/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.zhihu.com/pin/1915306009817221010",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oUEZm6hAivqia4BIA0DThPACFMiOA3GbCd0An~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1774519200&x-signature=7ed1ub7TPIHK2aEFxIaMP3c06sY%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7468804425499364666",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0073",
+    "name": "黑头角雉",
+    "query": "黑头角雉 Tragopan melanocephalus 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0074",
+    "name": "红胸角雉",
+    "query": "红胸角雉 Tragopan satyra 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0075",
+    "name": "灰腹角雉",
+    "query": "灰腹角雉 Tragopan blythii 鸟类",
+    "source": "acjson",
+    "candidateCount": 118,
+    "saved": [
+      "/static/birds/bird_import_0075/01.jpg",
+      "/static/birds/bird_import_0075/02.jpg",
+      "/static/birds/bird_import_0075/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%81%B0%E8%85%B9%E8%A7%92%E9%9B%89%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/2501285",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0076",
+    "name": "红腹角雉",
+    "query": "红腹角雉 Tragopan temminckii 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0077",
+    "name": "黄腹角雉",
+    "query": "黄腹角雉 Tragopan caboti 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0078",
+    "name": "红喉雉鹑",
+    "query": "红喉雉鹑 Tetraophasis obscurus 鸟类",
+    "source": "acjson",
+    "candidateCount": 114,
+    "saved": [
+      "/static/birds/bird_import_0078/01.jpg",
+      "/static/birds/bird_import_0078/02.jpg",
+      "/static/birds/bird_import_0078/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%BA%A2%E5%96%89%E9%9B%89%E9%B9%91/5869413",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0079",
+    "name": "黄喉雉鹑",
+    "query": "黄喉雉鹑 Tetraophasis szechenyii 鸟类",
+    "source": "acjson",
+    "candidateCount": 117,
+    "saved": [
+      "/static/birds/bird_import_0079/01.jpg",
+      "/static/birds/bird_import_0079/02.jpg",
+      "/static/birds/bird_import_0079/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.thepaper.cn/newsDetail_forward_29040722",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E9%BB%84%E5%96%89%E9%9B%89%E9%B9%91/5869846",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0080",
+    "name": "棕尾虹雉",
+    "query": "棕尾虹雉 Lophophorus impejanus 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0080/01.jpg",
+      "/static/birds/bird_import_0080/02.jpg",
+      "/static/birds/bird_import_0080/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5069624619354595656",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0081",
+    "name": "白尾梢虹雉",
+    "query": "白尾梢虹雉 Lophophorus sclateri 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0081/01.jpg",
+      "/static/birds/bird_import_0081/02.jpg",
+      "/static/birds/bird_import_0081/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://weibo.com/7522764590/PkVo58OIu",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0082",
+    "name": "绿尾虹雉",
+    "query": "绿尾虹雉 Lophophorus lhuysii 鸟类",
+    "source": "acjson",
+    "candidateCount": 121,
+    "saved": [
+      "/static/birds/bird_import_0082/01.jpg",
+      "/static/birds/bird_import_0082/02.jpg",
+      "/static/birds/bird_import_0082/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.douyin.com/note/7484788613331307815",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://www.meipian.cn/58dj3tid",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0083",
+    "name": "勺鸡",
+    "query": "勺鸡 Pucrasia macrolopha 鸟类",
+    "source": "acjson",
+    "candidateCount": 124,
+    "saved": [
+      "/static/birds/bird_import_0083/01.jpg",
+      "/static/birds/bird_import_0083/02.jpg",
+      "/static/birds/bird_import_0083/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p9-pc-sign.douyinpic.com/tos-cn-i-0813/o4jyhQjKAeQmejevIAfAAR3ZZ3dA4jbPA85fwf~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1722394800&x-signature=a2HgjXovUf9wfOAgeQpmcwR%2BVW0%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7340301157266476288",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4758509936018081367",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oYypJggafAEmIkBCAD9o0QCB2EADFAAfGdAIdr~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7523783275719855398",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0084",
+    "name": "花尾榛鸡",
+    "query": "花尾榛鸡 Tetrastes bonasia 鸟类",
+    "source": "acjson",
+    "candidateCount": 123,
+    "saved": [
+      "/static/birds/bird_import_0084/01.jpg",
+      "/static/birds/bird_import_0084/02.png",
+      "/static/birds/bird_import_0084/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p9-pc-sign.douyinpic.com/tos-cn-i-0813/o08tI9NeAAUo0CBsAAgiIU3hEfFH06iCuAu7lA~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1761174000&x-signature=CY3OYRVmAEPmS1orn1wjix0Lta4%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7540458948047375616",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5042064913723845256",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0085",
+    "name": "斑尾榛鸡",
+    "query": "斑尾榛鸡 Tetrastes sewerzowi 鸟类",
+    "source": "acjson",
+    "candidateCount": 137,
+    "saved": [
+      "/static/birds/bird_import_0085/01.png",
+      "/static/birds/bird_import_0085/02.jpg",
+      "/static/birds/bird_import_0085/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4928179505049872809",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o4E2Ab92XFDATA2AEnED4ufuIA1Hw7PkEebtf9~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7483697479498714427",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0086",
+    "name": "柳雷鸟",
+    "query": "柳雷鸟 Lagopus lagopus 鸟类",
+    "source": "acjson",
+    "candidateCount": 108,
+    "saved": [
+      "/static/birds/bird_import_0086/01.jpg",
+      "/static/birds/bird_import_0086/02.jpg",
+      "/static/birds/bird_import_0086/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E6%9F%B3%E9%9B%B7%E9%B8%9F%E9%BB%91%E9%BE%99%E6%B1%9F%E4%BA%9A%E7%A7%8D/2505782",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0087",
+    "name": "岩雷鸟",
+    "query": "岩雷鸟 Lagopus muta 鸟类",
+    "source": "acjson",
+    "candidateCount": 128,
+    "saved": [
+      "/static/birds/bird_import_0087/01.jpg",
+      "/static/birds/bird_import_0087/02.jpg",
+      "/static/birds/bird_import_0087/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.bilibili.com/video/BV1oDsHeyE9A",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0088",
+    "name": "镰翅鸡",
+    "query": "镰翅鸡 Falcipennis falcipennis 鸟类",
+    "source": "acjson",
+    "candidateCount": 118,
+    "saved": [
+      "/static/birds/bird_import_0088/01.jpg",
+      "/static/birds/bird_import_0088/02.jpeg",
+      "/static/birds/bird_import_0088/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1822114389829211103&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://www.sohu.com/a/852870588_122101385",
+        "message": "not image content-type: text/html;charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0089",
+    "name": "西方松鸡",
+    "query": "西方松鸡 Tetrao urogallus 鸟类",
+    "source": "acjson",
+    "candidateCount": 132,
+    "saved": [
+      "/static/birds/bird_import_0089/01.jpg",
+      "/static/birds/bird_import_0089/02.jpg",
+      "/static/birds/bird_import_0089/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://weibo.com/7615542441/Ovb8nagpW",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0090",
+    "name": "黑嘴松鸡",
+    "query": "黑嘴松鸡 Tetrao urogalloides 鸟类",
+    "source": "acjson",
+    "candidateCount": 125,
+    "saved": [
+      "/static/birds/bird_import_0090/01.jpg",
+      "/static/birds/bird_import_0090/02.jpg",
+      "/static/birds/bird_import_0090/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E9%BB%91%E5%98%B4%E6%9D%BE%E9%B8%A1%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/1887735",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0091",
+    "name": "黑琴鸡",
+    "query": "黑琴鸡 Lyrurus tetrix 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0091/01.jpg",
+      "/static/birds/bird_import_0091/02.png",
+      "/static/birds/bird_import_0091/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o0LHiAAfnCEaFQcPEmFEw4DjAjA9QNAIEtfDex~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1773320400&x-signature=mFZAUITghRvgb8S9%2BPuPqn3VT58%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7462216983262580027",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5234994140453306346",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0092",
+    "name": "高原山鹑",
+    "query": "高原山鹑 Perdix hodgsoniae 鸟类",
+    "source": "acjson",
+    "candidateCount": 137,
+    "saved": [
+      "/static/birds/bird_import_0092/01.jpg",
+      "/static/birds/bird_import_0092/02.jpg",
+      "/static/birds/bird_import_0092/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o0qK9nA6BA9EAgfiEAQAF2FfS1UwEFIDANeEKU~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7423411053817613627",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/osPA85jN9EeI7AL7nJJQMf4AA4B2gCeH1vuGI8~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1771200000&x-signature=0Bokain6kvdl%2BGnnGJZXHiFonYs%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7490011805939436860",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0093",
+    "name": "灰山鹑",
+    "query": "灰山鹑 Perdix perdix 鸟类",
+    "source": "acjson",
+    "candidateCount": 135,
+    "saved": [
+      "/static/birds/bird_import_0093/01.jpg",
+      "/static/birds/bird_import_0093/02.jpg",
+      "/static/birds/bird_import_0093/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%81%B0%E5%B1%B1%E9%B9%91%E6%84%8F%E5%A4%A7%E5%88%A9%E4%BA%9A%E7%A7%8D/13237039",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0094",
+    "name": "斑翅山鹑",
+    "query": "斑翅山鹑 Perdix dauurica 鸟类",
+    "source": "acjson",
+    "candidateCount": 130,
+    "saved": [
+      "/static/birds/bird_import_0094/01.jpg",
+      "/static/birds/bird_import_0094/02.jpg",
+      "/static/birds/bird_import_0094/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4375855073240072431",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0095",
+    "name": "白冠长尾雉",
+    "query": "白冠长尾雉 Syrmaticus reevesii 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0096",
+    "name": "黑长尾雉",
+    "query": "黑长尾雉 Syrmaticus mikado 鸟类",
+    "source": "acjson",
+    "candidateCount": 106,
+    "saved": [
+      "/static/birds/bird_import_0096/01.jpg",
+      "/static/birds/bird_import_0096/02.png",
+      "/static/birds/bird_import_0096/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://pic1.arkoo.com/BFC6D31B1F164A4099DF8525B2D530BF/picture/o_1i3us6m38114h1hgvl3h3dun3cla.jpg",
+        "message": "image too small: 675 bytes"
+      },
+      {
+        "url": "http://www.isenlin.cn/sf_61593B57A7D74E34BA57270711517381_209_591FBFA9504.html",
+        "message": "not image content-type: text/html"
+      },
+      {
+        "url": "http://baijiahao.baidu.com/s?id=1822555075047962021&wfr=spider&for=pc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0097",
+    "name": "白颈长尾雉",
+    "query": "白颈长尾雉 Syrmaticus ellioti 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0098",
+    "name": "黑颈长尾雉",
+    "query": "黑颈长尾雉 Syrmaticus humiae 鸟类",
+    "source": "acjson",
+    "candidateCount": 132,
+    "saved": [
+      "/static/birds/bird_import_0098/01.jpg",
+      "/static/birds/bird_import_0098/02.jpg",
+      "/static/birds/bird_import_0098/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4775846730467763818",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimage109.360doc.com%2FDownloadImg%2F2025%2F06%2F1210%2F298597297_1_20250612105431318.jpeg&refer=http%3A%2F%2Fimage109.360doc.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1777771798&t=fd154375819a2d12083673cfcb050819",
+        "message": "image too small: 52 bytes"
+      },
+      {
+        "url": "http://www.360doc.cn/article/58888887_1155351290.html",
+        "message": "download failed: HTTP 404"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0099",
+    "name": "红腹锦鸡",
+    "query": "红腹锦鸡 Chrysolophus pictus 鸟类",
+    "source": "acjson",
+    "candidateCount": 137,
+    "saved": [
+      "/static/birds/bird_import_0099/01.png",
+      "/static/birds/bird_import_0099/02.jpg",
+      "/static/birds/bird_import_0099/03.png"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5296957637706133817",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0100",
+    "name": "白腹锦鸡",
+    "query": "白腹锦鸡 Chrysolophus amherstiae 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0101",
+    "name": "雉鸡",
+    "query": "雉鸡 Phasianus colchicus 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0101/01.jpg",
+      "/static/birds/bird_import_0101/02.jpg",
+      "/static/birds/bird_import_0101/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://tuchong.com/photo/125487710/",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0102",
+    "name": "藏马鸡",
+    "query": "藏马鸡 Crossoptilon harmani 鸟类",
+    "source": "acjson",
+    "candidateCount": 122,
+    "saved": [
+      "/static/birds/bird_import_0102/01.png",
+      "/static/birds/bird_import_0102/02.jpg",
+      "/static/birds/bird_import_0102/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_3233489889377811593",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o0cAyfzHaw39DkAIAetEANEeMEhFEawmnVH9AC~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7459985995233037627",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0103",
+    "name": "白马鸡",
+    "query": "白马鸡 Crossoptilon crossoptilon 鸟类",
+    "source": "acjson",
+    "candidateCount": 121,
+    "saved": [
+      "/static/birds/bird_import_0103/01.jpg",
+      "/static/birds/bird_import_0103/02.jpg",
+      "/static/birds/bird_import_0103/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o0VBA6PQdafGWEh3APEodeIKLBA7EAHXeWHKAI~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7462164538788465932",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://m.dianping.com/ugcdetail/243779026?sceneType=0&bizType=29&msource=baiduappugc",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0104",
+    "name": "褐马鸡",
+    "query": "褐马鸡 Crossoptilon mantchuricum 鸟类",
+    "source": "acjson",
+    "candidateCount": 131,
+    "saved": [
+      "/static/birds/bird_import_0104/01.jpg",
+      "/static/birds/bird_import_0104/02.png",
+      "/static/birds/bird_import_0104/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oEwtiz7HIANHBhAAEA3hWoeA5ED9gAf4luCkTN~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1721678400&x-signature=mPkBbxYXYU5LBvCYhL9YfLEkYCc%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7345052905986215205",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4990807713047414702",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0105",
+    "name": "蓝马鸡",
+    "query": "蓝马鸡 Crossoptilon auritum 鸟类",
+    "source": "acjson",
+    "candidateCount": 127,
+    "saved": [
+      "/static/birds/bird_import_0105/01.jpg",
+      "/static/birds/bird_import_0105/02.jpg",
+      "/static/birds/bird_import_0105/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/oEfniX9FAeDr1c0EssFgNIABAsAGQgCql3AD9A~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7471005935540964623",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://www.douyin.com/note/7500258601359035675",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/o8wsA0fiEGETtA4nAbAI9TciafCds0ACABpCgq~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772146800&x-signature=RVsVZA%2BBPDMXXgWtg5pE383JiR4%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7472685304026107174",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0106",
+    "name": "蓝腹鹇",
+    "query": "蓝腹鹇 Lophura swinhoii 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0107",
+    "name": "黑鹇",
+    "query": "黑鹇 Lophura leucomelanos 鸟类",
+    "source": "acjson",
+    "candidateCount": 126,
+    "saved": [
+      "/static/birds/bird_import_0107/01.jpg",
+      "/static/birds/bird_import_0107/02.jpg",
+      "/static/birds/bird_import_0107/03.jpeg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oc84ADcI2AFoBvDfBAgeKEOwhD7TfAIQEQtEAO~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1762700400&x-signature=kiay3LpeZFuu7rtQhlrcXAmrqw4%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7457546271625170203",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/ogAKDA7hMgvPIsHiqZC9JVIhBAIZgioEbAJAE~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7406877791968382227",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0108",
+    "name": "白鹇",
+    "query": "白鹇 Lophura nycthemera 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0109",
+    "name": "绿孔雀",
+    "query": "绿孔雀 Pavo muticus 鸟类",
+    "source": "acjson",
+    "candidateCount": 132,
+    "saved": [
+      "/static/birds/bird_import_0109/01.jpg",
+      "/static/birds/bird_import_0109/02.jpg",
+      "/static/birds/bird_import_0109/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4605181256753632140",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c001/o0vALioIAgAKi2u86pPLBaI6q7AEErAg7BXr0~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772481600&x-signature=aRSrmjZl6XaFiJ0HQTqjYEf5XAg%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7515075541927120143",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0110",
+    "name": "绿脚树鹧鸪",
+    "query": "绿脚树鹧鸪 Tropicoperdix chloropus 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0111",
+    "name": "海南孔雀雉",
+    "query": "海南孔雀雉 Polyplectron katsumatae 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0111/01.jpg",
+      "/static/birds/bird_import_0111/02.jpg",
+      "/static/birds/bird_import_0111/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4739796226359158608",
+        "message": "not image content-type: text/html;charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E6%B5%B7%E5%8D%97%E5%AD%94%E9%9B%80%E9%9B%89/2589544",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0112",
+    "name": "灰孔雀雉",
+    "query": "灰孔雀雉 Polyplectron bicalcaratum 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0112/01.jpg",
+      "/static/birds/bird_import_0112/02.jpg",
+      "/static/birds/bird_import_0112/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p9-pc-sign.douyinpic.com/tos-cn-i-0813/osIbQAAA9NyzAWDnSFGEfusYEv0A1EAgCPZfCQ~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772650800&x-signature=hILyWVNqsoI%2F4ZFlnMGpceNityc%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7479806125362154791",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/o4AvfiS4AgAerB2iI60ECsAnCSiAwzVewAEHER~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1774148400&x-signature=hl6ZyKXpCKVOE2YqoKawtXzKzgM%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7460162856063913276",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813/oQD6NEDIBZn4mC3UgifAAcAAFiTBAzAAd88evU~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1766790000&x-signature=Kns%2Fh%2BuTWgXpeYNFCV7USTdF5Pw%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7481846731580214543",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0113",
+    "name": "棕胸竹鸡",
+    "query": "棕胸竹鸡 Bambusicola fytchii 鸟类",
+    "source": "acjson",
+    "candidateCount": 127,
+    "saved": [
+      "/static/birds/bird_import_0113/01.jpg",
+      "/static/birds/bird_import_0113/02.jpg",
+      "/static/birds/bird_import_0113/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oAfwWkkAEAEiAQw62MB1e0IkKEAE8IecxiUABF~tplv-dy-aweme-images:q75.webp",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7518234573358353722",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E6%A3%95%E8%83%B8%E7%AB%B9%E9%B8%A1/3221457",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0114",
+    "name": "灰胸竹鸡",
+    "query": "灰胸竹鸡 Bambusicola thoracicus 鸟类",
+    "source": "acjson",
+    "candidateCount": 127,
+    "saved": [
+      "/static/birds/bird_import_0114/01.jpg",
+      "/static/birds/bird_import_0114/02.jpg",
+      "/static/birds/bird_import_0114/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E7%81%B0%E8%83%B8%E7%AB%B9%E9%B8%A1/291419",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0115",
+    "name": "台湾竹鸡",
+    "query": "台湾竹鸡 Bambusicola sonorivox 鸟类",
+    "source": "acjson",
+    "candidateCount": 129,
+    "saved": [
+      "/static/birds/bird_import_0115/01.jpg",
+      "/static/birds/bird_import_0115/02.jpg",
+      "/static/birds/bird_import_0115/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4173875044731314271",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0116",
+    "name": "红原鸡",
+    "query": "红原鸡 Gallus gallus 鸟类",
+    "source": "acjson",
+    "candidateCount": 137,
+    "saved": [
+      "/static/birds/bird_import_0116/01.jpg",
+      "/static/birds/bird_import_0116/02.jpg",
+      "/static/birds/bird_import_0116/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://www.veer.com/photo/471618108.html",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0117",
+    "name": "中华鹧鸪",
+    "query": "中华鹧鸪 Francolinus pintadeanus 鸟类",
+    "source": "acjson",
+    "candidateCount": 133,
+    "saved": [
+      "/static/birds/bird_import_0117/01.jpeg",
+      "/static/birds/bird_import_0117/02.jpg",
+      "/static/birds/bird_import_0117/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://m.douyin.com/share/challenge/1728206233261059",
+        "message": "not image content-type: text/html"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0118",
+    "name": "藏雪鸡",
+    "query": "藏雪鸡 Tetraogallus tibetanus 鸟类",
+    "source": "acjson",
+    "candidateCount": 53,
+    "saved": [
+      "/static/birds/bird_import_0118/01.jpg",
+      "/static/birds/bird_import_0118/02.jpg",
+      "/static/birds/bird_import_0118/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E8%97%8F%E9%9B%AA%E9%B8%A1%E6%8C%87%E5%90%8D%E4%BA%9A%E7%A7%8D/2500998",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0119",
+    "name": "阿尔泰雪鸡",
+    "query": "阿尔泰雪鸡 Tetraogallus altaicus 鸟类",
+    "source": "acjson",
+    "candidateCount": 5,
+    "saved": [
+      "/static/birds/bird_import_0119/01.jpg",
+      "/static/birds/bird_import_0119/02.jpg",
+      "/static/birds/bird_import_0119/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://union.china.com.cn/txt/2021-09/07/content_41665771.html",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      },
+      {
+        "url": "http://spanish.china.org.cn/txt/2018-10/26/content_68289116.htm",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0120",
+    "name": "暗腹雪鸡",
+    "query": "暗腹雪鸡 Tetraogallus himalayensis 鸟类",
+    "source": "acjson",
+    "candidateCount": 126,
+    "saved": [
+      "/static/birds/bird_import_0120/01.jpg",
+      "/static/birds/bird_import_0120/02.jpg",
+      "/static/birds/bird_import_0120/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://p3-pc-sign.douyinpic.com/tos-cn-i-0813c000-ce/oss9d85iA4e3AIREzEizAuDBwOejAEvXP2fANz~tplv-dy-aweme-images:q75.webp?biz_tag=aweme_images&from=327834062&lk3s=138a59ce&s=PackSourceEnum_SEO&sc=image&se=false&x-expires=1772064000&x-signature=9BVNbt%2BbGI8T9G6roTzaiiU3e4I%3D",
+        "message": "download failed: HTTP 403"
+      },
+      {
+        "url": "http://www.douyin.com/note/7493349450350431545",
+        "message": "not image content-type: text/html; charset=utf-8"
+      },
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_5438180173982217216",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0121",
+    "name": "蓝胸鹑",
+    "query": "蓝胸鹑 Synoicus chinensis 鸟类",
+    "source": "acjson",
+    "candidateCount": 116,
+    "saved": [
+      "/static/birds/bird_import_0121/01.jpg",
+      "/static/birds/bird_import_0121/02.jpg",
+      "/static/birds/bird_import_0121/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E8%93%9D%E8%83%B8%E9%B9%91/1716726",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0122",
+    "name": "西鹌鹑",
+    "query": "西鹌鹑 Coturnix coturnix 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  },
+  {
+    "birdId": "bird_import_0123",
+    "name": "鹌鹑",
+    "query": "鹌鹑 Coturnix japonica 鸟类",
+    "source": "acjson",
+    "candidateCount": 119,
+    "saved": [
+      "/static/birds/bird_import_0123/01.jpg",
+      "/static/birds/bird_import_0123/02.jpg",
+      "/static/birds/bird_import_0123/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://baike.baidu.com/item/%E8%A5%BF%E9%B9%8C%E9%B9%91/1113382",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0124",
+    "name": "黑胸鹌鹑",
+    "query": "黑胸鹌鹑 Coturnix coromandelica 鸟类",
+    "source": "acjson",
+    "candidateCount": 127,
+    "saved": [
+      "/static/birds/bird_import_0124/01.jpg",
+      "/static/birds/bird_import_0124/02.jpg",
+      "/static/birds/bird_import_0124/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "https://bird.art/uimg/m/441_DN_20250311085630_504609823_0.webp",
+        "message": "not image content-type: "
+      },
+      {
+        "url": "http://bird.art/nd/441/%BA%DA%D0%D8%F0%C6%F0%C8/Rain+Quail/Rain+Quail",
+        "message": "not image content-type: text/html; charset=UTF-8"
+      },
+      {
+        "url": "http://baike.baidu.com/item/%E9%BB%91%E8%83%B8%E9%B9%8C%E9%B9%91/1112835",
+        "message": "not image content-type: text/html; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0125",
+    "name": "石鸡",
+    "query": "石鸡 Alectoris chukar 鸟类",
+    "source": "acjson",
+    "candidateCount": 118,
+    "saved": [
+      "/static/birds/bird_import_0125/01.png",
+      "/static/birds/bird_import_0125/02.jpg",
+      "/static/birds/bird_import_0125/03.jpg"
+    ],
+    "errors": [
+      {
+        "url": "http://mbd.baidu.com/newspage/data/dtlandingsuper?nid=dt_4788696061178369294",
+        "message": "not image content-type: text/html;charset=utf-8"
+      }
+    ]
+  },
+  {
+    "birdId": "bird_import_0126",
+    "name": "大石鸡",
+    "query": "大石鸡 Alectoris magna 鸟类",
+    "source": "html-fallback",
+    "candidateCount": 0,
+    "saved": [],
+    "errors": []
+  }
+]

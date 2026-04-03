@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="home-page">
     <!-- 顶部导航栏 -->
     <view class="top-nav">
@@ -225,8 +225,11 @@ export default {
           content: item.content || ''
         }))
     
-        // 轮播取前3条有封面的，没封面用默认图
-        this.bannerList = this.newsList.slice(0, 3).map(news => ({
+        const bannerSource = this.newsList.filter(news => news.cover).slice(0, 3)
+        const fallbackSource = bannerSource.length > 0 ? bannerSource : this.newsList.slice(0, 3)
+
+        // 轮播优先展示带封面的新闻，无图时再回退默认图
+        this.bannerList = fallbackSource.map(news => ({
           id:    news.id,
           image: news.cover || '/static/banners/default.jpg',
           title: news.title,
@@ -279,9 +282,8 @@ export default {
     },
     
     viewAllNews() {
-      uni.showToast({
-        title: '新闻列表功能开发中',
-        icon: 'none'
+      uni.navigateTo({
+        url: '/pages/public/home/all-news'
       })
     },
     

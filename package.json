@@ -7,7 +7,9 @@
     "dev:h5": "uni serve",
     "build:h5": "uni build",
     "dev:mp-weixin": "uni serve --platform mp-weixin",
-    "build:mp-weixin": "uni build --platform mp-weixin"
+    "build:mp-weixin": "uni build --platform mp-weixin",
+    "crawl:bird-images": "node scripts/bird-image-crawler.js",
+    "upload:bird-images": "node scripts/upload-bird-images-to-unicloud.js"
   },
   "dependencies": {
     "@dcloudio/uni-app": "^2.0.0",
