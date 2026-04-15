@@ -32,6 +32,30 @@
       </view>
     </view>
 
+    <view class="brief-panel">
+      <view class="brief-head">
+        <view>
+          <text class="brief-title">每日早报</text>
+          <text class="brief-sub">按“候鸟优先、生态兜底”从全文新闻池生成</text>
+        </view>
+        <view class="brief-actions">
+          <view class="brief-btn" @click="generateMorningBrief(false)">
+            <text>{{ generatingBrief ? '生成中' : '生成早报' }}</text>
+          </view>
+          <view class="brief-btn light" @click="generateMorningBrief(true)">
+            <text>抓取并生成</text>
+          </view>
+        </view>
+      </view>
+      <view v-if="latestBrief && latestBrief._id" class="brief-card" @click="viewMorningBrief">
+        <text class="brief-card-title">{{ latestBrief.title }}</text>
+        <text class="brief-card-summary">{{ latestBrief.summary }}</text>
+        <text class="brief-card-meta">
+          {{ latestBrief.dateKey }} · 纳入 {{ latestBrief.stats && latestBrief.stats.newsCount || 0 }} 条
+        </text>
+      </view>
+    </view>
+
     <scroll-view scroll-y class="scroll" @scrolltolower="loadMore">
       <view v-if="newsList.length" class="news-list">
         <view v-for="news in newsList" :key="news.id" class="news-card">
@@ -87,7 +111,9 @@ export default {
       loading: false,
       loadingMore: false,
       crawling: false,
+      generatingBrief: false,
       currentTag: '',
+      latestBrief: null,
       tagFilters: [
         { label: '全部', value: '' },
         { label: '新闻', value: '新闻' },
@@ -106,6 +132,11 @@ export default {
 
   onLoad() {
     this.loadNews(true)
+    this.loadLatestBrief()
+  },
+
+  onShow() {
+    this.loadLatestBrief()
   },
 
   methods: {
@@ -203,6 +234,16 @@ export default {
       }
     },
 
+    async loadLatestBrief() {
+      try {
+        const result = await this.callNewsAdmin('getLatestMorningBrief')
+        this.latestBrief = result.data || null
+      } catch (error) {
+        console.error('load latest brief failed:', error)
+        this.latestBrief = null
+      }
+    },
+
     setTagFilter(tag) {
       if (this.currentTag === tag) return
       this.currentTag = tag
@@ -240,6 +281,30 @@ export default {
       }
     },
 
+    async generateMorningBrief(refreshNews = false) {
+      if (this.generatingBrief) return
+      this.generatingBrief = true
+      try {
+        const result = await this.callNewsAdmin('triggerMorningBrief', { refreshNews })
+        uni.showToast({
+          title: result.message || '生成完成',
+          icon: 'success'
+        })
+        await this.loadLatestBrief()
+        if (refreshNews) {
+          await this.loadNews(true)
+        }
+      } catch (error) {
+        console.error('generate morning brief failed:', error)
+        uni.showToast({
+          title: error.message || '生成失败',
+          icon: 'none'
+        })
+      } finally {
+        this.generatingBrief = false
+      }
+    },
+
     async deleteNews(news) {
       uni.showModal({
         title: '删除确认',
@@ -267,6 +332,13 @@ export default {
     viewNews(news) {
       uni.navigateTo({
         url: `/pages/public/home/news-detail?id=${news.id}`
+      })
+    },
+
+    viewMorningBrief() {
+      if (!this.latestBrief || !this.latestBrief._id) return
+      uni.navigateTo({
+        url: `/pages/public/home/morning-brief-detail?id=${this.latestBrief._id}`
       })
     },
 
@@ -364,6 +436,91 @@ export default {
   background: #fff;
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.brief-panel {
+  margin: 20rpx 24rpx 0;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #ffffff 0%, #eef5ff 100%);
+  border-radius: 24rpx;
+  box-shadow: 0 14rpx 28rpx rgba(27, 75, 140, 0.08);
+}
+
+.brief-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.brief-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1b2b44;
+}
+
+.brief-sub {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #7b8aa0;
+}
+
+.brief-actions {
+  display: flex;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.brief-btn {
+  height: 64rpx;
+  padding: 0 22rpx;
+  border-radius: 18rpx;
+  background: #1b4b8c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brief-btn.light {
+  background: rgba(27, 75, 140, 0.1);
+}
+
+.brief-btn text {
+  font-size: 22rpx;
+  color: #fff;
+}
+
+.brief-btn.light text {
+  color: #1b4b8c;
+}
+
+.brief-card {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(27, 75, 140, 0.08);
+}
+
+.brief-card-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.brief-card-summary {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #5d6b82;
+  line-height: 1.6;
+}
+
+.brief-card-meta {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #8a97a8;
 }
 
 .filter-chip {

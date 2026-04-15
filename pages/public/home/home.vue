@@ -97,6 +97,30 @@
     </view>
 
     <!-- 最新动态 -->
+    <view v-if="morningBrief._id" class="brief-section" @click="goMorningBrief">
+      <view class="section-header">
+        <view class="header-left">
+          <view class="title-line"></view>
+          <text class="section-title">今日早报</text>
+        </view>
+        <text class="brief-date">{{ morningBrief.dateKey }}</text>
+      </view>
+
+      <view class="brief-card">
+        <view class="brief-main">
+          <text class="brief-title">{{ morningBrief.title }}</text>
+          <text class="brief-summary">{{ morningBrief.summary }}</text>
+          <view class="brief-stats" v-if="morningBrief.stats">
+            <text>纳入 {{ morningBrief.stats.newsCount || 0 }} 条</text>
+            <text>候鸟 {{ morningBrief.stats.migratoryBirdCount || 0 }}</text>
+            <text>生态 {{ morningBrief.stats.ecologyCount || 0 }}</text>
+          </view>
+        </view>
+        <image v-if="morningBrief.cover" :src="morningBrief.cover" class="brief-cover" mode="aspectFill" />
+      </view>
+    </view>
+
+    <!-- 最新动态 -->
     <view class="news-section">
       <view class="section-header">
         <view class="header-left">
@@ -147,6 +171,7 @@ export default {
   data() {
     return {
       newsList: [],
+      morningBrief: {},
       newsLoading: false,
       bannerList: [],
       valuesList: [
@@ -199,6 +224,11 @@ export default {
   
   onLoad() {
     this.loadNews()
+    this.loadMorningBrief()
+  },
+
+  onShow() {
+    this.loadMorningBrief()
   },
   
   methods: {
@@ -244,6 +274,26 @@ export default {
         this.newsLoading = false
       }
     },
+
+    async loadMorningBrief() {
+      try {
+        const res = await uniCloud.callFunction({
+          name: 'gw-news-admin',
+          data: {
+            action: 'getLatestMorningBrief'
+          }
+        })
+
+        const result = res.result || {}
+        if (!result.success) {
+          throw new Error(result.message || '早报加载失败')
+        }
+        this.morningBrief = result.data || {}
+      } catch (error) {
+        console.error('loadMorningBrief error:', error && error.message ? error.message : error)
+        this.morningBrief = {}
+      }
+    },
     
     formatNewsTime(ts) {
       if (!ts) return ''
@@ -284,6 +334,13 @@ export default {
     viewAllNews() {
       uni.navigateTo({
         url: '/pages/public/home/all-news'
+      })
+    },
+
+    goMorningBrief() {
+      if (!this.morningBrief._id) return
+      uni.navigateTo({
+        url: `/pages/public/home/morning-brief-detail?id=${this.morningBrief._id}`
       })
     },
     
@@ -573,14 +630,74 @@ export default {
   ;
   justify-content: center;
   }
-  .official-guide {
+.official-guide {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16rpx;
   padding: 16rpx 0;
   border-top: 1rpx solid #DCDFE6;
-  }
+}
+
+.brief-section {
+  padding: 0 30rpx 28rpx;
+}
+
+.brief-date {
+  font-size: 22rpx;
+  color: #7B8AA0;
+}
+
+.brief-card {
+  display: flex;
+  gap: 20rpx;
+  background: linear-gradient(135deg, #ffffff 0%, #eef5ff 100%);
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 14rpx 28rpx rgba(27, 75, 140, 0.08);
+}
+
+.brief-main {
+  flex: 1;
+}
+
+.brief-title {
+  display: block;
+  font-size: 30rpx;
+  line-height: 1.5;
+  color: #1B2B44;
+  font-weight: 700;
+}
+
+.brief-summary {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #5D6B82;
+}
+
+.brief-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.brief-stats text {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(27, 75, 140, 0.08);
+  color: #1B4B8C;
+  font-size: 20rpx;
+}
+
+.brief-cover {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
   .guide-line {
   flex: 1;
   height: 1rpx;

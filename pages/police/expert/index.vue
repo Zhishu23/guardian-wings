@@ -154,6 +154,15 @@ export default {
       ],
       expertList: [
         {
+          id: 'A003', type: 'agent', typeLabel: 'AI',
+          name: '案情推理助手',
+          title: '案情推理智能体',
+          specialty: '时间线梳理 · 证据链推理',
+          statusText: '随时可用',
+          rating: '4.9', consultations: '∞', avgTime: '<1秒',
+          online: true
+        },
+        {
           id: 'A001', type: 'agent', typeLabel: 'AI',
           name: '法律助手',
           title: '法律智能体',

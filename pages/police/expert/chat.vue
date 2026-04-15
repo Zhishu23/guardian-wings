@@ -189,6 +189,7 @@ export default {
     
     // 根据专家类型设置初始消息
     this.setInitialMessage()
+    this.setQuickQuestionsByExpert()
     
     // 延迟滚动到底部
     setTimeout(() => {
@@ -253,7 +254,8 @@ export default {
       if (this.isAgent) {
         const welcomeMessages = {
           'A001': '您好！我是法律助手，专注于野生动物保护法和刑事程序咨询。有什么法律问题需要帮助吗？',
-          'A002': '您好！我是生态助手，擅长鸟类鉴别和生态分析。请问有什么生态相关的问题需要咨询？'
+          'A002': '您好！我是生态助手，擅长鸟类鉴别和生态分析。请问有什么生态相关的问题需要咨询？',
+          'A003': '你好！我是案情推理助手，我会围绕已知事实、时间节点与证据链进行结构化推理，帮助你识别疑点并给出下一步侦查建议。'
         }
         
         this.messageList = [
@@ -318,6 +320,16 @@ export default {
     sendQuickQuestion(question) {
       this.inputMessage = question
       this.sendMessage()
+    },
+
+    setQuickQuestionsByExpert() {
+      if (!this.isAgent) return
+      const presets = {
+        A001: ['如何处理现场证据？', '法律程序咨询', '案件分析建议', '技术支持'],
+        A002: ['鸟类鉴别要点', '生态风险评估', '迁徙规律咨询', '栖息地保护建议'],
+        A003: ['请帮我梳理案情时间线', '有哪些关键矛盾点？', '证据链还缺什么？', '下一步侦查建议']
+      }
+      this.quickQuestions = presets[this.expertId] || this.quickQuestions
     },
     
     getCurrentTime() {

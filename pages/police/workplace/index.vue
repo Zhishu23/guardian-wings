@@ -2,7 +2,6 @@
   <view class="workplace-page">
     <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
 
-    <!-- 顶部导航 -->
     <view class="custom-navbar">
       <view class="navbar-left">
         <view class="officer-avatar">
@@ -33,7 +32,6 @@
       </view>
     </view>
 
-    <!-- 数据概览条 -->
     <view class="stats-banner">
       <view class="stat-item" v-for="(s, i) in statItems" :key="i">
         <text class="stat-val">{{ s.val }}</text>
@@ -41,14 +39,89 @@
       </view>
     </view>
 
-    <!-- 内容滚动区 -->
     <scroll-view
       scroll-y
       class="content-scroll"
       :style="{ height: scrollHeight + 'px' }"
       :show-scrollbar="false"
     >
-      <!-- 快捷入口 -->
+      <view class="section-card" v-if="quickResumeItems.length > 0">
+        <view class="section-head">
+          <view class="section-line"></view>
+          <text class="section-title">快速继续</text>
+        </view>
+        <view class="resume-list">
+          <view
+            class="resume-item"
+            v-for="item in quickResumeItems"
+            :key="item.key"
+            @click="handleResume(item)"
+          >
+            <view class="resume-main">
+              <text class="resume-title">{{ item.title }}</text>
+              <text class="resume-meta">{{ item.meta }}</text>
+            </view>
+            <view class="resume-tag" :class="item.tagClass">
+              <text>{{ item.tag }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head">
+          <view class="section-line"></view>
+          <text class="section-title">最近事件</text>
+          <text class="section-link" @click="goEventManager">进入管理</text>
+        </view>
+        <view v-if="recentEvents.length > 0">
+          <view
+            class="event-item"
+            v-for="event in recentEvents"
+            :key="event.id"
+            @click="goEventManager"
+          >
+            <view class="event-main">
+              <view class="event-title-row">
+                <text class="event-title">{{ event.title }}</text>
+                <view class="event-status" :class="'event-status-' + event.statusClass">
+                  <text>{{ event.statusText }}</text>
+                </view>
+              </view>
+              <text class="event-meta">{{ event.meta }}</text>
+              <text class="event-sub">{{ event.subMeta }}</text>
+            </view>
+            <svg viewBox="0 0 24 24" fill="none" style="width:28rpx;height:28rpx;">
+              <path d="M9 6L15 12L9 18" stroke="#C0C4CC" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </view>
+        </view>
+        <view class="empty-tip" v-else>
+          <text class="empty-tip-text">暂无事件包，进入事件管理可开始整理现场资料</text>
+        </view>
+      </view>
+
+      <view class="section-card">
+        <view class="section-head">
+          <view class="section-line"></view>
+          <text class="section-title">待处理草稿</text>
+        </view>
+        <view class="draft-grid">
+          <view class="draft-card" @click="openDraftCategory('report')">
+            <text class="draft-value">{{ draftSummary.report }}</text>
+            <text class="draft-label">报告待完善</text>
+          </view>
+          <view class="draft-card" @click="openDraftCategory('transcript')">
+            <text class="draft-value">{{ draftSummary.transcript }}</text>
+            <text class="draft-label">笔录草稿</text>
+          </view>
+          <view class="draft-card" @click="openDraftCategory('material')">
+            <text class="draft-value">{{ draftSummary.material }}</text>
+            <text class="draft-label">未归档素材</text>
+          </view>
+        </view>
+      </view>
+
       <view class="section-card">
         <view class="section-head">
           <view class="section-line"></view>
@@ -56,7 +129,7 @@
         </view>
         <view class="quick-grid">
           <view class="quick-item" v-for="(item, i) in quickItems" :key="i" @click="handleQuick(item.key)">
-            <view class="quick-icon-wrap" :style="{background: item.bg}">
+            <view class="quick-icon-wrap" :style="{ background: item.bg }">
               <svg :viewBox="item.viewBox" fill="none" style="width:44rpx;height:44rpx;">
                 <path :d="item.path" :fill="item.color"/>
               </svg>
@@ -66,7 +139,6 @@
         </view>
       </view>
 
-      <!-- 现场工具 -->
       <view class="section-card">
         <view class="section-head">
           <view class="section-line"></view>
@@ -74,8 +146,8 @@
           <text class="section-sub">离线可用</text>
         </view>
         <view class="tool-list">
-          <view class="tool-item" v-for="(tool, i) in fieldTools" :key="i" @click="navigateTo(tool.url)">
-            <view class="tool-icon-wrap" :style="{background: tool.bg}">
+          <view class="tool-item" v-for="tool in fieldTools" :key="tool.key" @click="navigateTo(tool.url)">
+            <view class="tool-icon-wrap" :style="{ background: tool.bg }">
               <svg :viewBox="tool.viewBox" fill="none" style="width:40rpx;height:40rpx;">
                 <path :d="tool.path" :fill="tool.color"/>
               </svg>
@@ -85,42 +157,40 @@
               <text class="tool-desc">{{ tool.desc }}</text>
             </view>
             <view class="tool-right">
-              <view class="tool-tag">离线</view>
-              <svg viewBox="0 0 24 24" fill="none" style="width:28rpx;height:28rpx;margin-top:8rpx;">
-                <path d="M9 6L15 12L9 18" stroke="#C0C4CC" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+              <view class="tool-count">
+                <text>{{ tool.statusText }}</text>
+              </view>
+              <text class="tool-secondary">{{ tool.secondaryText }}</text>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 最近报告 -->
       <view class="section-card">
         <view class="section-head">
           <view class="section-line"></view>
-          <text class="section-title">最近报告</text>
-          <text class="section-link" @click="viewAllReports">查看全部 ›</text>
+          <text class="section-title">最近文书</text>
+          <text class="section-link" @click="viewAllReports">查看全部</text>
         </view>
         <view v-if="recentReports.length > 0">
           <view class="report-item" v-for="r in recentReports" :key="r.id" @click="viewReport(r)">
             <view class="report-left">
-              <view class="report-status-dot" :class="'dot-' + r.status"></view>
+              <view class="report-status-dot" :class="'dot-' + r.statusClass"></view>
               <view class="report-info">
                 <text class="report-title-text">{{ r.title }}</text>
                 <text class="report-meta">{{ r.type }} · {{ r.time }}</text>
               </view>
             </view>
-            <view class="report-badge" :class="'badge-' + r.status">
-              <text>{{ getStatusText(r.status) }}</text>
+            <view class="report-badge" :class="'badge-' + r.statusClass">
+              <text>{{ r.statusText }}</text>
             </view>
           </view>
         </view>
         <view class="empty-tip" v-else>
-          <text class="empty-tip-text">暂无报告，点击"报告生成"新建</text>
+          <text class="empty-tip-text">暂无文书记录，点击报告生成即可新建</text>
         </view>
       </view>
 
-      <!-- 我的档案入口 -->
       <view class="archive-entry" @click="goArchive">
         <view class="archive-left">
           <view class="archive-icon">
@@ -130,7 +200,7 @@
           </view>
           <view>
             <text class="archive-title">我的档案</text>
-            <text class="archive-sub">任务记录 · 报告存档</text>
+            <text class="archive-sub">任务记录 · 素材归档 · 文书留存</text>
           </view>
         </view>
         <svg viewBox="0 0 24 24" fill="none" style="width:32rpx;height:32rpx;">
@@ -141,7 +211,6 @@
       <view style="height: 160rpx;"></view>
     </scroll-view>
 
-    <!-- 底部导航 -->
     <view class="police-tabbar">
       <view class="tabbar-item" @click="switchTab('task')">
         <view class="tabbar-icon-wrap">
@@ -184,6 +253,13 @@ export default {
       officerName: '',
       officerDept: '',
       recentReports: [],
+      recentEvents: [],
+      draftSummary: {
+        report: 0,
+        transcript: 0,
+        material: 0
+      },
+      quickResumeItems: [],
       statItems: [
         { val: '0', label: '待处理任务' },
         { val: '0', label: '进行中' },
@@ -218,25 +294,54 @@ export default {
       ],
       fieldTools: [
         {
-          name: '照片采集', desc: '拍摄现场照片，自动叠加水印',
+          key: 'photo',
+          name: '拍照取证', desc: '现场拍摄、加水印、整理照片',
           url: '/pages/police/workplace/photo-capture',
           bg: 'rgba(37,99,235,0.1)', color: '#2563EB',
           viewBox: '0 0 24 24',
-          path: 'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z'
+          path: 'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z',
+          statusText: '今日 0 张',
+          secondaryText: '离线可用'
         },
         {
-          name: '事件记录', desc: '快速记录现场事件，支持视频和笔录',
-          url: '/pages/police/workplace/event-record',
+          key: 'video',
+          name: '视频记录', desc: '录制现场视频，保留时序证据',
+          url: '/pages/police/workplace/video-record',
           bg: 'rgba(5,150,105,0.1)', color: '#059669',
           viewBox: '0 0 24 24',
-          path: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z'
+          path: 'M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z',
+          statusText: '今日 0 段',
+          secondaryText: '离线可用'
         },
         {
-          name: '报告生成', desc: '创建标准化执法报告，多模板支持',
-          url: '/pages/police/workplace/report-generate',
+          key: 'transcript',
+          name: '笔录记录', desc: '快速记录现场情况与处置经过',
+          url: '/pages/police/workplace/transcript',
           bg: 'rgba(217,119,6,0.1)', color: '#D97706',
           viewBox: '0 0 24 24',
-          path: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z'
+          path: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2zm0-3h5v2H8V8z',
+          statusText: '草稿 0 份',
+          secondaryText: '可继续编辑'
+        },
+        {
+          key: 'event',
+          name: '事件管理', desc: '整理素材、归并事件、继续处理',
+          url: '/pages/police/workplace/event-record',
+          bg: 'rgba(14,116,144,0.1)', color: '#0E7490',
+          viewBox: '0 0 24 24',
+          path: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z',
+          statusText: '事件 0 个',
+          secondaryText: '整理现场资料'
+        },
+        {
+          key: 'report',
+          name: '报告生成', desc: '汇总素材，生成标准化文书',
+          url: '/pages/police/workplace/report-generate',
+          bg: 'rgba(124,58,237,0.1)', color: '#7C3AED',
+          viewBox: '0 0 24 24',
+          path: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z',
+          statusText: '待完善 0 份',
+          secondaryText: '支持草稿恢复'
         }
       ]
     }
@@ -245,102 +350,359 @@ export default {
   onLoad() {
     const sys = uni.getSystemInfoSync()
     this.statusBarHeight = sys.statusBarHeight
-    // 精确计算：窗口高度 - 状态栏 - 导航栏 - 数据条 - tabbar
-    // 导航栏约88px，数据条约72px，tabbar约60px（upx2px换算）
     this.scrollHeight = sys.windowHeight
       - sys.statusBarHeight
       - uni.upx2px(88)
       - uni.upx2px(96)
       - uni.upx2px(120)
-      + uni.upx2px(40)   
+      + uni.upx2px(40)
     this.loadPoliceInfo()
     this.loadDashboard()
-    this.loadRecentReports()
+    this.loadWorkspaceLocalData()
   },
 
   onShow() {
     this.loadDashboard()
-    this.loadRecentReports()
+    this.loadWorkspaceLocalData()
   },
 
   methods: {
     loadPoliceInfo() {
-      try {
-        const raw = uni.getStorageSync('gw_police_info')
-        const info = raw ? JSON.parse(raw) : {}
-        this.officerName = info.name || ''
-        this.officerDept = info.department || ''
-      } catch (e) {}
+      const info = this.readStorageObject('gw_police_info', {})
+      this.officerName = info.name || ''
+      this.officerDept = info.department || ''
     },
 
     async loadDashboard() {
       try {
-        const raw = uni.getStorageSync('gw_police_info')
-        const police = raw ? JSON.parse(raw) : {}
+        const police = this.readStorageObject('gw_police_info', {})
         const res = await uniCloud.callFunction({
           name: 'gw-police',
           data: { action: 'getDashboard', params: { officer_id: police.officer_id || '' } }
         })
         if (res.result && res.result.code === 0) {
-          const d = res.result.data
-          this.statItems[0].val = String(d.myPendingTasks  || 0)
-          this.statItems[1].val = String(d.myOngoingTasks  || 0)
-          this.statItems[2].val = String(d.todayEvents     || 0)
-          this.statItems[3].val = String(d.completedTasks  || 0)
+          const d = res.result.data || {}
+          this.statItems[0].val = String(d.myPendingTasks || 0)
+          this.statItems[1].val = String(d.myOngoingTasks || 0)
+          this.statItems[2].val = String(d.todayEvents || 0)
+          this.statItems[3].val = String(d.completedTasks || 0)
           this.pendingTaskCount = d.myPendingTasks || 0
         }
       } catch (e) {}
     },
 
-    loadRecentReports() {
-      try {
-        const raw = uni.getStorageSync('gw_report_records')
-        const all = raw ? JSON.parse(raw) : []
-        this.recentReports = all
-          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-          .slice(0, 3)
-          .map(r => ({
-            id: r.id,
-            title: r.title || '无标题',
-            type: this.getTypeLabel(r.template),
-            status: r.status,
-            time: r.updatedAt
-          }))
-      } catch (e) { this.recentReports = [] }
+    loadWorkspaceLocalData() {
+      const reports = this.readStorageArray('gw_report_records')
+      const transcripts = this.readStorageArray('gw_transcript_records')
+      const videos = this.readStorageArray('gw_video_records')
+      const photos = this.readStorageArray('gw_photo_records')
+      const events = this.readStorageArray('gw_event_records')
+
+      this.loadRecentReports(reports)
+      this.loadRecentEvents(events, reports, transcripts, videos, photos)
+      this.loadDraftSummary(reports, transcripts, videos, photos, events)
+      this.loadQuickResume(events, reports, transcripts)
+      this.updateToolStatus(reports, transcripts, videos, photos, events)
     },
 
-    getTypeLabel(t) {
-      return { incident: '事故报告', patrol: '巡逻日志', investigation: '调查报告', summary: '工作总结' }[t] || '报告'
+    loadRecentReports(allReports) {
+      this.recentReports = allReports
+        .slice()
+        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))
+        .slice(0, 3)
+        .map((report) => {
+          const statusClass = this.normalizeReportStatus(report.status)
+          return {
+            id: report.id,
+            title: report.title || 'Untitled',
+            type: this.getTypeLabel(report.template),
+            statusClass,
+            statusText: this.getReportStatusText(report.status),
+            time: this.formatDateTime(report.updatedAt || report.createdAt)
+          }
+        })
     },
-    getStatusText(s) {
-      return { draft: '草稿', submitted: '已提交', approved: '已审批' }[s] || '未知'
+
+    loadRecentEvents(events, reports, transcripts, videos, photos) {
+      this.recentEvents = events
+        .slice()
+        .map((event) => this.normalizeEventRecord(event, reports, transcripts, videos, photos))
+        .sort((a, b) => this.getTimeValue(b.updatedAt) - this.getTimeValue(a.updatedAt))
+        .slice(0, 3)
+    },
+
+    loadDraftSummary(reports, transcripts, videos, photos, events) {
+      this.draftSummary = {
+        report: reports.filter((item) => this.isPendingReport(item.status)).length,
+        transcript: transcripts.filter((item) => this.isDraftTranscript(item.status)).length,
+        material: videos.filter((item) => !item.eventId).length
+          + photos.filter((item) => !item.eventId).length
+          + transcripts.filter((item) => !item.eventId && this.isDraftTranscript(item.status)).length
+          + events.filter((item) => this.isPendingEvent(item.status)).length
+      }
+    },
+
+    loadQuickResume(events, reports, transcripts) {
+      const resumeItems = []
+      const activeEvent = events
+        .slice()
+        .filter((item) => this.isPendingEvent(item.status))
+        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
+      if (activeEvent) {
+        resumeItems.push({
+          key: 'event',
+          title: activeEvent.title || 'Continue Event',
+          meta: this.getEventStatusText(activeEvent.status) + ' · ' + this.formatDateTime(activeEvent.updatedAt || activeEvent.createdAt),
+          tag: 'EVENT',
+          tagClass: 'tag-event',
+          action: () => this.goEventManager()
+        })
+      }
+
+      const draftReport = reports
+        .slice()
+        .filter((item) => this.isPendingReport(item.status))
+        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
+      if (draftReport) {
+        resumeItems.push({
+          key: 'report',
+          title: draftReport.title || 'Continue Report',
+          meta: this.getReportStatusText(draftReport.status) + ' · ' + this.formatDateTime(draftReport.updatedAt || draftReport.createdAt),
+          tag: 'REPORT',
+          tagClass: 'tag-report',
+          action: () => this.viewReport({ id: draftReport.id })
+        })
+      }
+
+      const draftTranscript = transcripts
+        .slice()
+        .filter((item) => this.isDraftTranscript(item.status))
+        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
+      if (draftTranscript) {
+        resumeItems.push({
+          key: 'transcript',
+          title: draftTranscript.title || draftTranscript.description || 'Continue Transcript',
+          meta: this.getTranscriptStatusText(draftTranscript.status) + ' · ' + this.formatDateTime(draftTranscript.updatedAt || draftTranscript.createdAt),
+          tag: 'NOTE',
+          tagClass: 'tag-transcript',
+          action: () => this.navigateTo(`/pages/police/workplace/transcript?editId=${draftTranscript.id}`)
+        })
+      }
+
+      this.quickResumeItems = resumeItems.slice(0, 2)
+    },
+
+    updateToolStatus(reports, transcripts, videos, photos, events) {
+      const today = this.getTodayKey()
+      const todayPhotos = photos.filter((item) => this.getDateKey(item.createdAt).startsWith(today)).length
+      const todayVideos = videos.filter((item) => this.getDateKey(item.createdAt).startsWith(today)).length
+      const draftTranscripts = transcripts.filter((item) => this.isDraftTranscript(item.status)).length
+      const pendingReports = reports.filter((item) => this.isPendingReport(item.status)).length
+      const eventCount = events.length
+
+      this.fieldTools = this.fieldTools.map((tool) => {
+        if (tool.key === 'photo') return Object.assign({}, tool, { statusText: '今日 ' + todayPhotos + ' 张', secondaryText: todayPhotos > 0 ? '已采集照片' : '离线可用' })
+        if (tool.key === 'video') return Object.assign({}, tool, { statusText: '今日 ' + todayVideos + ' 段', secondaryText: todayVideos > 0 ? '现场视频记录' : '离线可用' })
+        if (tool.key === 'transcript') return Object.assign({}, tool, { statusText: '草稿 ' + draftTranscripts + ' 份', secondaryText: draftTranscripts > 0 ? '可继续编辑' : '快速记录现场' })
+        if (tool.key === 'event') return Object.assign({}, tool, { statusText: '事件 ' + eventCount + ' 个', secondaryText: eventCount > 0 ? '继续整理素材' : '整理现场资料' })
+        if (tool.key === 'report') return Object.assign({}, tool, { statusText: '待完善 ' + pendingReports + ' 份', secondaryText: pendingReports > 0 ? '支持草稿恢复' : '新建标准文书' })
+        return tool
+      })
+    },
+
+    normalizeEventRecord(event, reports, transcripts, videos, photos) {
+      const photoCount = Array.isArray(event.photoIds) ? event.photoIds.length : photos.filter((item) => item.eventId === event.id).length
+      const videoCount = Array.isArray(event.videoIds) ? event.videoIds.length : videos.filter((item) => item.eventId === event.id).length
+      const transcriptCount = Array.isArray(event.transcriptIds) ? event.transcriptIds.length : transcripts.filter((item) => item.eventId === event.id).length
+      const reportCount = Array.isArray(event.reportIds) ? event.reportIds.length : reports.filter((item) => item.eventId === event.id).length
+
+      return {
+        id: event.id,
+        title: event.title || event.description || 'Untitled Event',
+        statusClass: this.normalizeEventStatus(event.status),
+        statusText: this.getEventStatusText(event.status),
+        meta: (event.type || '现场事件') + ' · ' + this.formatDateTime(event.updatedAt || event.createdAt || event.happenTime),
+        subMeta: '照片 ' + photoCount + ' · 视频 ' + videoCount + ' · 笔录 ' + transcriptCount + ' · 文书 ' + reportCount,
+        updatedAt: event.updatedAt || event.createdAt || event.happenTime
+      }
+    },
+
+    readStorageArray(key) {
+      const raw = uni.getStorageSync(key)
+      if (!raw) return []
+      try {
+        const parsed = JSON.parse(raw)
+        return Array.isArray(parsed) ? parsed : []
+      } catch (e) {
+        return []
+      }
+    },
+
+    readStorageObject(key, fallback = {}) {
+      const raw = uni.getStorageSync(key)
+      if (!raw) return fallback
+      try {
+        const parsed = JSON.parse(raw)
+        return parsed && typeof parsed === 'object' ? parsed : fallback
+      } catch (e) {
+        return fallback
+      }
+    },
+
+    getTimeValue(value) {
+      if (!value) return 0
+      const time = new Date(String(value).replace(/\./g, '-')).getTime()
+      return Number.isNaN(time) ? 0 : time
+    },
+
+    formatDateTime(value) {
+      if (!value) return '刚刚'
+      return String(value).replace('T', ' ').replace(/\//g, '-').substring(0, 16)
+    },
+
+    getDateKey(value) {
+      if (!value) return ''
+      return String(value).replace(/\//g, '-').replace('T', ' ').substring(0, 10)
+    },
+
+    getTodayKey() {
+      const now = new Date()
+      const pad = (n) => String(n).padStart(2, '0')
+      return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+    },
+
+    normalizeReportStatus(status) {
+      if (status === 'approved' || status === 'completed' || status === 'exported') return 'approved'
+      if (status === 'submitted' || status === 'pending_complete') return 'submitted'
+      return 'draft'
+    },
+
+    normalizeEventStatus(status) {
+      if (status === 'archived') return 'archived'
+      if (status === 'pending_report') return 'pending'
+      if (status === 'pending_sort') return 'sorting'
+      return 'collecting'
+    },
+
+    isPendingReport(status) {
+      return !['approved', 'completed', 'exported'].includes(status)
+    },
+
+    isDraftTranscript(status) {
+      return !status || ['draft', 'editing', 'pending'].includes(status)
+    },
+
+    isPendingEvent(status) {
+      return !status || ['collecting', 'pending_sort', 'pending_report'].includes(status)
+    },
+
+    getTypeLabel(type) {
+      const map = {
+        incident: '事件处置',
+        patrol: '现场巡查',
+        investigation: '线索核查',
+        summary: '工作简报',
+        custom: '自定义'
+      }
+      return map[type] || '报告'
+    },
+
+    getReportStatusText(status) {
+      const map = {
+        draft: '草稿',
+        pending_complete: '待完善',
+        submitted: '待完善',
+        approved: '已完成',
+        completed: '已完成',
+        exported: '已导出'
+      }
+      return map[status] || '草稿'
+    },
+
+    getTranscriptStatusText(status) {
+      const map = {
+        draft: '草稿',
+        editing: '编辑中',
+        complete: '已完成',
+        completed: '已完成',
+        syncing: '处理中'
+      }
+      return map[status] || '草稿'
+    },
+
+    getEventStatusText(status) {
+      const map = {
+        collecting: '采集中',
+        pending_sort: '待整理',
+        pending_report: '待成文',
+        archived: '已归档'
+      }
+      return map[status] || '采集中'
+    },
+
+    handleResume(item) {
+      if (item && typeof item.action === 'function') item.action()
+    },
+
+    openDraftCategory(type) {
+      const routes = {
+        report: '/pages/police/workplace/report-list',
+        transcript: '/pages/police/workplace/transcript',
+        material: '/pages/police/workplace/event-record'
+      }
+      this.navigateTo(routes[type] || '/pages/police/workplace/event-record')
     },
 
     handleQuick(key) {
       const routes = {
-        'create-task':    '/pages/police/new-case/index',
-        'task-map':       '/pages/police/map/index',
+        'create-task': '/pages/police/new-case/index',
+        'task-map': '/pages/police/map/index',
         'bird-knowledge': '/pages/police/workplace/bird-query',
-        'law-search':     '/pages/public/law/index'
+        'law-search': '/pages/public/law/index'
       }
-      if (routes[key]) uni.navigateTo({ url: routes[key] })
-      else uni.showToast({ title: '功能开发中', icon: 'none' })
+      if (routes[key]) {
+        uni.navigateTo({ url: routes[key] })
+      } else {
+        uni.showToast({ title: '功能开发中', icon: 'none' })
+      }
     },
 
-    navigateTo(url) { uni.navigateTo({ url }) },
+    navigateTo(url) {
+      uni.navigateTo({ url })
+    },
 
-    goNotification() { uni.navigateTo({ url: '/pages/police/workplace/messages' }) },
-    goSettings()     { uni.navigateTo({ url: '/pages/police/workplace/police-settings' }) },
-    goArchive()      { uni.navigateTo({ url: '/pages/police/workplace/task-archive' }) },
-    viewAllReports() { uni.navigateTo({ url: '/pages/police/workplace/report-list' }) },
-    viewReport(r)    { uni.navigateTo({ url: `/pages/police/workplace/report-generate?id=${r.id}` }) },
+    goNotification() {
+      uni.navigateTo({ url: '/pages/police/workplace/messages' })
+    },
+
+    goSettings() {
+      uni.navigateTo({ url: '/pages/police/workplace/police-settings' })
+    },
+
+    goArchive() {
+      uni.navigateTo({ url: '/pages/police/workplace/task-archive' })
+    },
+
+    goEventManager() {
+      uni.navigateTo({ url: '/pages/police/workplace/event-record' })
+    },
+
+    viewAllReports() {
+      uni.navigateTo({ url: '/pages/police/workplace/report-list' })
+    },
+
+    viewReport(report) {
+      uni.navigateTo({ url: `/pages/police/workplace/report-detail?id=${report.id}` })
+    },
 
     switchTab(tab) {
       const routes = {
-        task:   '/pages/police/task-center/index',
+        task: '/pages/police/task-center/index',
         expert: '/pages/police/expert/index'
       }
-      if (routes[tab]) uni.redirectTo({ url: routes[tab] })
+      if (routes[tab]) {
+        uni.redirectTo({ url: routes[tab] })
+      }
     }
   }
 }
@@ -350,15 +712,23 @@ export default {
 .workplace-page { min-height: 100vh; background: #F2F6FC; }
 
 .custom-navbar {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 20rpx 28rpx 20rpx;
   background: linear-gradient(135deg, #0F2A5C 0%, #1B4B8C 60%, #2563EB 100%);
 }
+
 .navbar-left { display: flex; align-items: center; gap: 20rpx; }
 .officer-avatar {
-  width: 80rpx; height: 80rpx; border-radius: 50%;
-  background: rgba(255,255,255,0.2); border: 2rpx solid rgba(255,255,255,0.35);
-  display: flex; align-items: center; justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 2rpx solid rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .avatar-text { font-size: 32rpx; font-weight: bold; color: #FFFFFF; }
 .officer-info { display: flex; flex-direction: column; gap: 6rpx; }
@@ -369,43 +739,63 @@ export default {
 
 .navbar-right { display: flex; gap: 12rpx; }
 .nav-icon-btn {
-  width: 72rpx; height: 72rpx; background: rgba(255,255,255,0.15);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 .nav-badge {
-  position: absolute; top: 8rpx; right: 8rpx;
-  min-width: 28rpx; height: 28rpx; background: #EF4444;
-  border-radius: 14rpx; display: flex; align-items: center; justify-content: center;
-  padding: 0 6rpx; border: 2rpx solid #1B4B8C;
-  text { font-size: 16rpx; color: #FFFFFF; font-weight: bold; }
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  min-width: 28rpx;
+  height: 28rpx;
+  background: #EF4444;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
+  border: 2rpx solid #1B4B8C;
+  text {
+    font-size: 16rpx;
+    color: #FFFFFF;
+    font-weight: bold;
+  }
 }
 
-/* 数据概览条 */
 .stats-banner {
   display: flex;
   background: linear-gradient(135deg, #1B4B8C, #2563EB);
   padding: 20rpx 28rpx 28rpx;
 }
 .stat-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
   border-right: 1rpx solid rgba(255,255,255,0.2);
 }
 .stat-item:last-child { border-right: none; }
 .stat-val { font-size: 34rpx; font-weight: bold; color: #FFFFFF; }
 .stat-label { font-size: 18rpx; color: rgba(255,255,255,0.7); }
 
-/* 滚动区 */
 .content-scroll {
   width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
-/* 卡片 */
 .section-card {
-  background: #FFFFFF; border-radius: 20rpx;
-  margin: 20rpx 24rpx 0; padding: 28rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  margin: 20rpx 24rpx 0;
+  padding: 28rpx;
   box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
 }
 .section-head { display: flex; align-items: center; gap: 14rpx; margin-bottom: 24rpx; }
@@ -414,32 +804,113 @@ export default {
 .section-sub { font-size: 22rpx; color: #10B981; }
 .section-link { font-size: 24rpx; color: #2563EB; }
 
-/* 快捷入口 */
+.resume-list { display: flex; flex-direction: column; gap: 16rpx; }
+.resume-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 24rpx;
+  border-radius: 18rpx;
+  background: #F8FAFF;
+}
+.resume-main { flex: 1; min-width: 0; }
+.resume-title { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
+.resume-meta { display: block; font-size: 22rpx; color: #909399; }
+.resume-tag {
+  min-width: 92rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18rpx;
+  margin-left: 20rpx;
+  text { font-size: 20rpx; font-weight: 600; }
+}
+.tag-event { background: rgba(14,116,144,0.12); color: #0E7490; }
+.tag-report { background: rgba(124,58,237,0.12); color: #7C3AED; }
+.tag-transcript { background: rgba(217,119,6,0.12); color: #D97706; }
+
+.draft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16rpx; }
+.draft-card {
+  background: linear-gradient(180deg, #F8FAFF 0%, #F3F7FF 100%);
+  border-radius: 18rpx;
+  padding: 24rpx 12rpx;
+  text-align: center;
+}
+.draft-value { display: block; font-size: 36rpx; font-weight: 700; color: #1B4B8C; margin-bottom: 8rpx; }
+.draft-label { display: block; font-size: 22rpx; line-height: 1.5; color: #4A5568; }
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #F2F6FC;
+}
+.event-item:last-child { border-bottom: none; }
+.event-main { flex: 1; min-width: 0; }
+.event-title-row { display: flex; align-items: center; gap: 16rpx; margin-bottom: 8rpx; }
+.event-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A202C;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event-status { padding: 6rpx 14rpx; border-radius: 20rpx; }
+.event-status text { font-size: 20rpx; font-weight: 600; }
+.event-status-collecting { background: rgba(37,99,235,0.1); color: #2563EB; }
+.event-status-sorting { background: rgba(217,119,6,0.1); color: #D97706; }
+.event-status-pending { background: rgba(124,58,237,0.1); color: #7C3AED; }
+.event-status-archived { background: rgba(16,185,129,0.1); color: #059669; }
+.event-meta,
+.event-sub { display: block; font-size: 22rpx; color: #909399; line-height: 1.6; }
+
 .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16rpx; }
 .quick-item { display: flex; flex-direction: column; align-items: center; gap: 12rpx; padding: 20rpx 0; }
 .quick-item:active { opacity: 0.7; }
 .quick-icon-wrap { width: 96rpx; height: 96rpx; border-radius: 24rpx; display: flex; align-items: center; justify-content: center; }
 .quick-label { font-size: 22rpx; color: #4A5568; font-weight: 500; text-align: center; }
 
-/* 现场工具 */
-.tool-list { }
 .tool-item {
-  display: flex; align-items: center; gap: 20rpx;
-  padding: 24rpx 0; border-bottom: 1rpx solid #F2F6FC;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F2F6FC;
 }
 .tool-item:last-child { border-bottom: none; }
 .tool-item:active { opacity: 0.8; }
 .tool-icon-wrap { width: 80rpx; height: 80rpx; border-radius: 18rpx; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.tool-body { flex: 1; }
+.tool-body { flex: 1; min-width: 0; }
 .tool-name { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
 .tool-desc { display: block; font-size: 22rpx; color: #909399; line-height: 1.5; }
-.tool-right { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
-.tool-tag { background: rgba(16,185,129,0.1); color: #059669; font-size: 19rpx; padding: 4rpx 14rpx; border-radius: 8rpx; }
+.tool-right {
+  min-width: 132rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+.tool-count {
+  background: rgba(37,99,235,0.08);
+  color: #2563EB;
+  font-size: 19rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 18rpx;
+}
+.tool-secondary { font-size: 20rpx; color: #C0C4CC; }
 
-/* 最近报告 */
 .report-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20rpx 0; border-bottom: 1rpx solid #F2F6FC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F2F6FC;
 }
 .report-item:last-child { border-bottom: none; }
 .report-item:active { opacity: 0.7; }
@@ -449,20 +920,34 @@ export default {
 .dot-submitted { background: #2563EB; }
 .dot-approved { background: #10B981; }
 .report-info { flex: 1; }
-.report-title-text { display: block; font-size: 27rpx; font-weight: 500; color: #1A202C; margin-bottom: 6rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 420rpx; }
+.report-title-text {
+  display: block;
+  font-size: 27rpx;
+  font-weight: 500;
+  color: #1A202C;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 420rpx;
+}
 .report-meta { display: block; font-size: 22rpx; color: #909399; }
 .report-badge { font-size: 20rpx; padding: 6rpx 18rpx; border-radius: 20rpx; flex-shrink: 0; }
-.badge-draft     { background: rgba(156,163,175,0.12); color: #6B7280; }
-.badge-submitted { background: rgba(37,99,235,0.1);   color: #2563EB; }
-.badge-approved  { background: rgba(16,185,129,0.1);  color: #10B981; }
-.empty-tip { padding: 32rpx 0; text-align: center; }
-.empty-tip-text { font-size: 25rpx; color: #C0C4CC; }
+.badge-draft { background: rgba(156,163,175,0.12); color: #6B7280; }
+.badge-submitted { background: rgba(37,99,235,0.1); color: #2563EB; }
+.badge-approved { background: rgba(16,185,129,0.1); color: #10B981; }
 
-/* 我的档案入口 */
+.empty-tip { padding: 32rpx 0; text-align: center; }
+.empty-tip-text { font-size: 25rpx; color: #C0C4CC; line-height: 1.7; }
+
 .archive-entry {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #FFFFFF; border-radius: 20rpx;
-  margin: 20rpx 24rpx 0; padding: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  margin: 20rpx 24rpx 0;
+  padding: 28rpx;
   box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
 }
 .archive-entry:active { background: #F8FAFF; }
@@ -471,16 +956,39 @@ export default {
 .archive-title { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
 .archive-sub { display: block; font-size: 22rpx; color: #909399; }
 
-/* 底部导航 */
 .police-tabbar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: 120rpx; background: rgba(15,23,42,0.97);
-  backdrop-filter: blur(20rpx); border-top: 1rpx solid rgba(255,255,255,0.08);
-  display: flex; padding-bottom: env(safe-area-inset-bottom); z-index: 1000;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  background: rgba(15,23,42,0.97);
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(255,255,255,0.08);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
 }
 .tabbar-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6rpx; }
 .tabbar-icon-wrap { position: relative; width: 48rpx; height: 48rpx; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); }
-.tab-badge { position: absolute; top: -8rpx; right: -14rpx; min-width: 30rpx; height: 30rpx; background: #DC2626; border-radius: 15rpx; display: flex; align-items: center; justify-content: center; padding: 0 6rpx; text { font-size: 16rpx; color: #FFFFFF; font-weight: bold; } }
+.tab-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -14rpx;
+  min-width: 30rpx;
+  height: 30rpx;
+  background: #DC2626;
+  border-radius: 15rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
+  text {
+    font-size: 16rpx;
+    color: #FFFFFF;
+    font-weight: bold;
+  }
+}
 .tabbar-label { font-size: 20rpx; color: rgba(255,255,255,0.4); }
 .tabbar-item.active .tabbar-icon-wrap { color: #3B82F6; }
 .tabbar-item.active .tabbar-label { color: #3B82F6; font-weight: 600; }

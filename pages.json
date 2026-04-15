@@ -53,6 +53,10 @@
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "全部新闻" }
     },
     {
+      "path": "pages/public/home/morning-brief-detail",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "早报详情" }
+    },
+    {
       "path": "pages/public/report/my-reports",
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的举报" }
     },
@@ -185,8 +189,12 @@
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "视频采集" }
     },
     {
+      "path": "pages/police/workplace/media-preview",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "媒体预览" }
+    },
+    {
       "path": "pages/police/workplace/report-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "举报详情" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "报告详情" }
     },
     {
       "path": "pages/police/workplace/handle-report",

@@ -1,120 +1,165 @@
 <template>
   <view class="page">
     <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
-
-    <!-- 顶导航 -->
     <view class="navbar">
-      <view class="nav-back" @click="goBack">
-        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
-      </view>
+      <view class="nav-btn" @click="goBack">返回</view>
       <view class="nav-center">
-        <text class="nav-title">事件记录</text>
+        <text class="nav-title">事件管理</text>
+        <text class="nav-sub">现场素材归集与成包</text>
       </view>
-      <view class="nav-right">
-        <view class="nav-btn" v-if="allRecords.length > 0" @click="onClear">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg>
-        </view>
-      </view>
+      <view class="nav-btn right" @click="createEvent">新建</view>
     </view>
 
-    <!-- 今日概览 -->
-    <view class="overview">
-      <view class="overview-card ov-video">
-        <view class="ov-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" fill="currentColor"/></svg>
-        </view>
-        <view class="ov-body">
-          <text class="ov-num">{{ todayVideoCount }}</text>
-          <text class="ov-label">今日视频</text>
-        </view>
+    <scroll-view scroll-y class="scroll">
+      <view class="stats-grid">
+        <view class="stat-card"><text class="stat-num">{{ eventList.length }}</text><text class="stat-label">事件包</text></view>
+        <view class="stat-card"><text class="stat-num">{{ pendingCount }}</text><text class="stat-label">待处理</text></view>
+        <view class="stat-card"><text class="stat-num">{{ unfiledCount }}</text><text class="stat-label">未归集素材</text></view>
+        <view class="stat-card"><text class="stat-num">{{ reportList.length }}</text><text class="stat-label">报告数</text></view>
       </view>
-      <view class="overview-card ov-transcript">
-        <view class="ov-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z" fill="currentColor"/></svg>
-        </view>
-        <view class="ov-body">
-          <text class="ov-num">{{ todayTranscriptCount }}</text>
-          <text class="ov-label">今日笔录</text>
-        </view>
-      </view>
-      <view class="overview-card ov-total">
-        <view class="ov-icon">
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" fill="currentColor"/></svg>
-        </view>
-        <view class="ov-body">
-          <text class="ov-num">{{ allRecords.length }}</text>
-          <text class="ov-label">总记录</text>
-        </view>
-      </view>
-    </view>
 
-    <!-- 入口卡片组 -->
-    <view class="entries">
-      <view class="entry-card entry-video" @click="goVideo">
-        <view class="entry-left">
-          <view class="entry-icon">
-            <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" fill="currentColor"/></svg>
-          </view>
-          <view class="entry-text">
-            <text class="entry-title">视频采集</text>
-            <text class="entry-desc">录制现场视频，自动标注时间与位置信息</text>
-          </view>
-        </view>
-        <view class="entry-meta">
-          <view class="entry-badge" v-if="videoCount > 0"><text>{{ videoCount }}</text></view>
-          <svg viewBox="0 0 24 24" class="entry-arrow"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/></svg>
+      <view class="quick-row">
+        <view class="quick-btn primary" @click="createEvent"><text>新建事件包</text></view>
+        <view class="quick-btn" @click="goPhoto"><text>照片采集</text></view>
+        <view class="quick-btn" @click="goVideo"><text>视频记录</text></view>
+        <view class="quick-btn" @click="goTranscript"><text>笔录记录</text></view>
+      </view>
+
+      <view class="filter-row">
+        <view v-for="item in filters" :key="item.value" class="filter-pill" :class="{ active: activeFilter === item.value }" @click="activeFilter = item.value">
+          <text>{{ item.label }}</text>
         </view>
       </view>
 
-      <view class="entry-card entry-transcript" @click="goTranscript">
-        <view class="entry-left">
-          <view class="entry-icon">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2zm0-3h5v2H8V8z" fill="currentColor"/></svg>
-          </view>
-          <view class="entry-text">
-            <text class="entry-title">笔录记录</text>
-            <text class="entry-desc">结构化笔录，支持模板与图片标注</text>
-          </view>
-        </view>
-        <view class="entry-meta">
-          <view class="entry-badge entry-badge-green" v-if="transcriptCount > 0"><text>{{ transcriptCount }}</text></view>
-          <svg viewBox="0 0 24 24" class="entry-arrow"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/></svg>
-        </view>
-      </view>
-    </view>
-
-    <!-- 历史记录列表 -->
-    <view class="history" v-if="allRecords.length > 0">
-      <text class="history-head">最近记录</text>
-      <view class="history-list">
-        <view v-for="rec in allRecords" :key="rec.id" class="history-row" @click="openRecord(rec)">
-          <view class="hr-type" :class="rec.type === 'video' ? 'hr-type-v' : 'hr-type-t'">
-            <svg viewBox="0 0 24 24" v-if="rec.type === 'video'"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" fill="currentColor"/></svg>
-            <svg viewBox="0 0 24 24" v-else><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z" fill="currentColor"/></svg>
-          </view>
-          <view class="hr-content">
-            <view class="hr-top">
-              <text class="hr-id">{{ rec.id }}</text>
-              <view class="hr-status" :class="'s-' + rec.status"><text>{{ statusLabel(rec.status) }}</text></view>
+      <view v-if="filteredEvents.length > 0">
+        <view v-for="event in filteredEvents" :key="event.id" class="event-card" @click="editEvent(event)">
+          <view class="event-head">
+            <view class="event-main">
+              <text class="event-title">{{ event.title || '未命名事件' }}</text>
+              <text class="event-meta">{{ typeLabel(event.type) }} · {{ event.happenTime || event.updatedAt || event.createdAt || '未填写时间' }}</text>
             </view>
-            <text class="hr-desc">{{ rec.description || '无描述' }}</text>
-            <text class="hr-time">{{ rec.createdAt }}</text>
+            <text class="badge" :class="'s-' + normalizeStatus(event.status)">{{ statusLabel(event.status) }}</text>
+          </view>
+          <text class="event-line">{{ event.locationText || '地点未填写' }}</text>
+          <text class="event-line" v-if="event.description">{{ event.description }}</text>
+          <view class="counts">
+            <view class="count-chip"><text>照片 {{ eventPhotoCount(event) }}</text></view>
+            <view class="count-chip"><text>视频 {{ eventVideoCount(event) }}</text></view>
+            <view class="count-chip"><text>笔录 {{ eventTranscriptCount(event) }}</text></view>
+            <view class="count-chip"><text>报告 {{ eventReportCount(event) }}</text></view>
+          </view>
+          <view class="actions" @click.stop="">
+            <view class="action-btn" @click="editEvent(event)">编辑</view>
+            <view class="action-btn" @click="openReport(event)">去成文</view>
+            <view class="action-btn ghost" @click="archiveEvent(event)">归档</view>
           </view>
         </view>
       </view>
-    </view>
 
-    <!-- 空态 -->
-    <view class="empty" v-else>
-      <svg viewBox="0 0 96 96" class="empty-svg">
-        <circle cx="48" cy="48" r="44" fill="#1E293B" stroke="#334155" stroke-width="2"/>
-        <rect x="28" y="30" width="40" height="28" rx="4" fill="none" stroke="#475569" stroke-width="2"/>
-        <path d="M42 40l10 5-10 5v-10z" fill="#475569"/>
-        <rect x="33" y="65" width="30" height="3" rx="1.5" fill="#334155"/>
-        <rect x="38" y="71" width="20" height="3" rx="1.5" fill="#2D3748"/>
-      </svg>
-      <text class="empty-title">暂无事件记录</text>
-      <text class="empty-desc">选择上方入口开始录制视频或创建笔录</text>
+      <view v-else class="empty">
+        <text class="empty-title">还没有事件包</text>
+        <text class="empty-desc">先新建事件，再把照片、视频和笔录归进来。</text>
+      </view>
+
+      <view class="safe-bottom" />
+    </scroll-view>
+
+    <view class="mask" v-if="editorVisible" @click="closeEditor">
+      <view class="sheet" @click.stop>
+        <view class="sheet-head">
+          <text class="sheet-title">{{ form.id ? '编辑事件包' : '新建事件包' }}</text>
+          <text class="sheet-close" @click="closeEditor">关闭</text>
+        </view>
+
+        <view class="sheet-scroll">
+          <view class="section">
+            <text class="label">事件标题</text>
+            <textarea class="textarea compact" :value="form.title" maxlength="60" placeholder="如：湿地巡查发现疑似候鸟捕猎线索" @input="setField('title', $event.detail.value)" />
+          </view>
+
+          <view class="section">
+            <text class="label">事件类型</text>
+            <view class="chip-row">
+              <view v-for="item in typeOptions" :key="item.value" class="chip" :class="{ active: form.type === item.value }" @click="form.type = item.value">
+                <text>{{ item.label }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="section">
+            <text class="label">事件状态</text>
+            <view class="chip-row">
+              <view v-for="item in statusOptions" :key="item.value" class="chip" :class="{ active: form.status === item.value }" @click="form.status = item.value">
+                <text>{{ item.label }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="section">
+            <text class="label">发生时间</text>
+            <view class="picker-row">
+              <picker mode="date" :value="happenDateValue" @change="onDateChange">
+                <view class="picker-box"><text>{{ happenDateValue || '选择日期' }}</text></view>
+              </picker>
+              <picker mode="time" :value="happenClockValue" @change="onTimeChange">
+                <view class="picker-box"><text>{{ happenClockValue || '选择时间' }}</text></view>
+              </picker>
+            </view>
+            <text class="helper" v-if="form.happenTime">当前时间：{{ form.happenTime }}</text>
+          </view>
+
+          <view class="section">
+            <text class="label">事发地点</text>
+            <textarea class="textarea compact" :value="form.locationText" maxlength="80" placeholder="输入巡查区域、湿地、卡口或地标" @input="setField('locationText', $event.detail.value)" />
+          </view>
+
+          <view class="section">
+            <text class="label">情况说明</text>
+            <textarea class="textarea" :value="form.description" maxlength="300" placeholder="概述现场情况、目标对象、处置进展等" @input="setField('description', $event.detail.value)" />
+          </view>
+
+          <view class="section">
+            <view class="line-head">
+              <text class="label no-gap">关联照片</text>
+              <text class="link" @click="pickMaterial('photo')">添加</text>
+            </view>
+            <text class="helper" v-if="linkedPhotos.length === 0">暂无关联照片</text>
+            <view v-for="item in linkedPhotos" :key="item.id" class="material-item">
+              <text class="material-name">{{ item.remark || item.batchTitle || item.id }}</text>
+              <text class="remove-link" @click="removeLinked('photoIds', item.id)">移除</text>
+            </view>
+          </view>
+
+          <view class="section">
+            <view class="line-head">
+              <text class="label no-gap">关联视频</text>
+              <text class="link" @click="pickMaterial('video')">添加</text>
+            </view>
+            <text class="helper" v-if="linkedVideos.length === 0">暂无关联视频</text>
+            <view v-for="item in linkedVideos" :key="item.id" class="material-item">
+              <text class="material-name">{{ item.remark || item.durationStr || item.id }}</text>
+              <text class="remove-link" @click="removeLinked('videoIds', item.id)">移除</text>
+            </view>
+          </view>
+
+          <view class="section">
+            <view class="line-head">
+              <text class="label no-gap">关联笔录</text>
+              <text class="link" @click="pickMaterial('transcript')">添加</text>
+            </view>
+            <text class="helper" v-if="linkedTranscripts.length === 0">暂无关联笔录</text>
+            <view v-for="item in linkedTranscripts" :key="item.id" class="material-item">
+              <text class="material-name">{{ item.title || item.summary || item.id }}</text>
+              <text class="remove-link" @click="removeLinked('transcriptIds', item.id)">移除</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="sheet-foot">
+          <button class="foot-btn light" @click="closeEditor">取消</button>
+          <button class="foot-btn primary" @click="saveEvent">保存事件包</button>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -123,144 +168,353 @@
 export default {
   name: 'EventRecord',
   data() {
-    return { statusBarHeight: 0, allRecords: [] }
+    return {
+      statusBarHeight: 0,
+      activeFilter: 'all',
+      editorVisible: false,
+      eventList: [],
+      photoList: [],
+      videoList: [],
+      transcriptList: [],
+      reportList: [],
+      filters: [
+        { value: 'all', label: '全部' },
+        { value: 'collecting', label: '采集中' },
+        { value: 'pending_sort', label: '待整理' },
+        { value: 'pending_report', label: '待成文' },
+        { value: 'archived', label: '已归档' }
+      ],
+      typeOptions: [
+        { value: 'patrol', label: '巡查处置' },
+        { value: 'clue', label: '线索核查' },
+        { value: 'poaching', label: '非法捕猎' },
+        { value: 'rescue', label: '救助放归' },
+        { value: 'other', label: '其他' }
+      ],
+      statusOptions: [
+        { value: 'collecting', label: '采集中' },
+        { value: 'pending_sort', label: '待整理' },
+        { value: 'pending_report', label: '待成文' },
+        { value: 'archived', label: '已归档' }
+      ],
+      form: {}
+    }
   },
   computed: {
-    videoCount() { return this.allRecords.filter(r => r.type === 'video').length },
-    transcriptCount() { return this.allRecords.filter(r => r.type === 'transcript').length },
-    todayVideoCount() {
-      const today = new Date().toISOString().slice(0, 10)
-      return this.allRecords.filter(r => r.type === 'video' && r.createdAt && r.createdAt.startsWith(today)).length
+    filteredEvents() {
+      const list = this.eventList.slice().sort((a, b) => this.timeValue(b.updatedAt || b.createdAt) - this.timeValue(a.updatedAt || a.createdAt))
+      if (this.activeFilter === 'all') return list
+      return list.filter((item) => this.normalizeStatus(item.status) === this.activeFilter)
     },
-    todayTranscriptCount() {
-      const today = new Date().toISOString().slice(0, 10)
-      return this.allRecords.filter(r => r.type === 'transcript' && r.createdAt && r.createdAt.startsWith(today)).length
+    pendingCount() {
+      return this.eventList.filter((item) => ['collecting', 'pending_sort', 'pending_report'].includes(this.normalizeStatus(item.status))).length
+    },
+    unfiledCount() {
+      return this.photoList.filter((item) => item.status !== 'discarded' && !item.eventId).length +
+        this.videoList.filter((item) => item.status !== 'discarded' && !item.eventId).length +
+        this.transcriptList.filter((item) => item.status !== 'discarded' && !item.eventId).length
+    },
+    linkedPhotos() {
+      return this.photoList.filter((item) => this.form.photoIds.includes(item.id))
+    },
+    linkedVideos() {
+      return this.videoList.filter((item) => this.form.videoIds.includes(item.id))
+    },
+    linkedTranscripts() {
+      return this.transcriptList.filter((item) => this.form.transcriptIds.includes(item.id))
+    },
+    happenDateValue() {
+      if (!this.form.happenTime) return ''
+      return this.form.happenTime.split(' ')[0] || ''
+    },
+    happenClockValue() {
+      if (!this.form.happenTime) return ''
+      const part = this.form.happenTime.split(' ')[1] || ''
+      return part ? part.slice(0, 5) : ''
     }
   },
   onLoad() {
     this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
-    this.load()
+    this.resetForm()
+    this.loadAll()
   },
-  onShow() { this.load() },
+  onShow() {
+    this.loadAll()
+  },
   methods: {
-    load() {
+    emptyEvent() {
+      return {
+        id: '',
+        title: '',
+        type: 'patrol',
+        locationText: '',
+        happenTime: '',
+        description: '',
+        status: 'collecting',
+        createdAt: '',
+        updatedAt: '',
+        photoIds: [],
+        videoIds: [],
+        transcriptIds: [],
+        reportIds: []
+      }
+    },
+    normalizeEvent(item) {
+      const base = Object.assign({}, this.emptyEvent(), item || {})
+      base.photoIds = Array.isArray(base.photoIds) ? base.photoIds : []
+      base.videoIds = Array.isArray(base.videoIds) ? base.videoIds : []
+      base.transcriptIds = Array.isArray(base.transcriptIds) ? base.transcriptIds : []
+      base.reportIds = Array.isArray(base.reportIds) ? base.reportIds : []
+      base.status = this.normalizeStatus(base.status)
+      return base
+    },
+    resetForm() {
+      const now = this.nowText()
+      this.form = this.normalizeEvent({ createdAt: now, updatedAt: now })
+    },
+    loadAll() {
+      this.eventList = this.readArray('gw_event_records').map((item) => this.normalizeEvent(item))
+      this.photoList = this.readArray('gw_photo_records')
+      this.videoList = this.readArray('gw_video_records')
+      this.transcriptList = this.readArray('gw_transcript_records')
+      this.reportList = this.readArray('gw_report_records')
+    },
+    readArray(key) {
       try {
-        const v = uni.getStorageSync('gw_video_records')
-        const t = uni.getStorageSync('gw_transcript_records')
-        const videos = v ? JSON.parse(v) : []
-        const transcripts = t ? JSON.parse(t) : []
-        this.allRecords = [...videos, ...transcripts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      } catch (e) { this.allRecords = [] }
+        const raw = uni.getStorageSync(key)
+        const parsed = raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : []
+        return Array.isArray(parsed) ? parsed : []
+      } catch (e) {
+        return []
+      }
     },
-    statusLabel(s) { return { draft:'草稿', complete:'已完成', syncing:'同步中' }[s] || '未知' },
-    goVideo() { uni.navigateTo({ url: '/pages/police/workplace/video-record' }) },
-    goTranscript() { uni.navigateTo({ url: '/pages/police/workplace/transcript' }) },
-    openRecord(rec) {
-      const page = rec.type === 'video' ? 'video-record' : 'transcript'
-      uni.navigateTo({ url: `/pages/police/workplace/${page}?editId=${rec.id}` })
+    writeArray(key, list) {
+      uni.setStorageSync(key, JSON.stringify(list || []))
     },
-    onClear() {
-      uni.showModal({
-        title: '确认清空',
-        content: `将删除全部 ${this.allRecords.length} 条记录，此操作不可恢复。`,
-        success: r => {
-          if (r.confirm) {
-            uni.removeStorageSync('gw_video_records')
-            uni.removeStorageSync('gw_transcript_records')
-            this.allRecords = []
-            uni.showToast({ title: '已清空', icon: 'success' })
-          }
+    nowText() {
+      const d = new Date()
+      const p = (n) => String(n).padStart(2, '0')
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds())
+    },
+    genId() {
+      const d = new Date()
+      const p = (n) => String(n).padStart(2, '0')
+      return 'EV' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds())
+    },
+    timeValue(value) {
+      if (!value) return 0
+      const t = new Date(String(value).replace(/-/g, '/')).getTime()
+      return isNaN(t) ? 0 : t
+    },
+    setField(field, value) {
+      this.$set(this.form, field, value)
+    },
+    onDateChange(e) {
+      const date = e.detail.value
+      const clock = this.happenClockValue || '00:00'
+      this.setField('happenTime', date + ' ' + clock)
+    },
+    onTimeChange(e) {
+      const clock = e.detail.value
+      const date = this.happenDateValue || this.nowText().split(' ')[0]
+      this.setField('happenTime', date + ' ' + clock)
+    },
+    createEvent() {
+      this.resetForm()
+      this.editorVisible = true
+    },
+    editEvent(item) {
+      this.form = this.normalizeEvent(item)
+      this.editorVisible = true
+    },
+    closeEditor() {
+      this.editorVisible = false
+    },
+    saveEvent() {
+      const title = (this.form.title || '').trim()
+      if (!title) {
+        uni.showToast({ title: '请填写事件标题', icon: 'none' })
+        return
+      }
+      const list = this.eventList.slice()
+      const now = this.nowText()
+      const target = this.normalizeEvent(Object.assign({}, this.form, {
+        id: this.form.id || this.genId(),
+        title,
+        updatedAt: now,
+        createdAt: this.form.createdAt || now
+      }))
+      const index = list.findIndex((item) => item.id === target.id)
+      if (index === -1) list.unshift(target)
+      else list.splice(index, 1, target)
+      this.eventList = list
+      this.writeArray('gw_event_records', this.eventList)
+      this.syncMaterials(target)
+      this.loadAll()
+      this.editorVisible = false
+      uni.showToast({ title: '事件已保存', icon: 'success' })
+    },
+    syncMaterials(event) {
+      this.photoList = this.syncOne(this.photoList, 'gw_photo_records', event.id, event.photoIds)
+      this.videoList = this.syncOne(this.videoList, 'gw_video_records', event.id, event.videoIds)
+      this.transcriptList = this.syncOne(this.transcriptList, 'gw_transcript_records', event.id, event.transcriptIds)
+    },
+    syncOne(list, key, eventId, selectedIds) {
+      const next = list.map((item) => {
+        const row = Object.assign({}, item)
+        if (selectedIds.includes(item.id)) row.eventId = eventId
+        else if (row.eventId === eventId) row.eventId = ''
+        return row
+      })
+      this.writeArray(key, next)
+      return next
+    },
+    pickMaterial(type) {
+      const map = {
+        photo: { field: 'photoIds', list: this.photoList.filter((item) => item.status !== 'discarded'), text: (item) => item.remark || item.batchTitle || item.id },
+        video: { field: 'videoIds', list: this.videoList.filter((item) => item.status !== 'discarded'), text: (item) => item.remark || item.durationStr || item.id },
+        transcript: { field: 'transcriptIds', list: this.transcriptList.filter((item) => item.status !== 'discarded'), text: (item) => item.title || item.summary || item.id }
+      }
+      const current = map[type]
+      if (!current || current.list.length === 0) {
+        uni.showToast({ title: '暂无可选素材', icon: 'none' })
+        return
+      }
+      uni.showActionSheet({
+        itemList: current.list.slice(0, 10).map(current.text),
+        success: (res) => {
+          const picked = current.list[res.tapIndex]
+          if (!picked) return
+          const ids = this.form[current.field].slice()
+          if (!ids.includes(picked.id)) this.$set(this.form, current.field, ids.concat(picked.id))
         }
       })
     },
-    goBack() { uni.navigateBack({ delta: 1 }) }
+    removeLinked(field, id) {
+      this.$set(this.form, field, this.form[field].filter((item) => item !== id))
+    },
+    normalizeStatus(status) {
+      if (status === 'draft') return 'pending_sort'
+      if (status === 'complete') return 'pending_report'
+      return status || 'collecting'
+    },
+    statusLabel(status) {
+      return {
+        collecting: '采集中',
+        pending_sort: '待整理',
+        pending_report: '待成文',
+        archived: '已归档'
+      }[this.normalizeStatus(status)] || '采集中'
+    },
+    typeLabel(type) {
+      return {
+        patrol: '巡查处置',
+        clue: '线索核查',
+        poaching: '非法捕猎',
+        rescue: '救助放归',
+        other: '其他'
+      }[type] || '其他'
+    },
+    eventPhotoCount(event) {
+      return Array.isArray(event.photoIds) && event.photoIds.length ? event.photoIds.length : this.photoList.filter((item) => item.eventId === event.id).length
+    },
+    eventVideoCount(event) {
+      return Array.isArray(event.videoIds) && event.videoIds.length ? event.videoIds.length : this.videoList.filter((item) => item.eventId === event.id).length
+    },
+    eventTranscriptCount(event) {
+      return Array.isArray(event.transcriptIds) && event.transcriptIds.length ? event.transcriptIds.length : this.transcriptList.filter((item) => item.eventId === event.id).length
+    },
+    eventReportCount(event) {
+      return Array.isArray(event.reportIds) && event.reportIds.length ? event.reportIds.length : this.reportList.filter((item) => item.eventId === event.id).length
+    },
+    archiveEvent(event) {
+      const next = this.normalizeEvent(Object.assign({}, event, { status: 'archived', updatedAt: this.nowText() }))
+      const list = this.eventList.slice()
+      const idx = list.findIndex((item) => item.id === event.id)
+      if (idx > -1) {
+        list.splice(idx, 1, next)
+        this.eventList = list
+        this.writeArray('gw_event_records', this.eventList)
+        uni.showToast({ title: '已归档', icon: 'success' })
+      }
+    },
+    goBack() {
+      uni.navigateBack({ delta: 1 })
+    },
+    goPhoto() {
+      uni.navigateTo({ url: '/pages/police/workplace/photo-capture' })
+    },
+    goVideo() {
+      uni.navigateTo({ url: '/pages/police/workplace/video-record' })
+    },
+    goTranscript() {
+      uni.navigateTo({ url: '/pages/police/workplace/transcript' })
+    },
+    openReport(event) {
+      uni.navigateTo({ url: '/pages/police/workplace/report-generate?eventId=' + (event.id || this.form.id) })
+    }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.page { min-height: 100vh; background: #0F172A; padding-bottom: 60rpx; }
-.status-bar { background: #0F172A; }
-
-.navbar { display: flex; align-items: center; padding: 14rpx 24rpx; background: #0F172A; }
-.nav-back { width: 56rpx; height: 56rpx; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
-.nav-center { flex: 1; text-align: center; }
-.nav-title { font-size: 30rpx; font-weight: 600; color: #fff; }
-.nav-right { width: 56rpx; display: flex; align-items: center; justify-content: flex-end; }
-.nav-btn { color: rgba(255,255,255,0.5); }
-.nav-btn svg { width: 28rpx; height: 28rpx; }
-
-.overview { display: flex; gap: 12rpx; padding: 20rpx 24rpx 0; }
-.overview-card {
-  flex: 1; border-radius: 16rpx; padding: 20rpx 16rpx; display: flex; flex-direction: column; align-items: center; gap: 12rpx;
-  border: 1rpx solid rgba(255,255,255,0.07);
-}
-.ov-video { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.2); }
-.ov-transcript { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); }
-.ov-total { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.2); }
-
-.ov-icon { width: 52rpx; height: 52rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.ov-video .ov-icon { background: rgba(37,99,235,0.2); color: #60A5FA; }
-.ov-transcript .ov-icon { background: rgba(16,185,129,0.2); color: #34D399; }
-.ov-total .ov-icon { background: rgba(139,92,246,0.2); color: #A78BFA; }
-.ov-icon svg { width: 26rpx; height: 26rpx; }
-
-.ov-body { display: flex; flex-direction: column; align-items: center; gap: 2rpx; }
-.ov-num { font-size: 32rpx; font-weight: 700; color: #fff; }
-.ov-label { font-size: 18rpx; color: rgba(255,255,255,0.4); }
-
-.entries { padding: 24rpx 24rpx 0; display: flex; flex-direction: column; gap: 14rpx; }
-.entry-card {
-  display: flex; align-items: center; justify-content: space-between; padding: 22rpx 20rpx;
-  border-radius: 18rpx; border: 1rpx solid rgba(255,255,255,0.08); transition: transform 0.15s;
-}
-.entry-card:active { transform: scale(0.975); }
-.entry-video { background: linear-gradient(135deg, rgba(37,99,235,0.17) 0%, rgba(37,99,235,0.05) 100%); border-color: rgba(37,99,235,0.22); }
-.entry-transcript { background: linear-gradient(135deg, rgba(16,185,129,0.17) 0%, rgba(16,185,129,0.05) 100%); border-color: rgba(16,185,129,0.22); }
-
-.entry-left { display: flex; align-items: center; gap: 18rpx; }
-.entry-icon { width: 76rpx; height: 76rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.entry-video .entry-icon { background: rgba(37,99,235,0.22); color: #60A5FA; }
-.entry-transcript .entry-icon { background: rgba(16,185,129,0.22); color: #34D399; }
-.entry-icon svg { width: 36rpx; height: 36rpx; }
-
-.entry-title { font-size: 28rpx; font-weight: 600; color: #fff; display: block; margin-bottom: 5rpx; }
-.entry-desc { font-size: 22rpx; color: rgba(255,255,255,0.4); display: block; }
-
-.entry-meta { display: flex; align-items: center; gap: 10rpx; }
-.entry-badge { background: rgba(37,99,235,0.22); border-radius: 18rpx; padding: 5rpx 14rpx; }
-.entry-badge text { font-size: 22rpx; font-weight: 600; color: #60A5FA; }
-.entry-badge-green { background: rgba(16,185,129,0.22) !important; }
-.entry-badge-green text { color: #34D399 !important; }
-.entry-arrow { width: 24rpx; height: 24rpx; color: rgba(255,255,255,0.3); }
-
-.history { padding: 30rpx 24rpx 0; }
-.history-head { font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.4); display: block; margin-bottom: 14rpx; }
-.history-list { display: flex; flex-direction: column; gap: 10rpx; }
-
-.history-row {
-  display: flex; gap: 16rpx; align-items: flex-start; padding: 18rpx;
-  background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.06); border-radius: 14rpx; transition: background 0.15s;
-}
-.history-row:active { background: rgba(255,255,255,0.08); }
-
-.hr-type { width: 52rpx; height: 52rpx; border-radius: 12rpx; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.hr-type-v { background: rgba(37,99,235,0.14); color: #60A5FA; }
-.hr-type-t { background: rgba(16,185,129,0.14); color: #34D399; }
-.hr-type svg { width: 26rpx; height: 26rpx; }
-
-.hr-content { flex: 1; min-width: 0; }
-.hr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5rpx; }
-.hr-id { font-size: 21rpx; font-weight: 600; color: rgba(255,255,255,0.6); font-family: 'SF Mono', monospace; }
-.hr-status { padding: 4rpx 12rpx; border-radius: 10rpx; font-size: 18rpx; font-weight: 500; }
-.s-draft { background: rgba(245,158,11,0.14); color: #FBBF24; }
-.s-complete { background: rgba(16,185,129,0.14); color: #34D399; }
-.s-syncing { background: rgba(37,99,235,0.14); color: #60A5FA; }
-.hr-desc { font-size: 22rpx; color: rgba(255,255,255,0.5); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5rpx; }
-.hr-time { font-size: 19rpx; color: rgba(255,255,255,0.28); display: block; }
-
-.empty { display: flex; flex-direction: column; align-items: center; padding: 90rpx 48rpx; text-align: center; }
-.empty-svg { width: 150rpx; height: 150rpx; margin-bottom: 30rpx; }
-.empty-title { font-size: 28rpx; font-weight: 600; color: rgba(255,255,255,0.55); display: block; margin-bottom: 10rpx; }
-.empty-desc { font-size: 22rpx; color: rgba(255,255,255,0.3); line-height: 1.6; display: block; }
+<style scoped>
+.page { min-height: 100vh; background: #f3f6fb; color: #1f2937; display: flex; flex-direction: column; }
+.status-bar, .navbar { background: linear-gradient(135deg, #0f766e, #155e75); }
+.navbar { height: 88rpx; padding: 0 24rpx; display: flex; align-items: center; color: #fff; }
+.nav-btn { width: 88rpx; font-size: 26rpx; }
+.nav-btn.right { text-align: right; font-weight: 600; }
+.nav-center { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.nav-title { font-size: 32rpx; font-weight: 700; }
+.nav-sub { font-size: 20rpx; opacity: 0.82; }
+.scroll { flex: 1; padding: 20rpx 24rpx; box-sizing: border-box; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16rpx; }
+.stat-card { background: #fff; border-radius: 20rpx; padding: 24rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.06); }
+.stat-num { display: block; font-size: 40rpx; font-weight: 700; color: #0f766e; }
+.stat-label { display: block; margin-top: 8rpx; font-size: 22rpx; color: #64748b; }
+.quick-row, .filter-row, .counts, .actions, .chip-row, .picker-row { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.quick-row, .filter-row { margin-top: 18rpx; }
+.quick-btn, .filter-pill, .count-chip, .chip { padding: 14rpx 20rpx; border-radius: 999rpx; font-size: 22rpx; }
+.quick-btn { background: #fff; box-shadow: 0 8rpx 20rpx rgba(15,23,42,0.05); }
+.quick-btn.primary { background: #0f766e; color: #fff; }
+.filter-pill { background: #e2e8f0; color: #475569; }
+.filter-pill.active, .chip.active { background: #0f766e; color: #fff; }
+.event-card { margin-top: 18rpx; padding: 24rpx; background: #fff; border-radius: 22rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.06); }
+.event-head { display: flex; justify-content: space-between; gap: 16rpx; }
+.event-main { flex: 1; }
+.event-title { display: block; font-size: 28rpx; font-weight: 700; color: #111827; }
+.event-meta, .event-line { display: block; margin-top: 8rpx; font-size: 22rpx; color: #64748b; line-height: 1.7; }
+.badge { padding: 6rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; white-space: nowrap; }
+.s-collecting { background: rgba(59,130,246,0.12); color: #2563eb; }
+.s-pending_sort { background: rgba(245,158,11,0.14); color: #d97706; }
+.s-pending_report { background: rgba(16,185,129,0.14); color: #059669; }
+.s-archived { background: rgba(100,116,139,0.14); color: #475569; }
+.count-chip { background: #f1f5f9; color: #334155; }
+.action-btn { flex: 1; text-align: center; padding: 14rpx 0; border-radius: 14rpx; background: #eff6ff; color: #2563eb; font-size: 24rpx; }
+.action-btn.ghost { background: #f8fafc; color: #64748b; }
+.empty { margin-top: 20rpx; padding: 60rpx 30rpx; background: #fff; border-radius: 22rpx; text-align: center; }
+.empty-title { display: block; font-size: 30rpx; font-weight: 700; color: #0f172a; }
+.empty-desc { display: block; margin-top: 12rpx; font-size: 23rpx; color: #64748b; }
+.safe-bottom { height: 120rpx; }
+.mask { position: fixed; inset: 0; background: rgba(15,23,42,0.42); display: flex; align-items: flex-end; z-index: 99; }
+.sheet { width: 100%; max-height: 88vh; background: #fff; border-radius: 30rpx 30rpx 0 0; overflow: hidden; }
+.sheet-head { height: 96rpx; padding: 0 24rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 2rpx solid #eef2f7; }
+.sheet-title { font-size: 30rpx; font-weight: 700; color: #111827; }
+.sheet-close { font-size: 24rpx; color: #64748b; }
+.sheet-scroll { max-height: calc(88vh - 180rpx); overflow-y: auto; padding: 24rpx; box-sizing: border-box; }
+.section { margin-bottom: 22rpx; }
+.line-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10rpx; }
+.label { display: block; margin-bottom: 10rpx; font-size: 24rpx; color: #334155; font-weight: 600; }
+.label.no-gap { margin-bottom: 0; }
+.textarea { width: 100%; min-height: 170rpx; padding: 18rpx; box-sizing: border-box; background: #f8fafc; border-radius: 16rpx; font-size: 25rpx; color: #111827; }
+.textarea.compact { min-height: 92rpx; }
+.picker-box { min-width: 220rpx; padding: 18rpx; background: #f8fafc; border-radius: 16rpx; font-size: 24rpx; color: #111827; text-align: center; }
+.helper { display: block; margin-top: 10rpx; font-size: 22rpx; color: #94a3b8; }
+.link { font-size: 23rpx; color: #2563eb; }
+.material-item { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; margin-top: 10rpx; padding: 16rpx 18rpx; border-radius: 16rpx; background: #f8fafc; }
+.material-name { flex: 1; font-size: 23rpx; color: #334155; line-height: 1.6; }
+.remove-link { font-size: 22rpx; color: #ef4444; }
+.sheet-foot { display: flex; gap: 16rpx; padding: 18rpx 24rpx 28rpx; border-top: 2rpx solid #eef2f7; }
+.foot-btn { flex: 1; border-radius: 16rpx; font-size: 26rpx; }
+.foot-btn.light { background: #eef2f7; color: #334155; }
+.foot-btn.primary { background: #0f766e; color: #fff; }
 </style>

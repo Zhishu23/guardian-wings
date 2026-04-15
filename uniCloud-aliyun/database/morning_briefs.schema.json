@@ -1,0 +1,129 @@
+{
+  "bsonType": "object",
+  "required": ["dateKey", "title", "summary"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "早报唯一 ID，自动生成"
+    },
+    "dateKey": {
+      "bsonType": "string",
+      "title": "日期键",
+      "description": "早报日期，格式 YYYY-MM-DD",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "标题",
+      "description": "早报标题",
+      "minLength": 2,
+      "maxLength": 120
+    },
+    "summary": {
+      "bsonType": "string",
+      "title": "摘要",
+      "description": "早报总摘要",
+      "maxLength": 500
+    },
+    "lead": {
+      "bsonType": "string",
+      "title": "导语",
+      "description": "早报导语"
+    },
+    "sections": {
+      "bsonType": "array",
+      "title": "正文分节",
+      "description": "早报结构化段落内容",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "title": {
+            "bsonType": "string"
+          },
+          "content": {
+            "bsonType": "string"
+          }
+        }
+      }
+    },
+    "newsRefs": {
+      "bsonType": "array",
+      "title": "相关新闻",
+      "description": "组成早报的新闻引用",
+      "items": {
+        "bsonType": "object",
+        "properties": {
+          "id": {
+            "bsonType": "string"
+          },
+          "title": {
+            "bsonType": "string"
+          },
+          "source": {
+            "bsonType": "string"
+          },
+          "time": {
+            "bsonType": "string"
+          },
+          "tag": {
+            "bsonType": "string"
+          },
+          "tagType": {
+            "bsonType": "string"
+          },
+          "summary": {
+            "bsonType": "string"
+          },
+          "themeCategory": {
+            "bsonType": "string"
+          }
+        }
+      }
+    },
+    "stats": {
+      "bsonType": "object",
+      "title": "统计",
+      "description": "本期早报统计信息",
+      "properties": {
+        "newsCount": {
+          "bsonType": "int"
+        },
+        "migratoryBirdCount": {
+          "bsonType": "int"
+        },
+        "ecologyCount": {
+          "bsonType": "int"
+        }
+      }
+    },
+    "cover": {
+      "bsonType": "string",
+      "title": "封面图",
+      "description": "早报主视觉"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "状态",
+      "description": "生成状态",
+      "defaultValue": "ready"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "description": "自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "description": "最后生成时间"
+    }
+  }
+}

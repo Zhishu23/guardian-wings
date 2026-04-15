@@ -1,0 +1,13 @@
+{
+  "triggers": [
+    {
+      "name": "daily-morning-brief",
+      "type": "timer",
+      "config": {
+        "cronExpression": "0 10 8 * * *",
+        "enable": true,
+        "description": "每日 08:10 生成候鸟生态早报"
+      }
+    }
+  ]
+}

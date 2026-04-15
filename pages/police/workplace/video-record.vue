@@ -1,148 +1,153 @@
 <template>
   <view class="page">
     <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
-
-    <!-- 顶导航 -->
     <view class="navbar">
-      <view class="nav-back" @click="goBack">
-        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
-      </view>
+      <view class="nav-btn" @click="goBack">返回</view>
       <view class="nav-center">
-        <text class="nav-title">视频采集</text>
-        <text class="nav-sub">最大录制时长 10 分钟</text>
+        <text class="nav-title">视频记录</text>
+        <text class="nav-sub">{{ filteredVideoList.length }} / {{ activeVideoCount }} 段</text>
       </view>
-      <view class="nav-right" />
+      <view class="nav-btn" @click="showSettings" v-if="videoList.length > 0">更多</view>
+      <view class="nav-btn placeholder" v-else></view>
     </view>
 
-    <!-- 位置状态栏 -->
     <view class="loc-bar" :class="locStatus">
-      <svg viewBox="0 0 24 24" class="loc-pin"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>
       <text class="loc-text">{{ locationText }}</text>
-      <view class="loc-retry" v-if="locStatus === 'failed'" @click="fetchLocation">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08C16.95 15.3 14.76 17 12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5c1.38 0 2.64.56 3.54 1.46L13 10h7V3l-2.35 3.35z" fill="currentColor"/></svg>
+      <text class="loc-link" v-if="locStatus === 'failed'" @click="fetchLocation">重试</text>
+    </view>
+
+    <view class="toolbar">
+      <view v-for="tab in filterTabs" :key="tab.key" class="pill" :class="{ active: activeFilter === tab.key }" @click="activeFilter = tab.key">
+        <text>{{ tab.label }}</text>
       </view>
     </view>
 
     <scroll-view scroll-y class="scroll">
-
-      <!-- 录制入口 -->
-      <view class="record-btn-card" @click="startRecord">
-        <view class="rb-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" fill="currentColor"/></svg>
-        </view>
-        <view class="rb-text">
-          <text class="rb-title">开始录制</text>
-          <text class="rb-desc">调用摄像头录制现场视频</text>
-        </view>
-        <svg viewBox="0 0 24 24" class="rb-arrow"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/></svg>
+      <view class="record-card" @click="startRecord">
+        <text class="record-title">开始录制</text>
+        <text class="record-desc">录制后可补充说明、事件归属、关键片段和证据状态</text>
       </view>
 
-      <!-- 水印说明 -->
-      <view class="watermark-notice">
-        <svg viewBox="0 0 24 24" class="wn-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/></svg>
-        <text class="wn-text">视频录制后，时间与位置水印信息将以元数据形式随视频存储，上传时由后端服务器合成水印。</text>
+      <view class="tip-card">
+        <text>视频录制完成后会保存到本地记录，可标记关键证据，并挂接到事件与报告。</text>
       </view>
 
-      <!-- 视频列表 -->
-      <view class="section" v-if="videoList.length > 0">
-        <view class="section-head">
-          <text class="section-title">已录制视频</text>
-          <text class="section-count">{{ videoList.length }} 条</text>
-        </view>
-
-        <view v-for="(video, idx) in videoList" :key="video.id" class="video-card">
-          <!-- 缩略图行 -->
-          <view class="vc-thumb-row">
-            <view class="vc-thumb" @click="previewVideo(video)">
-              <view class="vc-thumb-bg">
-                <svg viewBox="0 0 48 48" class="vc-play"><circle cx="24" cy="24" r="20" fill="rgba(0,0,0,0.55)"/><path d="M20 16l12 8-12 8v-16z" fill="#fff"/></svg>
-              </view>
-              <view class="vc-duration"><text>{{ video.durationStr }}</text></view>
+      <view v-if="filteredVideoList.length > 0">
+        <view v-for="video in filteredVideoList" :key="video.id" class="video-card" :class="{ discarded: video.status === 'discarded' }">
+          <view class="card-top">
+            <view class="thumb" @click="previewVideo(video)">
+              <text class="play-text">播放</text>
+              <text class="duration">{{ video.durationStr }}</text>
+              <text class="evidence" v-if="video.isKeyEvidence">关键</text>
             </view>
-
-            <!-- 水印元数据 -->
-            <view class="vc-meta">
-              <view class="vc-meta-row">
-                <svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4v4l3 1.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                <text>{{ video.createdAt }}</text>
-              </view>
-              <view class="vc-meta-row">
-                <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 1C5.24 1 3 3.24 3 6c0 3.5 5 8.5 5 8.5s5-5 5-8.5c0-2.76-2.24-5-5-5zm0 6.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
-                <text>{{ video.location }}</text>
-              </view>
-              <view class="vc-meta-row">
-                <svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
-                <text>{{ video.officerId }}</text>
-              </view>
+            <view class="meta">
+              <text class="title">{{ video.remark || '未命名视频' }}</text>
+              <text class="line">{{ formatDateTime(video.createdAt) }}</text>
+              <text class="line">{{ video.locationText || video.location || '位置未知' }}</text>
+              <text class="line">{{ getVideoRelationText(video) }}</text>
+              <text class="status" :class="'status-' + normalizeStatus(video.status)">{{ getStatusText(video.status) }}</text>
             </view>
           </view>
 
-          <!-- 标注区 -->
-          <view class="vc-annotate">
-            <!-- 描述 -->
-            <view class="ann-row">
-              <text class="ann-label">描述</text>
-              <input type="text" class="ann-input" :value="video.description" placeholder="添加简要描述…" @input="setField(idx, 'description', $event.detail.value)" />
-            </view>
+          <view class="tag-row">
+            <view v-for="tag in getTypeTags(video)" :key="tag" class="tag"><text>{{ tag }}</text></view>
+          </view>
 
-            <!-- 事件类型 -->
-            <view class="ann-row">
-              <text class="ann-label">事件类型</text>
-              <view class="chips">
-                <view v-for="t in eventTypes" :key="t.value" class="chip" :class="video.eventType === t.value ? 'chip-on' : ''" @click="setField(idx, 'eventType', t.value)">
-                  <text>{{ t.label }}</text>
-                </view>
-              </view>
-            </view>
-
-            <!-- 关键时间节点 -->
-            <view class="ann-row">
-              <text class="ann-label">关键节点</text>
-              <view class="keypoints">
-                <view v-for="(kp, ki) in video.keypoints" :key="ki" class="kp-item">
-                  <view class="kp-dot" />
-                  <text class="kp-text">{{ kp }}</text>
-                  <view class="kp-del" @click="removeKeypoint(idx, ki)">
-                    <svg viewBox="0 0 16 16" width="14" height="14"><path d="M12 4.7L11.3 4 8 7.3 4.7 4 4 4.7 7.3 8 4 11.3l.7.7L8 8.7l3.3 3.3.7-.7L8.7 8z" fill="currentColor"/></svg>
-                  </view>
-                </view>
-                <view class="kp-add" @click="addKeypoint(idx)">
-                  <svg viewBox="0 0 16 16" width="14" height="14"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                  <text>添加节点</text>
-                </view>
-              </view>
+          <view class="clip-list" v-if="video.clipMarks && video.clipMarks.length > 0">
+            <view v-for="(clip, idx) in video.clipMarks" :key="idx" class="clip-item">
+              <text class="clip-time">{{ clip.start }} - {{ clip.end }}</text>
+              <text class="clip-text">{{ clip.remark }}</text>
             </view>
           </view>
 
-          <!-- 底部动作 -->
-          <view class="vc-footer">
-            <view class="vc-btn vc-btn-play" @click="previewVideo(video)">
-              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
-              <text>预览</text>
-            </view>
-            <view class="vc-btn vc-btn-del" @click="deleteVideo(idx)">
-              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/></svg>
-              <text>删除</text>
-            </view>
+          <view class="btn-row">
+            <view class="btn blue" @click="previewVideo(video)">预览</view>
+            <view class="btn green" @click="openEditor(video)">编辑</view>
+            <view class="btn red" @click="markDiscarded(video.id)">作废</view>
           </view>
         </view>
       </view>
 
-      <!-- 空态 -->
-      <view class="empty" v-else>
-        <svg viewBox="0 0 96 96" class="empty-svg">
-          <circle cx="48" cy="48" r="44" fill="#1E293B" stroke="#334155" stroke-width="2"/>
-          <path d="M32 30h32v24H32z" fill="none" stroke="#475569" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M64 37l8-4v22l-8-4" fill="none" stroke="#475569" stroke-width="2" stroke-linejoin="round"/>
-          <circle cx="48" cy="64" r="3" fill="#475569"/>
-          <circle cx="48" cy="64" r="1.2" fill="#334155"/>
-        </svg>
-        <text class="empty-title">未录制视频</text>
-        <text class="empty-desc">点击上方开始录制，录制完成后可在此管理和标注视频</text>
+      <view v-else class="empty">
+        <text class="empty-title">还没有视频记录</text>
+        <text class="empty-desc">点击上方开始录制，录制完成后可继续整理。</text>
       </view>
 
       <view class="safe-bottom" />
     </scroll-view>
+
+    <view class="mask" v-if="editorVisible" @click="closeEditor">
+      <view class="sheet" @click.stop="">
+        <view class="sheet-head">
+          <text class="sheet-title">视频信息</text>
+          <text class="sheet-close" @click="closeEditor">关闭</text>
+        </view>
+        <scroll-view scroll-y class="sheet-scroll">
+          <view class="preview-box" @click="previewEditorVideo">
+            <text>点击预览视频</text>
+            <text class="preview-duration">{{ editorForm ? editorForm.durationStr : '' }}</text>
+          </view>
+
+          <view class="field">
+            <text class="label">视频说明</text>
+            <textarea class="textarea" v-model="editorForm.remark" maxlength="120" placeholder="输入视频内容或现场说明" />
+          </view>
+
+          <view class="field">
+            <text class="label">归属事件</text>
+            <view class="picker" @click="pickEvent">
+              <text>{{ selectedEventLabel }}</text>
+              <text class="link">选择</text>
+            </view>
+          </view>
+
+          <view class="field">
+            <text class="label">事件类型</text>
+            <view class="row">
+              <view v-for="item in eventTypes" :key="item.value" class="pill small" :class="{ active: editorForm.eventType === item.value }" @click="editorForm.eventType = item.value">
+                <text>{{ item.label }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="field">
+            <text class="label">视频状态</text>
+            <view class="row">
+              <view v-for="item in statusOptions" :key="item.value" class="pill small" :class="{ active: editorForm.status === item.value }" @click="editorForm.status = item.value">
+                <text>{{ item.label }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="field">
+            <view class="picker" @click="editorForm.isKeyEvidence = !editorForm.isKeyEvidence">
+              <text class="label inline">关键证据</text>
+              <text class="link">{{ editorForm.isKeyEvidence ? '是' : '否' }}</text>
+            </view>
+          </view>
+
+          <view class="field">
+            <view class="picker">
+              <text class="label inline">关键片段</text>
+              <text class="link" @click.stop="addClipMark">新增片段</text>
+            </view>
+            <view v-if="editorForm.clipMarks && editorForm.clipMarks.length > 0">
+              <view v-for="(clip, idx) in editorForm.clipMarks" :key="idx" class="clip-edit">
+                <input class="input time" v-model="clip.start" placeholder="00:00" />
+                <input class="input time" v-model="clip.end" placeholder="00:30" />
+                <input class="input remark" v-model="clip.remark" placeholder="片段说明" />
+                <view class="clip-del" @click="removeClipMark(idx)">删</view>
+              </view>
+            </view>
+            <text class="meta" v-else>暂无关键片段。</text>
+          </view>
+        </scroll-view>
+        <view class="sheet-foot">
+          <button class="action light" @click="previewEditorVideo">预览</button>
+          <button class="action primary" @click="saveEditor">保存</button>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -153,136 +158,359 @@ export default {
     return {
       statusBarHeight: 0,
       videoList: [],
-      locationText: '定位中…',
+      eventOptions: [],
+      activeFilter: 'all',
+      filterTabs: [
+        { key: 'all', label: '全部' },
+        { key: 'today', label: '今日' },
+        { key: 'unfiled', label: '未归档' },
+        { key: 'unlinked', label: '未引用' },
+        { key: 'key', label: '关键' },
+        { key: 'discarded', label: '作废' }
+      ],
+      locationText: '定位中...',
       locStatus: 'loading',
       currentAddress: '',
       lat: null,
       lng: null,
       officerId: 'GW-2025-0312',
+      editorVisible: false,
+      editorForm: null,
       eventTypes: [
         { value: 'suspicious', label: '可疑活动' },
-        { value: 'poaching',   label: '捕猎行为' },
-        { value: 'patrol',     label: '巡逻记录' },
-        { value: 'incident',   label: '突发事件' },
-        { value: 'other',      label: '其他' }
+        { value: 'poaching', label: '捕猎行为' },
+        { value: 'patrol', label: '巡查记录' },
+        { value: 'incident', label: '突发事件' },
+        { value: 'other', label: '其他' }
+      ],
+      statusOptions: [
+        { value: 'draft', label: '待整理' },
+        { value: 'complete', label: '已完成' },
+        { value: 'discarded', label: '作废' }
       ]
     }
   },
-  onLoad(query) {
-    this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
-    this.loadList()
-    this.fetchLocation()
-    if (query && query.editId) {
-      uni.showToast({ title: '已加载记录列表', icon: 'none' })
+  computed: {
+    activeVideoCount() {
+      return this.videoList.filter((item) => item.status !== 'discarded').length
+    },
+    filteredVideoList() {
+      const today = this.getTodayKey()
+      return this.videoList.filter((item) => {
+        const status = this.normalizeStatus(item.status)
+        if (this.activeFilter === 'today') return this.getDateKey(item.createdAt) === today && status !== 'discarded'
+        if (this.activeFilter === 'unfiled') return !item.eventId && status !== 'discarded'
+        if (this.activeFilter === 'unlinked') return (!item.linkedReportIds || item.linkedReportIds.length === 0) && status !== 'discarded'
+        if (this.activeFilter === 'key') return !!item.isKeyEvidence && status !== 'discarded'
+        if (this.activeFilter === 'discarded') return status === 'discarded'
+        return status !== 'discarded'
+      })
+    },
+    selectedEventLabel() {
+      if (!this.editorForm) return '未选择'
+      if (!this.editorForm.eventId) return '未归档'
+      const found = this.eventOptions.find((item) => item.id === this.editorForm.eventId)
+      return found ? found.title : '未归档'
     }
   },
+  onLoad() {
+    this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    this.loadOfficerInfo()
+    this.loadList()
+    this.loadEventOptions()
+    this.fetchLocation()
+  },
+  onShow() {
+    this.loadList()
+    this.loadEventOptions()
+  },
   methods: {
-    /* 位置 */
+    loadOfficerInfo() {
+      try {
+        const raw = uni.getStorageSync('gw_police_info')
+        const info = raw ? JSON.parse(raw) : {}
+        if (info.officer_id) this.officerId = info.officer_id
+      } catch (e) {}
+    },
+    loadEventOptions() {
+      this.eventOptions = this.readStorageArray('gw_event_records').slice().sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt)).map((item) => ({
+        id: item.id,
+        title: item.title || item.description || '未命名事件'
+      }))
+    },
     fetchLocation() {
       this.locStatus = 'loading'
-      this.locationText = '定位中…'
+      this.locationText = '定位中...'
       uni.getLocation({
         type: 'wgs84',
-        success: res => {
+        success: (res) => {
           this.lat = res.latitude
           this.lng = res.longitude
-          this.currentAddress = `纬度 ${res.latitude.toFixed(5)}, 经度 ${res.longitude.toFixed(5)}`
+          this.currentAddress = '纬度 ' + res.latitude.toFixed(5) + ', 经度 ' + res.longitude.toFixed(5)
           this.locationText = this.currentAddress
           this.locStatus = 'success'
         },
-        fail: () => { this.locStatus = 'failed'; this.locationText = '定位失败，点击重试' }
+        fail: () => {
+          this.locStatus = 'failed'
+          this.locationText = '定位失败，点击重试'
+        }
       })
     },
-
-    /* 编号生成 */
     genId() {
       const d = new Date()
-      const p = n => String(n).padStart(2, '0')
-      return `GW-V-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`
+      const p = (n) => String(n).padStart(2, '0')
+      return `GW-V-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.floor(Math.random() * 9000 + 1000)}`
     },
-
-    /* 时长格式 */
     fmtDuration(s) {
-      const m = Math.floor(s / 60), sec = Math.round(s % 60)
-      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      const m = Math.floor(s / 60)
+      const sec = Math.round(s % 60)
+      return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
     },
-
-    /* 录制 */
     startRecord() {
       uni.chooseVideo({
         sourceType: ['camera'],
         maxDuration: 600,
         camera: 'back',
-        success: res => {
-          const d = new Date()
-          const p = n => String(n).padStart(2, '0')
-          this.videoList.unshift({
+        success: (res) => {
+          const finalPath = res.tempFilePath || ''
+          const video = this.normalizeVideo({
             id: this.genId(),
             type: 'video',
-            tempFilePath: res.tempFilePath,
+            tempFilePath: finalPath,
+            localPath: finalPath,
             duration: res.duration || 0,
             durationStr: this.fmtDuration(res.duration || 0),
-            createdAt: `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`,
+            createdAt: this.formatFullDateTime(new Date()),
+            updatedAt: this.formatFullDateTime(new Date()),
+            locationText: this.currentAddress || '位置未知',
             location: this.currentAddress || '位置未知',
             latitude: this.lat,
             longitude: this.lng,
             officerId: this.officerId,
-            description: '',
+            remark: '',
+            eventId: '',
             eventType: '',
-            keypoints: [],
+            clipMarks: [],
             status: 'draft',
-            synced: false
+            isKeyEvidence: false,
+            linkedReportIds: []
           })
+          this.videoList.unshift(video)
           this.saveList()
-          uni.showToast({ title: '录制完成，请添加标注', icon: 'success' })
+          this.openEditor(video)
+          this.persistVideoPathInBackground(video.id, finalPath)
+          uni.showToast({ title: '录制完成', icon: 'success' })
         },
-        fail: () => { uni.showToast({ title: '录制失败或已取消', icon: 'none' }) }
+        fail: () => uni.showToast({ title: '录制失败或已取消', icon: 'none' })
       })
     },
-
-    /* 预览 */
-    previewVideo(v) {
-      uni.previewVideo({ src: v.tempFilePath, fail: () => { uni.showToast({ title: '视频文件丢失', icon: 'none' }) } })
+    previewVideo(video) {
+      const path = video && video.tempFilePath ? video.tempFilePath : ''
+      if (!path) {
+        uni.showToast({ title: '视频文件丢失', icon: 'none' })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/police/workplace/media-preview?type=video&path=' + encodeURIComponent(path)
+      })
     },
-
-    /* 字段更新 */
-    setField(idx, field, val) {
-      this.videoList[idx][field] = val
-      if (this.videoList[idx].description || this.videoList[idx].eventType) this.videoList[idx].status = 'complete'
+    previewEditorVideo() {
+      if (!this.editorForm) return
+      this.previewVideo(this.editorForm)
+    },
+    openEditor(video) {
+      this.editorForm = JSON.parse(JSON.stringify(this.normalizeVideo(video)))
+      this.editorVisible = true
+    },
+    closeEditor() {
+      this.editorVisible = false
+      this.editorForm = null
+    },
+    saveEditor() {
+      if (!this.editorForm) return
+      const idx = this.videoList.findIndex((item) => item.id === this.editorForm.id)
+      if (idx === -1) return
+      const next = this.normalizeVideo(Object.assign({}, this.editorForm, { updatedAt: this.formatFullDateTime(new Date()) }))
+      this.videoList.splice(idx, 1, next)
       this.saveList()
+      this.closeEditor()
+      uni.showToast({ title: '已保存', icon: 'success' })
     },
-
-    /* 关键节点 */
-    addKeypoint(idx) {
-      uni.showModal({
-        title: '添加关键节点',
-        content: '请输入节点描述（如 00:30 发现可疑人员）',
-        editable: true,
-        placeholderText: '如：00:30 发现可疑人员',
-        success: res => {
-          if (res.confirm && res.content) {
-            if (!this.videoList[idx].keypoints) this.$set(this.videoList[idx], 'keypoints', [])
-            this.videoList[idx].keypoints.push(res.content)
-            this.saveList()
+    pickEvent() {
+      const list = ['不归档'].concat(this.eventOptions.map((item) => item.title))
+      uni.showActionSheet({
+        itemList: list,
+        success: (res) => {
+          if (!this.editorForm) return
+          if (res.tapIndex === 0) {
+            this.editorForm.eventId = ''
+            return
           }
+          const target = this.eventOptions[res.tapIndex - 1]
+          this.editorForm.eventId = target ? target.id : ''
         }
       })
     },
-    removeKeypoint(idx, ki) { this.videoList[idx].keypoints.splice(ki, 1); this.saveList() },
-
-    /* 删除 */
-    deleteVideo(idx) {
-      uni.showModal({
-        title: '确认删除', content: '删除后无法恢复，确定要删除此视频记录吗？',
-        success: r => { if (r.confirm) { this.videoList.splice(idx, 1); this.saveList(); uni.showToast({ title: '已删除', icon: 'success' }) } }
+    addClipMark() {
+      if (!this.editorForm) return
+      if (!Array.isArray(this.editorForm.clipMarks)) this.editorForm.clipMarks = []
+      this.editorForm.clipMarks.push({ start: '', end: '', remark: '' })
+    },
+    removeClipMark(index) {
+      if (!this.editorForm || !Array.isArray(this.editorForm.clipMarks)) return
+      this.editorForm.clipMarks.splice(index, 1)
+    },
+    markDiscarded(id) {
+      const idx = this.videoList.findIndex((item) => item.id === id)
+      if (idx === -1) return
+      const next = this.normalizeVideo(Object.assign({}, this.videoList[idx], { status: 'discarded', updatedAt: this.formatFullDateTime(new Date()) }))
+      this.videoList.splice(idx, 1, next)
+      this.saveList()
+      uni.showToast({ title: '已标记作废', icon: 'success' })
+    },
+    showSettings() {
+      uni.showActionSheet({
+        itemList: ['查看作废视频', '清空全部视频'],
+        success: (res) => {
+          if (res.tapIndex === 0) this.activeFilter = 'discarded'
+          if (res.tapIndex === 1) this.clearAllVideos()
+        }
       })
     },
-
-    /* 存储 */
-    saveList() { try { uni.setStorageSync('gw_video_records', JSON.stringify(this.videoList)) } catch(e) { uni.showToast({ title: '存储失败', icon: 'none' }) } },
-    loadList() { try { const r = uni.getStorageSync('gw_video_records'); this.videoList = r ? JSON.parse(r) : [] } catch(e) { this.videoList = [] } },
-
-    goBack() { uni.navigateBack({ delta: 1 }) }
+    clearAllVideos() {
+      uni.showModal({
+        title: '确认清空',
+        content: '将清空全部视频记录，此操作无法恢复，是否继续？',
+        success: (res) => {
+          if (!res.confirm) return
+          this.videoList = []
+          this.saveList()
+          uni.showToast({ title: '已清空', icon: 'success' })
+        }
+      })
+    },
+    getVideoRelationText(video) {
+      const eventText = video.eventId ? '已归入事件' : '未归档'
+      const reportCount = Array.isArray(video.linkedReportIds) ? video.linkedReportIds.length : 0
+      return eventText + ' · 已引用 ' + reportCount + ' 次'
+    },
+    getTypeTags(video) {
+      const tags = []
+      const found = this.eventTypes.find((item) => item.value === video.eventType)
+      if (found) tags.push(found.label)
+      if (video.clipMarks && video.clipMarks.length > 0) tags.push('片段 ' + video.clipMarks.length)
+      return tags
+    },
+    saveList() {
+      try {
+        uni.setStorageSync('gw_video_records', JSON.stringify(this.videoList))
+      } catch (e) {
+        uni.showToast({ title: '存储失败', icon: 'none' })
+      }
+    },
+    loadList() {
+      this.videoList = this.readStorageArray('gw_video_records').map((item) => this.normalizeVideo(item))
+    },
+    normalizeVideo(video) {
+      return {
+        id: video.id || this.genId(),
+        type: 'video',
+        tempFilePath: video.tempFilePath || video.localPath || '',
+        localPath: video.localPath || video.tempFilePath || '',
+        duration: video.duration || 0,
+        durationStr: video.durationStr || this.fmtDuration(video.duration || 0),
+        createdAt: video.createdAt || this.formatFullDateTime(new Date()),
+        updatedAt: video.updatedAt || video.createdAt || this.formatFullDateTime(new Date()),
+        locationText: video.locationText || video.location || '位置未知',
+        location: video.location || video.locationText || '位置未知',
+        latitude: video.latitude || null,
+        longitude: video.longitude || null,
+        officerId: video.officerId || this.officerId,
+        remark: video.remark || video.description || '',
+        eventId: video.eventId || '',
+        eventType: video.eventType || '',
+        clipMarks: Array.isArray(video.clipMarks) ? video.clipMarks : Array.isArray(video.keypoints) ? video.keypoints.map((text) => ({ start: '', end: '', remark: text })) : [],
+        status: this.normalizeStatus(video.status),
+        isKeyEvidence: !!video.isKeyEvidence,
+        linkedReportIds: Array.isArray(video.linkedReportIds) ? video.linkedReportIds : []
+      }
+    },
+    normalizeStatus(status) {
+      if (status === 'discarded') return 'discarded'
+      if (status === 'complete' || status === 'completed') return 'complete'
+      return 'draft'
+    },
+    getStatusText(status) {
+      const map = { draft: '待整理', complete: '已完成', discarded: '作废' }
+      return map[this.normalizeStatus(status)] || '待整理'
+    },
+    formatDateTime(value) {
+      return String(value || '').replace('T', ' ').substring(0, 16)
+    },
+    formatFullDateTime(date) {
+      const d = date instanceof Date ? date : new Date(date)
+      const pad = (n) => String(n).padStart(2, '0')
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+    },
+    getDateKey(value) {
+      return String(value || '').replace('T', ' ').substring(0, 10)
+    },
+    getTodayKey() {
+      return this.formatFullDateTime(new Date()).substring(0, 10)
+    },
+    getTimeValue(value) {
+      const time = new Date(String(value || '').replace(/\./g, '-')).getTime()
+      return Number.isNaN(time) ? 0 : time
+    },
+    readStorageArray(key) {
+      const raw = uni.getStorageSync(key)
+      if (!raw) return []
+      try {
+        const parsed = JSON.parse(raw)
+        return Array.isArray(parsed) ? parsed : []
+      } catch (e) {
+        return []
+      }
+    },
+    persistLocalFile(tempPath) {
+      return new Promise((resolve) => {
+        if (!tempPath) {
+          resolve('')
+          return
+        }
+        if (typeof uni.saveFile !== 'function') {
+          resolve(tempPath)
+          return
+        }
+        uni.saveFile({
+          tempFilePath: tempPath,
+          success: (res) => resolve((res && res.savedFilePath) || tempPath),
+          fail: () => resolve(tempPath)
+        })
+      })
+    },
+    async persistVideoPathInBackground(videoId, tempPath) {
+      if (!videoId || !tempPath) return
+      const stablePath = await this.persistLocalFile(tempPath)
+      const finalPath = stablePath || tempPath
+      if (finalPath === tempPath) return
+      const idx = this.videoList.findIndex((item) => item.id === videoId)
+      if (idx === -1) return
+      const next = this.normalizeVideo(Object.assign({}, this.videoList[idx], {
+        tempFilePath: finalPath,
+        localPath: finalPath,
+        updatedAt: this.formatFullDateTime(new Date())
+      }))
+      this.videoList.splice(idx, 1, next)
+      if (this.editorForm && this.editorForm.id === videoId) {
+        this.editorForm.tempFilePath = finalPath
+        this.editorForm.localPath = finalPath
+      }
+      this.saveList()
+    },
+    goBack() {
+      uni.navigateBack({ delta: 1 })
+    }
   }
 }
 </script>
@@ -290,90 +518,79 @@ export default {
 <style scoped lang="scss">
 .page { min-height: 100vh; max-height: 100vh; background: #0F172A; display: flex; flex-direction: column; overflow: hidden; }
 .status-bar { background: #0F172A; flex-shrink: 0; }
-
-/* 导航 */
-.navbar { display: flex; align-items: center; padding: 14rpx 24rpx; background: #0F172A; flex-shrink: 0; }
-.nav-back { width: 56rpx; height: 56rpx; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
-.nav-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2rpx; }
-.nav-title { font-size: 30rpx; font-weight: 600; color: #fff; }
+.navbar, .picker, .card-top, .btn-row, .sheet-head, .sheet-foot { display: flex; align-items: center; }
+.navbar { padding: 14rpx 24rpx; }
+.nav-btn { width: 80rpx; color: rgba(255,255,255,0.7); font-size: 24rpx; }
+.nav-btn.placeholder { opacity: 0; }
+.nav-center { flex: 1; text-align: center; }
+.nav-title { font-size: 30rpx; font-weight: 600; color: #fff; display: block; }
 .nav-sub { font-size: 20rpx; color: rgba(255,255,255,0.38); }
-.nav-right { width: 56rpx; }
-
-/* 位置栏 */
-.loc-bar { flex-shrink: 0; margin: 0 20rpx; border-radius: 12rpx; display: flex; align-items: center; gap: 10rpx; padding: 12rpx 18rpx; }
-.loc-pin { width: 24rpx; height: 24rpx; flex-shrink: 0; }
-.loc-text { flex: 1; font-size: 22rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.loc-retry { flex-shrink: 0; }
-.loc-bar.loading { background: rgba(37,99,235,0.12); border: 1rpx solid rgba(37,99,235,0.2); .loc-pin,.loc-text { color: #60A5FA; } }
-.loc-bar.success { background: rgba(16,185,129,0.12); border: 1rpx solid rgba(16,185,129,0.2); .loc-pin,.loc-text { color: #34D399; } }
-.loc-bar.failed { background: rgba(239,68,68,0.12); border: 1rpx solid rgba(239,68,68,0.2); .loc-pin,.loc-text,.loc-retry { color: #F87171; } }
-
-/* 滚动 */
-.scroll { flex: 1; overflow-y: auto; padding: 16rpx 20rpx; }
-
-/* 录制入口 */
-.record-btn-card { display: flex; align-items: center; gap: 18rpx; padding: 22rpx; background: linear-gradient(135deg,rgba(37,99,235,0.2) 0%,rgba(37,99,235,0.07) 100%); border: 1rpx solid rgba(37,99,235,0.3); border-radius: 18rpx; margin-bottom: 14rpx; transition: transform 0.15s; }
-.record-btn-card:active { transform: scale(0.975); }
-.rb-icon { width: 80rpx; height: 80rpx; border-radius: 50%; background: rgba(37,99,235,0.25); display: flex; align-items: center; justify-content: center; color: #60A5FA; flex-shrink: 0; }
-.rb-icon svg { width: 38rpx; height: 38rpx; }
-.rb-text { flex: 1; }
-.rb-title { font-size: 28rpx; font-weight: 600; color: #fff; display: block; margin-bottom: 4rpx; }
-.rb-desc { font-size: 22rpx; color: rgba(255,255,255,0.42); display: block; }
-.rb-arrow { width: 26rpx; height: 26rpx; color: rgba(255,255,255,0.3); }
-
-/* 水印说明 */
-.watermark-notice { display: flex; gap: 10rpx; align-items: flex-start; padding: 16rpx 18rpx; background: rgba(245,158,11,0.08); border: 1rpx solid rgba(245,158,11,0.18); border-radius: 12rpx; margin-bottom: 22rpx; }
-.wn-icon { width: 28rpx; height: 28rpx; color: #FBBF24; flex-shrink: 0; margin-top: 2rpx; }
-.wn-text { font-size: 21rpx; color: rgba(255,255,255,0.5); line-height: 1.5; flex: 1; }
-
-/* 分段头 */
-.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14rpx; }
-.section-title { font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.45); }
-.section-count { font-size: 22rpx; color: rgba(255,255,255,0.28); }
-
-/* 视频卡 */
-.video-card { background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.08); border-radius: 18rpx; padding: 20rpx; margin-bottom: 16rpx; }
-
-.vc-thumb-row { display: flex; gap: 18rpx; margin-bottom: 20rpx; }
-.vc-thumb { width: 150rpx; height: 108rpx; flex-shrink: 0; border-radius: 12rpx; overflow: hidden; position: relative; border: 1rpx solid rgba(255,255,255,0.1); }
-.vc-thumb-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#1E293B,#334155); }
-.vc-play { width: 72rpx; height: 72rpx; }
-.vc-duration { position: absolute; bottom: 6rpx; right: 6rpx; background: rgba(0,0,0,0.6); border-radius: 8rpx; padding: 4rpx 10rpx; }
-.vc-duration text { font-size: 20rpx; color: #fff; font-weight: 600; font-family: 'SF Mono', monospace; }
-
-.vc-meta { flex: 1; display: flex; flex-direction: column; gap: 8rpx; justify-content: center; }
-.vc-meta-row { display: flex; align-items: center; gap: 8rpx; color: rgba(255,255,255,0.42); font-size: 22rpx; }
-
-/* 标注 */
-.vc-annotate { border-top: 1rpx solid rgba(255,255,255,0.08); padding-top: 18rpx; display: flex; flex-direction: column; gap: 18rpx; }
-.ann-row { display: flex; flex-direction: column; gap: 10rpx; }
-.ann-label { font-size: 22rpx; font-weight: 600; color: rgba(255,255,255,0.45); }
-.ann-input { width: 100%; height: 72rpx; padding: 0 16rpx; background: rgba(255,255,255,0.06); border: 1rpx solid rgba(255,255,255,0.1); border-radius: 12rpx; color: rgba(255,255,255,0.85); font-size: 24rpx; box-sizing: border-box; }
-
-.chips { display: flex; flex-wrap: wrap; gap: 10rpx; }
-.chip { padding: 10rpx 20rpx; background: rgba(255,255,255,0.06); border: 1rpx solid rgba(255,255,255,0.1); border-radius: 30rpx; font-size: 22rpx; color: rgba(255,255,255,0.5); transition: all 0.15s; }
-.chip:active { transform: scale(0.95); }
-.chip.chip-on { background: rgba(37,99,235,0.22); border-color: rgba(37,99,235,0.45); color: #60A5FA; }
-
-.keypoints { display: flex; flex-direction: column; gap: 10rpx; }
-.kp-item { display: flex; align-items: center; gap: 12rpx; padding: 12rpx 16rpx; background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.08); border-radius: 10rpx; }
-.kp-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #60A5FA; flex-shrink: 0; }
-.kp-text { flex: 1; font-size: 22rpx; color: rgba(255,255,255,0.65); }
-.kp-del { color: rgba(255,255,255,0.28); }
-.kp-add { display: flex; align-items: center; gap: 8rpx; justify-content: center; padding: 10rpx; border: 1rpx dashed rgba(37,99,235,0.35); border-radius: 10rpx; color: #60A5FA; font-size: 22rpx; }
-
-/* 底部动作 */
-.vc-footer { display: flex; gap: 12rpx; margin-top: 18rpx; padding-top: 16rpx; border-top: 1rpx solid rgba(255,255,255,0.06); }
-.vc-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8rpx; padding: 18rpx; border-radius: 12rpx; font-size: 24rpx; font-weight: 500; transition: transform 0.15s; }
-.vc-btn:active { transform: scale(0.96); }
-.vc-btn-play { background: rgba(37,99,235,0.18); border: 1rpx solid rgba(37,99,235,0.3); color: #60A5FA; }
-.vc-btn-del { background: rgba(239,68,68,0.12); border: 1rpx solid rgba(239,68,68,0.25); color: #F87171; }
-
-/* 空态 */
-.empty { display: flex; flex-direction: column; align-items: center; padding: 80rpx 48rpx; text-align: center; }
-.empty-svg { width: 150rpx; height: 150rpx; margin-bottom: 28rpx; }
-.empty-title { font-size: 28rpx; font-weight: 600; color: rgba(255,255,255,0.55); display: block; margin-bottom: 10rpx; }
-.empty-desc { font-size: 22rpx; color: rgba(255,255,255,0.3); line-height: 1.6; display: block; }
-
+.loc-bar { margin: 0 20rpx; padding: 12rpx 18rpx; border-radius: 12rpx; display: flex; gap: 10rpx; }
+.loc-text { flex: 1; font-size: 22rpx; }
+.loc-link { color: #93C5FD; font-size: 22rpx; }
+.loc-bar.loading { background: rgba(37,99,235,0.12); color: #60A5FA; }
+.loc-bar.success { background: rgba(16,185,129,0.12); color: #34D399; }
+.loc-bar.failed { background: rgba(239,68,68,0.12); color: #F87171; }
+.info-strip, .toolbar, .tag-row, .row { display: flex; gap: 12rpx; padding: 12rpx 20rpx 0; flex-wrap: wrap; }
+.info-chip, .pill, .tag { padding: 8rpx 16rpx; border-radius: 24rpx; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.68); font-size: 20rpx; }
+.info-chip-accent, .pill.active, .tag { background: rgba(37,99,235,0.18); color: #BFDBFE; }
+.pill.small { min-height: 44rpx; }
+.scroll { flex: 1; padding: 16rpx 20rpx; }
+.record-card, .tip-card, .video-card, .sheet { background: rgba(255,255,255,0.05); border-radius: 18rpx; }
+.record-card { padding: 22rpx; margin-bottom: 14rpx; border: 1rpx solid rgba(37,99,235,0.3); }
+.record-title { display: block; font-size: 28rpx; font-weight: 600; color: #fff; margin-bottom: 6rpx; }
+.record-desc, .tip-card text, .line, .clip-text, .meta { font-size: 22rpx; color: rgba(255,255,255,0.48); line-height: 1.5; }
+.tip-card { padding: 16rpx 18rpx; margin-bottom: 18rpx; }
+.section-title, .section-count { font-size: 24rpx; color: rgba(255,255,255,0.45); }
+.section-head { display: flex; justify-content: space-between; margin-bottom: 12rpx; }
+.video-card { padding: 20rpx; margin-bottom: 16rpx; border: 1rpx solid rgba(255,255,255,0.08); }
+.video-card.discarded { opacity: 0.6; }
+.card-top { gap: 16rpx; align-items: flex-start; }
+.thumb { width: 150rpx; height: 108rpx; border-radius: 12rpx; background: linear-gradient(135deg,#1E293B,#334155); position: relative; display: flex; align-items: center; justify-content: center; color: #fff; }
+.play-text { font-size: 24rpx; font-weight: 600; }
+.duration, .evidence { position: absolute; padding: 4rpx 10rpx; border-radius: 12rpx; font-size: 18rpx; color: #fff; }
+.duration { right: 8rpx; bottom: 8rpx; background: rgba(0,0,0,0.45); }
+.evidence { left: 8rpx; top: 8rpx; background: rgba(220,38,38,0.9); }
+.meta { flex: 1; min-width: 0; padding-top: 4rpx; }
+.title { display: block; font-size: 24rpx; color: rgba(255,255,255,0.92); font-weight: 600; margin-bottom: 8rpx; }
+.status { display: inline-block; margin-top: 8rpx; font-size: 20rpx; }
+.status-draft { color: #FBBF24; }
+.status-complete { color: #34D399; }
+.status-discarded { color: #F87171; }
+.clip-list { margin-top: 12rpx; display: flex; flex-direction: column; gap: 10rpx; }
+.clip-item { padding: 12rpx 14rpx; background: rgba(255,255,255,0.04); border-radius: 12rpx; }
+.clip-time { display: block; font-size: 20rpx; color: #93C5FD; margin-bottom: 4rpx; }
+.btn-row { gap: 12rpx; margin-top: 16rpx; }
+.btn { flex: 1; text-align: center; padding: 16rpx 0; border-radius: 12rpx; font-size: 24rpx; }
+.btn.blue { background: rgba(37,99,235,0.18); color: #60A5FA; }
+.btn.green { background: rgba(16,185,129,0.16); color: #34D399; }
+.btn.red { background: rgba(239,68,68,0.14); color: #F87171; }
+.empty { text-align: center; padding: 80rpx 40rpx; }
+.empty-title { display: block; font-size: 28rpx; color: rgba(255,255,255,0.65); margin-bottom: 10rpx; }
+.empty-desc { display: block; font-size: 22rpx; color: rgba(255,255,255,0.35); line-height: 1.6; }
 .safe-bottom { height: 60rpx; }
+.mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; }
+.sheet { width: 100%; max-height: 82vh; background: #111827; border-radius: 24rpx 24rpx 0 0; overflow: hidden; }
+.sheet-head, .sheet-foot { justify-content: space-between; padding: 24rpx; }
+.sheet-title { font-size: 30rpx; color: #fff; font-weight: 600; }
+.sheet-close, .link { font-size: 22rpx; color: #93C5FD; }
+.sheet-scroll { max-height: 58vh; padding: 0 24rpx 24rpx; }
+.preview-box, .picker, .clip-edit { background: rgba(255,255,255,0.05); border-radius: 16rpx; }
+.preview-box { height: 220rpx; margin: 24rpx 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.78); }
+.preview-duration { margin-top: 8rpx; font-size: 20rpx; color: rgba(255,255,255,0.45); }
+.field { margin-bottom: 22rpx; }
+.label { display: block; font-size: 24rpx; color: rgba(255,255,255,0.82); margin-bottom: 12rpx; }
+.label.inline { margin-bottom: 0; }
+.textarea, .input { width: 100%; background: rgba(255,255,255,0.05); border-radius: 16rpx; color: #fff; padding: 18rpx; box-sizing: border-box; }
+.textarea { min-height: 120rpx; }
+.picker { justify-content: space-between; padding: 18rpx 20rpx; color: rgba(255,255,255,0.8); }
+.section-topline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.clip-edit { display: flex; gap: 8rpx; padding: 12rpx; margin-bottom: 10rpx; align-items: center; }
+.input.time { width: 120rpx; }
+.input.remark { flex: 1; }
+.clip-del { width: 52rpx; text-align: center; color: #FCA5A5; }
+.action { flex: 1; height: 84rpx; line-height: 84rpx; border-radius: 16rpx; font-size: 28rpx; }
+.action::after { border: none; }
+.action.light { background: rgba(255,255,255,0.08); color: #E5E7EB; }
+.action.primary { background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%); color: #fff; }
 </style>

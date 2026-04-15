@@ -1,16 +1,13 @@
 <template>
   <view class="photo-capture-page">
-    <!-- 隐藏的 canvas，用于水印绘制 -->
     <canvas
       class="watermark-canvas"
       :canvas-id="'watermarkCanvas'"
       :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
     />
 
-    <!-- 状态栏占位 -->
     <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
 
-    <!-- 顶部导航 -->
     <view class="top-navbar">
       <view class="nav-back" @click="goBack">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -18,8 +15,8 @@
         </svg>
       </view>
       <view class="nav-center">
-        <text class="nav-title">照片采集</text>
-        <text class="nav-subtitle">{{ photoList.length }} 张已采集</text>
+        <text class="nav-title">拍照取证</text>
+        <text class="nav-subtitle">{{ filteredPhotoList.length }} / {{ activePhotoCount }} 张</text>
       </view>
       <view class="nav-right">
         <view class="nav-action" @click="showSettings" v-if="photoList.length > 0">
@@ -32,7 +29,6 @@
       </view>
     </view>
 
-    <!-- 位置状态栏 -->
     <view class="location-bar" :class="locationStatus">
       <view class="location-inner">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="loc-icon">
@@ -47,7 +43,6 @@
       </view>
     </view>
 
-    <!-- 水印预览信息栏 -->
     <view class="watermark-info-bar">
       <view class="info-chip">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
@@ -62,17 +57,31 @@
         </svg>
         <text>警员 {{ officerId }}</text>
       </view>
+      <view class="info-chip info-chip-accent">
+        <text>批次 {{ currentBatchLabel }}</text>
+      </view>
     </view>
 
-    <!-- 核心区域：预览图片列表或空态 -->
+    <view class="filter-strip">
+      <view
+        v-for="tab in filterTabs"
+        :key="tab.key"
+        class="filter-pill"
+        :class="{ active: activeFilter === tab.key }"
+        @click="activeFilter = tab.key"
+      >
+        <text>{{ tab.label }}</text>
+      </view>
+    </view>
+
     <scroll-view scroll-y class="content-area">
-      <!-- 有图片时的列表 -->
-      <view class="photo-grid" v-if="photoList.length > 0">
+      <view class="photo-grid" v-if="filteredPhotoList.length > 0">
         <view
-          v-for="(photo, index) in photoList"
+          v-for="(photo, index) in filteredPhotoList"
           :key="photo.id"
           class="photo-card"
-          @click="previewPhoto(index)"
+          :class="{ discarded: photo.status === 'discarded' }"
+          @click="openEditor(photo)"
         >
           <view class="photo-thumb-wrapper">
             <image
@@ -80,50 +89,50 @@
               class="photo-thumb"
               mode="aspectFill"
             />
-            <!-- 水印状态标记 -->
             <view class="watermark-badge" :class="photo.watermarked ? 'badge-done' : 'badge-pending'">
-              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="12" height="12" v-if="photo.watermarked">
-                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" fill="currentColor"/>
-              </svg>
-              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="12" height="12" v-else>
-                <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M8 4v4l3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <text>{{ photo.watermarked ? '印' : '原' }}</text>
             </view>
-            <!-- 序号 -->
             <view class="photo-index">
               <text>{{ index + 1 }}</text>
+            </view>
+            <view class="evidence-badge" v-if="photo.isKeyEvidence">
+              <text>关键</text>
             </view>
           </view>
 
           <view class="photo-meta">
-            <text class="photo-time">{{ photo.time }}</text>
-            <text class="photo-loc">{{ photo.location || '位置未知' }}</text>
+            <view class="photo-topline">
+              <text class="photo-time">{{ formatDateTime(photo.createdAt || photo.time) }}</text>
+              <text class="photo-status" :class="'status-' + normalizeStatus(photo.status)">{{ getStatusText(photo.status) }}</text>
+            </view>
+            <text class="photo-loc">{{ photo.locationText || photo.location || '位置未知' }}</text>
+            <text class="photo-remark" v-if="photo.remark">{{ photo.remark }}</text>
+            <text class="photo-event">{{ getPhotoRelationText(photo) }}</text>
+            <view class="tag-row" v-if="photo.tags && photo.tags.length">
+              <view class="mini-tag" v-for="tag in photo.tags.slice(0, 3)" :key="tag">
+                <text>{{ tag }}</text>
+              </view>
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 空态 -->
       <view class="empty-state" v-else>
         <view class="empty-icon-wrap">
           <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="empty-svg">
             <circle cx="40" cy="40" r="36" fill="#EBF8FF" stroke="#BFDBFE" stroke-width="2"/>
             <path d="M30 28h-4c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h28c1.1 0 2-.9 2-2V30c0-1.1-.9-2-2-2h-4l-3-4H33l-3 4z" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="40" cy="41" r="5" fill="none" stroke="#2563EB" stroke-width="2"/>
-            <path d="M46 27l3-3" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M49 24l2 0M49 24l0 2" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </view>
         <text class="empty-title">开始采集照片</text>
-        <text class="empty-desc">点击下方拍照按钮，系统将自动添加时间戳、位置信息和警员ID水印</text>
+        <text class="empty-desc">拍摄后可立即补充备注、标记关键证据，并归入事件包</text>
       </view>
 
       <view class="bottom-safe" />
     </scroll-view>
 
-    <!-- 底部拍照操作栏 -->
     <view class="bottom-action-bar">
-      <!-- 左侧：照相册选图 -->
       <view class="action-side" @click="chooseFromAlbum">
         <view class="action-btn-small">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -133,7 +142,6 @@
         <text class="action-label">相册</text>
       </view>
 
-      <!-- 中央：拍照按钮 -->
       <view class="capture-btn-outer" @click="takePhoto">
         <view class="capture-btn-inner">
           <view class="capture-btn-core">
@@ -144,17 +152,104 @@
         </view>
       </view>
 
-      <!-- 右侧：删除/清理 -->
-      <view class="action-side" @click="batchAction" v-if="photoList.length > 0">
+      <view class="action-side" @click="batchAction" v-if="activePhotoCount > 0">
         <view class="action-btn-small action-delete">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
           </svg>
         </view>
-        <text class="action-label">删除</text>
+        <text class="action-label">整理</text>
       </view>
-      <view class="action-side" v-else>
-        <!-- 占位，保持按钮居中 -->
+      <view class="action-side" v-else></view>
+    </view>
+
+    <view class="editor-mask" v-if="editorVisible" @click="closeEditor">
+      <view class="editor-sheet" @click.stop="">
+        <view class="editor-header">
+          <text class="editor-title">照片信息</text>
+          <view class="editor-close" @click="closeEditor">
+            <text>关闭</text>
+          </view>
+        </view>
+
+        <scroll-view scroll-y class="editor-scroll">
+          <image
+            v-if="editorForm.originalPath"
+            :src="editorForm.watermarkedPath || editorForm.originalPath"
+            class="editor-preview"
+            mode="aspectFill"
+            @click="previewEditorPhoto"
+          />
+
+          <view class="editor-section">
+            <text class="editor-label">照片说明</text>
+            <textarea
+              class="editor-textarea"
+              v-model="editorForm.remark"
+              maxlength="120"
+              placeholder="输入现场说明、目标物或补充信息"
+            />
+          </view>
+
+          <view class="editor-section">
+            <text class="editor-label">归属事件</text>
+            <view class="picker-row" @click="pickEvent">
+              <text>{{ selectedEventLabel }}</text>
+              <text class="picker-arrow">选择</text>
+            </view>
+          </view>
+
+          <view class="editor-section">
+            <text class="editor-label">照片状态</text>
+            <view class="chip-row">
+              <view
+                v-for="item in statusOptions"
+                :key="item.value"
+                class="select-chip"
+                :class="{ active: editorForm.status === item.value }"
+                @click="editorForm.status = item.value"
+              >
+                <text>{{ item.label }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="editor-section">
+            <view class="switch-row" @click="editorForm.isKeyEvidence = !editorForm.isKeyEvidence">
+              <text class="editor-label">关键证据</text>
+              <view class="switch-pill" :class="{ on: editorForm.isKeyEvidence }">
+                <text>{{ editorForm.isKeyEvidence ? '是' : '否' }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="editor-section">
+            <text class="editor-label">标签</text>
+            <view class="chip-row">
+              <view
+                v-for="tag in presetTags"
+                :key="tag"
+                class="select-chip"
+                :class="{ active: editorForm.tags.includes(tag) }"
+                @click="toggleTag(tag)"
+              >
+                <text>{{ tag }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="editor-section">
+            <text class="editor-label">采集信息</text>
+            <text class="editor-meta">时间：{{ formatDateTime(editorForm.createdAt || editorForm.time) }}</text>
+            <text class="editor-meta">位置：{{ editorForm.locationText || editorForm.location || '位置未知' }}</text>
+            <text class="editor-meta">批次：{{ editorForm.batchTitle || editorForm.batchId || '未分批次' }}</text>
+          </view>
+        </scroll-view>
+
+        <view class="editor-footer">
+          <button class="editor-btn editor-btn-light" @click="previewEditorPhoto">预览</button>
+          <button class="editor-btn editor-btn-primary" @click="saveEditor">保存</button>
+        </view>
       </view>
     </view>
   </view>
@@ -167,45 +262,83 @@ export default {
   data() {
     return {
       statusBarHeight: 0,
-
-      // 照片列表（本地存储）
       photoList: [],
-
-      // 当前位置信息
+      eventOptions: [],
+      activeFilter: 'all',
+      filterTabs: [
+        { key: 'all', label: '全部' },
+        { key: 'today', label: '今日' },
+        { key: 'unfiled', label: '未归档' },
+        { key: 'unlinked', label: '未引用' },
+        { key: 'key', label: '关键' },
+        { key: 'discarded', label: '作废' }
+      ],
+      presetTags: ['现场环境', '嫌疑工具', '动物个体', '车辆船只', '人员痕迹', '其他'],
+      statusOptions: [
+        { value: 'normal', label: '正常' },
+        { value: 'draft', label: '待整理' },
+        { value: 'discarded', label: '作废' }
+      ],
       currentLatitude: null,
       currentLongitude: null,
       currentAddress: '',
-      locationStatus: 'loading', // loading | success | failed
+      locationStatus: 'loading',
       locationText: '定位中...',
-
-      // 警员信息（实际应从登录状态获取）
       officerId: 'GW-2025-0312',
-
-      // 实时时间显示
       currentTime: '',
       timeTimer: null,
-
-      // canvas 绘制用
       canvasWidth: 1,
       canvasHeight: 1,
+      editorVisible: false,
+      editorForm: null,
+      currentBatchId: ''
+    }
+  },
 
-      // 上传状态占位
-      syncStatus: 'idle' // idle | syncing | synced
+  computed: {
+    activePhotoCount() {
+      return this.photoList.filter((item) => item.status !== 'discarded').length
+    },
+
+    filteredPhotoList() {
+      const today = this.getTodayKey()
+      return this.photoList.filter((item) => {
+        const status = this.normalizeStatus(item.status)
+        if (this.activeFilter === 'today') return this.getDateKey(item.createdAt || item.time) === today && status !== 'discarded'
+        if (this.activeFilter === 'unfiled') return !item.eventId && status !== 'discarded'
+        if (this.activeFilter === 'unlinked') return (!item.linkedReportIds || item.linkedReportIds.length === 0) && status !== 'discarded'
+        if (this.activeFilter === 'key') return !!item.isKeyEvidence && status !== 'discarded'
+        if (this.activeFilter === 'discarded') return status === 'discarded'
+        return status !== 'discarded'
+      })
+    },
+
+    currentBatchLabel() {
+      if (!this.currentBatchId) return '未开始'
+      return this.currentBatchId.slice(-6)
+    },
+
+    selectedEventLabel() {
+      if (!this.editorForm) return '未选择'
+      if (!this.editorForm.eventId) return '未归档'
+      const found = this.eventOptions.find((item) => item.id === this.editorForm.eventId)
+      return found ? found.title : '未归档'
     }
   },
 
   onLoad() {
     const info = uni.getSystemInfoSync()
     this.statusBarHeight = info.statusBarHeight
-
-    // 加载本地存储的照片列表
+    this.loadOfficerInfo()
     this.loadPhotoList()
-
-    // 启动实时时钟
+    this.loadEventOptions()
     this.startClock()
-
-    // 获取位置
     this.getLocation()
+  },
+
+  onShow() {
+    this.loadPhotoList()
+    this.loadEventOptions()
   },
 
   onUnload() {
@@ -213,33 +346,43 @@ export default {
   },
 
   methods: {
-  
+    loadOfficerInfo() {
+      try {
+        const raw = uni.getStorageSync('gw_police_info')
+        const info = raw ? JSON.parse(raw) : {}
+        if (info.officer_id) this.officerId = info.officer_id
+      } catch (e) {}
+    },
+
     startClock() {
       this.updateTime()
-      this.timeTimer = setInterval(() => { this.updateTime() }, 1000)
+      this.timeTimer = setInterval(() => this.updateTime(), 1000)
     },
 
     updateTime() {
-      const now = new Date()
-      const pad = (n) => String(n).padStart(2, '0')
-      this.currentTime =
-        now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
-        ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds())
+      this.currentTime = this.formatFullDateTime(new Date())
     },
 
-  
+    loadEventOptions() {
+      this.eventOptions = this.readStorageArray('gw_event_records')
+        .slice()
+        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))
+        .map((item) => ({
+          id: item.id,
+          title: item.title || item.description || '未命名事件'
+        }))
+    },
+
     getLocation() {
       this.locationStatus = 'loading'
       this.locationText = '定位中...'
-
       uni.getLocation({
         type: 'wgs84',
         success: (res) => {
           this.currentLatitude = res.latitude
           this.currentLongitude = res.longitude
+          this.currentAddress = '纬度 ' + res.latitude.toFixed(5) + ', 经度 ' + res.longitude.toFixed(5)
           this.locationStatus = 'success'
-
-          this.currentAddress = `纬度 ${res.latitude.toFixed(5)}, 经度 ${res.longitude.toFixed(5)}`
           this.locationText = this.currentAddress
         },
         fail: () => {
@@ -253,15 +396,12 @@ export default {
       this.getLocation()
     },
 
-
     takePhoto() {
       uni.chooseImage({
         count: 1,
         sourceType: ['camera'],
         success: (res) => {
-          if (res.tempFilePaths && res.tempFilePaths.length > 0) {
-            this.processPhoto(res.tempFilePaths[0])
-          }
+          if (res.tempFilePaths && res.tempFilePaths.length > 0) this.processPhoto(res.tempFilePaths[0])
         },
         fail: () => {
           uni.showToast({ title: '拍照失败，请检查权限', icon: 'none' })
@@ -269,15 +409,12 @@ export default {
       })
     },
 
- 
     chooseFromAlbum() {
       uni.chooseImage({
         count: 1,
         sourceType: ['album'],
         success: (res) => {
-          if (res.tempFilePaths && res.tempFilePaths.length > 0) {
-            this.processPhoto(res.tempFilePaths[0])
-          }
+          if (res.tempFilePaths && res.tempFilePaths.length > 0) this.importAlbumPhoto(res.tempFilePaths[0])
         },
         fail: () => {
           uni.showToast({ title: '选图失败', icon: 'none' })
@@ -285,86 +422,63 @@ export default {
       })
     },
 
-  
+    importAlbumPhoto(tempPath) {
+      if (!this.currentBatchId) this.currentBatchId = this.createBatchId()
+      this.savePhoto(tempPath, null)
+    },
+
     processPhoto(tempPath) {
-    
+      if (!this.currentBatchId) this.currentBatchId = this.createBatchId()
       uni.getImageInfo({
         src: tempPath,
         success: (imageInfo) => {
-          const imgW = imageInfo.width
-          const imgH = imageInfo.height
-
-         
-          this.canvasWidth = imgW
-          this.canvasHeight = imgH
-
-        
-          uni.nextTick(() => {
-            this.drawWatermark(tempPath, imgW, imgH)
-          })
+          this.canvasWidth = imageInfo.width
+          this.canvasHeight = imageInfo.height
+          uni.nextTick(() => this.drawWatermark(tempPath, imageInfo.width, imageInfo.height))
         },
         fail: () => {
-         
           this.canvasWidth = 1080
           this.canvasHeight = 1920
-          uni.nextTick(() => {
-            this.drawWatermark(tempPath, 1080, 1920)
-          })
+          uni.nextTick(() => this.drawWatermark(tempPath, 1080, 1920))
         }
       })
     },
 
     drawWatermark(tempPath, imgW, imgH) {
       const ctx = uni.createCanvasContext('watermarkCanvas', this)
-
-      // 1. 绘制原图
       ctx.drawImage(tempPath, 0, 0, imgW, imgH)
 
-      // 2. 底部水印背景（半透明黑色条带）
       const barHeight = Math.round(imgH * 0.13)
       const barY = imgH - barHeight
       ctx.fillStyle = 'rgba(0, 0, 0, 0.52)'
       ctx.fillRect(0, barY, imgW, barHeight)
 
-      // 3. 文本参数
-      const now = new Date()
-      const pad = (n) => String(n).padStart(2, '0')
-      const timeStr =
-        now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
-        ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds())
-
+      const timeStr = this.formatFullDateTime(new Date())
       const locStr = this.currentAddress || '位置信息不可用'
       const idStr = 'ID: ' + this.officerId
 
-      // 图标区域宽度
       const iconSize = Math.round(imgH * 0.055)
-      const fontSize1 = Math.round(imgH * 0.032)  
-      const fontSize2 = Math.round(imgH * 0.028)  
-      const fontSize3 = Math.round(imgH * 0.026)  
+      const fontSize1 = Math.round(imgH * 0.032)
+      const fontSize2 = Math.round(imgH * 0.028)
+      const fontSize3 = Math.round(imgH * 0.026)
       const marginLeft = Math.round(imgW * 0.04)
       const lineGap = Math.round(imgH * 0.018)
-
-      // ---- 左侧：时间 + 位置 ----
       const textStartY = barY + Math.round(barHeight * 0.28)
 
-      // 时间图标（圆+线）
       ctx.strokeStyle = 'rgba(255,255,255,0.9)'
       ctx.lineWidth = Math.round(iconSize * 0.15)
       ctx.beginPath()
       ctx.arc(marginLeft + iconSize * 0.5, textStartY + fontSize1 * 0.38, iconSize * 0.42, 0, Math.PI * 2)
       ctx.stroke()
-      // 时间针
       ctx.beginPath()
       ctx.moveTo(marginLeft + iconSize * 0.5, textStartY + fontSize1 * 0.38 - iconSize * 0.06)
       ctx.lineTo(marginLeft + iconSize * 0.5 + iconSize * 0.2, textStartY + fontSize1 * 0.38 + iconSize * 0.12)
       ctx.stroke()
 
-      // 时间文本
       ctx.fillStyle = 'rgba(255,255,255,0.95)'
       ctx.font = `bold ${fontSize1}px sans-serif`
       ctx.fillText(timeStr, marginLeft + iconSize * 1.1, textStartY + fontSize1 * 0.85)
 
-      // 位置图标（定位针）
       const locIconY = textStartY + fontSize1 + lineGap
       ctx.fillStyle = 'rgba(255,255,255,0.75)'
       ctx.beginPath()
@@ -377,15 +491,12 @@ export default {
       ctx.closePath()
       ctx.fill()
 
-      // 位置文本（截断处理）
       ctx.fillStyle = 'rgba(255,255,255,0.75)'
       ctx.font = `${fontSize2}px sans-serif`
       let locDisplay = locStr
       if (locDisplay.length > 22) locDisplay = locDisplay.substring(0, 20) + '...'
       ctx.fillText(locDisplay, marginLeft + iconSize * 1.1, locIconY + fontSize2 * 0.85)
 
-      // ---- 右侧：警员ID ----
-      // 背景胶囊
       const idTextWidth = ctx.measureText(idStr).width
       const capsuleW = idTextWidth + Math.round(iconSize * 2.2)
       const capsuleH = Math.round(fontSize3 * 1.7)
@@ -403,7 +514,6 @@ export default {
       ctx.closePath()
       ctx.fill()
 
-      // ID 图标（人形简图）
       const idIconX = capsuleX + Math.round(iconSize * 0.5)
       const idIconY = capsuleY + Math.round(capsuleH * 0.5) - Math.round(fontSize3 * 0.45)
       ctx.fillStyle = '#FFFFFF'
@@ -414,159 +524,327 @@ export default {
       ctx.ellipse(idIconX, idIconY + Math.round(fontSize3 * 0.55), Math.round(fontSize3 * 0.28), Math.round(fontSize3 * 0.18), 0, 0, Math.PI)
       ctx.fill()
 
-      // ID 文本
       ctx.fillStyle = '#FFFFFF'
       ctx.font = `bold ${fontSize3}px sans-serif`
       ctx.fillText(idStr, idIconX + Math.round(iconSize * 0.55), capsuleY + Math.round(capsuleH * 0.68))
 
-      // ---- 左下角：项目标识 ----
       const brandY = barY + barHeight - Math.round(barHeight * 0.25)
       ctx.fillStyle = 'rgba(255,255,255,0.35)'
       ctx.font = `${Math.round(imgH * 0.018)}px sans-serif`
-      ctx.fillText('Guardian Wings · 翼路平安', marginLeft, brandY)
+      ctx.fillText('Guardian Wings', marginLeft, brandY)
 
-      // 4. 导出 canvas 为图片
-      uni.canvasToTempFilePath({
-        canvasId: 'watermarkCanvas',
-        success: (res) => {
-          this.savePhoto(tempPath, res.tempFilePath)
-        },
-        fail: () => {
-          // canvas导出失败，保存原图
-          uni.showToast({ title: '水印添加失败，已保存原图', icon: 'none' })
-          this.savePhoto(tempPath, null)
-        }
-      }, this)
+      ctx.draw(false, () => {
+        uni.canvasToTempFilePath({
+          canvasId: 'watermarkCanvas',
+          success: (res) => this.savePhoto(tempPath, res.tempFilePath),
+          fail: () => {
+            uni.showToast({ title: '水印失败，已保存原图', icon: 'none' })
+            this.savePhoto(tempPath, null)
+          }
+        }, this)
+      })
     },
 
- 
     savePhoto(originalPath, watermarkedPath) {
-      const now = new Date()
-      const pad = (n) => String(n).padStart(2, '0')
-
+      const finalOriginalPath = originalPath || ''
+      const finalWatermarkedPath = watermarkedPath || null
       const photo = {
-        id: Date.now().toString(),
-        originalPath: originalPath,
-        watermarkedPath: watermarkedPath || null,
-        watermarked: !!watermarkedPath,
-        time: now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
-              ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds()),
+        id: this.createId('photo'),
+        batchId: this.currentBatchId,
+        batchTitle: '批次 ' + this.currentBatchId.slice(-6),
+        eventId: '',
+        createdAt: this.formatFullDateTime(new Date()),
+        updatedAt: this.formatFullDateTime(new Date()),
+        originalPath: finalOriginalPath,
+        watermarkedPath: finalWatermarkedPath,
+        watermarked: !!finalWatermarkedPath,
+        locationText: this.currentAddress || '位置信息不可用',
         location: this.currentAddress || '位置信息不可用',
         latitude: this.currentLatitude,
         longitude: this.currentLongitude,
         officerId: this.officerId,
-        synced: false
+        officerName: '',
+        remark: '',
+        tags: [],
+        isKeyEvidence: false,
+        linkedReportIds: [],
+        status: 'draft'
       }
 
       this.photoList.unshift(photo)
       this.savePhotoList()
-
+      this.openEditor(photo)
+      this.persistPhotoPathInBackground(photo.id, finalOriginalPath, finalWatermarkedPath)
       uni.showToast({ title: '照片已采集', icon: 'success' })
     },
 
-   
     savePhotoList() {
       try {
-        uni.setStorageSync('guardian_wings_photos', JSON.stringify(this.photoList))
+        uni.setStorageSync('gw_photo_records', JSON.stringify(this.photoList))
       } catch (e) {
         uni.showToast({ title: '存储失败', icon: 'none' })
       }
     },
 
     loadPhotoList() {
-      try {
-        const raw = uni.getStorageSync('guardian_wings_photos')
-        if (raw) {
-          this.photoList = JSON.parse(raw)
-        }
-      } catch (e) {
-        this.photoList = []
+      const current = this.readStorageArray('gw_photo_records')
+      if (current.length > 0) {
+        this.photoList = current.map((item) => this.normalizePhoto(item))
+        return
       }
+      const legacy = this.readStorageArray('guardian_wings_photos')
+      this.photoList = legacy.map((item) => this.normalizePhoto(item))
+      if (legacy.length > 0) this.savePhotoList()
     },
 
- 
-    previewPhoto(index) {
-      const photo = this.photoList[index]
-      const urls = this.photoList.map(p => p.watermarkedPath || p.originalPath)
-      uni.previewImage({
-        current: index,
-        urls: urls
+    openEditor(photo) {
+      this.editorForm = JSON.parse(JSON.stringify(this.normalizePhoto(photo)))
+      this.editorVisible = true
+    },
+
+    closeEditor() {
+      this.editorVisible = false
+      this.editorForm = null
+    },
+
+    saveEditor() {
+      if (!this.editorForm) return
+      const idx = this.photoList.findIndex((item) => item.id === this.editorForm.id)
+      if (idx === -1) return
+      this.editorForm.updatedAt = this.formatFullDateTime(new Date())
+      this.photoList.splice(idx, 1, this.normalizePhoto(this.editorForm))
+      this.savePhotoList()
+      this.closeEditor()
+      uni.showToast({ title: '已保存', icon: 'success' })
+    },
+
+    toggleTag(tag) {
+      if (!this.editorForm) return
+      const tags = this.editorForm.tags || []
+      const idx = tags.indexOf(tag)
+      if (idx > -1) tags.splice(idx, 1)
+      else tags.push(tag)
+      this.editorForm.tags = tags
+    },
+
+    pickEvent() {
+      const list = ['不归档'].concat(this.eventOptions.map((item) => item.title))
+      uni.showActionSheet({
+        itemList: list,
+        success: (res) => {
+          if (!this.editorForm) return
+          if (res.tapIndex === 0) {
+            this.editorForm.eventId = ''
+            return
+          }
+          const target = this.eventOptions[res.tapIndex - 1]
+          this.editorForm.eventId = target ? target.id : ''
+        }
       })
     },
 
+    previewEditorPhoto() {
+      if (!this.editorForm) return
+      const path = this.editorForm.watermarkedPath || this.editorForm.originalPath
+      if (!path) {
+        uni.showToast({ title: '图片文件丢失', icon: 'none' })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/police/workplace/media-preview?type=image&path=' + encodeURIComponent(path)
+      })
+    },
 
     batchAction() {
       uni.showActionSheet({
-        itemList: ['删除最新一张', '清空全部照片'],
+        itemList: ['标记最新照片作废', '清空全部照片'],
         success: (res) => {
-          if (res.tapIndex === 0) {
-            this.deletePhoto(0)
-          } else if (res.tapIndex === 1) {
-            this.clearAllPhotos()
-          }
+          if (res.tapIndex === 0) this.markLatestDiscarded()
+          if (res.tapIndex === 1) this.clearAllPhotos()
         }
       })
     },
 
-    deletePhoto(index) {
-      uni.showModal({
-        title: '确认删除',
-        content: '删除后无法恢复，确定要删除吗？',
-        success: (res) => {
-          if (res.confirm) {
-            this.photoList.splice(index, 1)
-            this.savePhotoList()
-            uni.showToast({ title: '已删除', icon: 'success' })
-          }
-        }
-      })
+    markLatestDiscarded() {
+      const latest = this.photoList.find((item) => this.normalizeStatus(item.status) !== 'discarded')
+      if (!latest) return
+      const idx = this.photoList.findIndex((item) => item.id === latest.id)
+      if (idx === -1) return
+      const updated = this.normalizePhoto(Object.assign({}, latest, {
+        status: 'discarded',
+        updatedAt: this.formatFullDateTime(new Date())
+      }))
+      this.photoList.splice(idx, 1, updated)
+      this.savePhotoList()
+      uni.showToast({ title: '已标记作废', icon: 'success' })
     },
 
     clearAllPhotos() {
       uni.showModal({
         title: '确认清空',
-        content: `将删除全部 ${this.photoList.length} 张照片，此操作不可恢复。`,
+        content: '将清空全部照片记录，此操作无法恢复，是否继续？',
         success: (res) => {
-          if (res.confirm) {
-            this.photoList = []
-            this.savePhotoList()
-            uni.showToast({ title: '已清空', icon: 'success' })
-          }
+          if (!res.confirm) return
+          this.photoList = []
+          this.savePhotoList()
+          uni.showToast({ title: '已清空', icon: 'success' })
         }
       })
     },
 
-   
     showSettings() {
       uni.showActionSheet({
-        itemList: ['保存最新照片到相册', '查看采集明细'],
+        itemList: ['保存最新照片到相册', '查看作废照片'],
         success: (res) => {
-          if (res.tapIndex === 0) {
-            this.saveToAlbum()
-          } else if (res.tapIndex === 1) {
-            uni.showToast({ title: '采集明细功能开发中', icon: 'none' })
-          }
+          if (res.tapIndex === 0) this.saveToAlbum()
+          if (res.tapIndex === 1) this.activeFilter = 'discarded'
         }
       })
     },
 
-    // 保存到系统相册
     saveToAlbum() {
       if (this.photoList.length === 0) return
       const latest = this.photoList[0]
-      const path = latest.watermarkedPath || latest.originalPath
       uni.saveImageToPhotosAlbum({
-        filePath: path,
-        success: () => {
-          uni.showToast({ title: '已保存到相册', icon: 'success' })
-        },
-        fail: () => {
-          uni.showToast({ title: '保存失败，请检查相册权限', icon: 'none' })
-        }
+        filePath: latest.watermarkedPath || latest.originalPath,
+        success: () => uni.showToast({ title: '已保存到相册', icon: 'success' }),
+        fail: () => uni.showToast({ title: '保存失败，请检查权限', icon: 'none' })
       })
     },
 
-    
+    getPhotoRelationText(photo) {
+      const eventText = photo.eventId ? '已归入事件' : '未归档'
+      const reportCount = Array.isArray(photo.linkedReportIds) ? photo.linkedReportIds.length : 0
+      return eventText + ' · 已引用 ' + reportCount + ' 次'
+    },
+
+    normalizePhoto(photo) {
+      const createdAt = photo.createdAt || photo.time || this.formatFullDateTime(new Date())
+      const batchId = photo.batchId || this.createBatchId(createdAt)
+      return {
+        id: photo.id || this.createId('photo'),
+        batchId,
+        batchTitle: photo.batchTitle || ('批次 ' + batchId.slice(-6)),
+        eventId: photo.eventId || '',
+        createdAt,
+        updatedAt: photo.updatedAt || createdAt,
+        originalPath: photo.originalPath,
+        watermarkedPath: photo.watermarkedPath || null,
+        watermarked: typeof photo.watermarked === 'boolean' ? photo.watermarked : !!photo.watermarkedPath,
+        locationText: photo.locationText || photo.location || '位置信息不可用',
+        location: photo.location || photo.locationText || '位置信息不可用',
+        latitude: photo.latitude || null,
+        longitude: photo.longitude || null,
+        officerId: photo.officerId || this.officerId,
+        officerName: photo.officerName || '',
+        remark: photo.remark || '',
+        tags: Array.isArray(photo.tags) ? photo.tags : [],
+        isKeyEvidence: !!photo.isKeyEvidence,
+        linkedReportIds: Array.isArray(photo.linkedReportIds) ? photo.linkedReportIds : [],
+        status: this.normalizeStatus(photo.status)
+      }
+    },
+
+    normalizeStatus(status) {
+      if (status === 'discarded') return 'discarded'
+      if (status === 'draft' || status === 'pending') return 'draft'
+      return 'normal'
+    },
+
+    getStatusText(status) {
+      const map = {
+        normal: '正常',
+        draft: '待整理',
+        discarded: '作废'
+      }
+      return map[this.normalizeStatus(status)] || '正常'
+    },
+
+    formatDateTime(value) {
+      return String(value || '').replace('T', ' ').substring(0, 16)
+    },
+
+    formatFullDateTime(date) {
+      const d = date instanceof Date ? date : new Date(date)
+      const pad = (n) => String(n).padStart(2, '0')
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+    },
+
+    getDateKey(value) {
+      return String(value || '').replace('T', ' ').substring(0, 10)
+    },
+
+    getTodayKey() {
+      return this.formatFullDateTime(new Date()).substring(0, 10)
+    },
+
+    getTimeValue(value) {
+      const time = new Date(String(value || '').replace(/\./g, '-')).getTime()
+      return Number.isNaN(time) ? 0 : time
+    },
+
+    createId(prefix) {
+      return prefix + '-' + Date.now() + '-' + Math.floor(Math.random() * 900 + 100)
+    },
+
+    createBatchId(seedTime) {
+      const base = seedTime ? new Date(seedTime) : new Date()
+      const pad = (n) => String(n).padStart(2, '0')
+      return 'batch-' + base.getFullYear() + pad(base.getMonth() + 1) + pad(base.getDate()) + pad(base.getHours()) + pad(base.getMinutes()) + pad(base.getSeconds())
+    },
+
+    readStorageArray(key) {
+      const raw = uni.getStorageSync(key)
+      if (!raw) return []
+      try {
+        const parsed = JSON.parse(raw)
+        return Array.isArray(parsed) ? parsed : []
+      } catch (e) {
+        return []
+      }
+    },
+
+    persistLocalFile(tempPath) {
+      return new Promise((resolve) => {
+        if (!tempPath) {
+          resolve('')
+          return
+        }
+        if (typeof uni.saveFile !== 'function') {
+          resolve(tempPath)
+          return
+        }
+        uni.saveFile({
+          tempFilePath: tempPath,
+          success: (res) => resolve((res && res.savedFilePath) || tempPath),
+          fail: () => resolve(tempPath)
+        })
+      })
+    },
+    async persistPhotoPathInBackground(photoId, originalPath, watermarkedPath) {
+      if (!photoId) return
+      const stableOriginalPath = await this.persistLocalFile(originalPath)
+      const stableWatermarkedPath = watermarkedPath ? await this.persistLocalFile(watermarkedPath) : ''
+      const finalOriginalPath = stableOriginalPath || originalPath || ''
+      const finalWatermarkedPath = stableWatermarkedPath || watermarkedPath || null
+      if (finalOriginalPath === originalPath && finalWatermarkedPath === (watermarkedPath || null)) return
+      const idx = this.photoList.findIndex((item) => item.id === photoId)
+      if (idx === -1) return
+      const next = this.normalizePhoto(Object.assign({}, this.photoList[idx], {
+        originalPath: finalOriginalPath,
+        watermarkedPath: finalWatermarkedPath,
+        watermarked: !!finalWatermarkedPath,
+        updatedAt: this.formatFullDateTime(new Date())
+      }))
+      this.photoList.splice(idx, 1, next)
+      if (this.editorForm && this.editorForm.id === photoId) {
+        this.editorForm.originalPath = finalOriginalPath
+        this.editorForm.watermarkedPath = finalWatermarkedPath
+        this.editorForm.watermarked = !!finalWatermarkedPath
+      }
+      this.savePhotoList()
+    },
+
     goBack() {
       uni.navigateBack({ delta: 1 })
     }
@@ -575,7 +853,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .photo-capture-page {
   min-height: 100vh;
   max-height: 100vh;
@@ -585,7 +862,6 @@ export default {
   overflow: hidden;
 }
 
-
 .watermark-canvas {
   position: fixed;
   left: -9999px;
@@ -594,11 +870,7 @@ export default {
   pointer-events: none;
 }
 
-.status-bar {
-  background: #0F172A;
-  flex-shrink: 0;
-}
-
+.status-bar { background: #0F172A; flex-shrink: 0; }
 
 .top-navbar {
   display: flex;
@@ -609,7 +881,8 @@ export default {
   flex-shrink: 0;
 }
 
-.nav-back {
+.nav-back,
+.nav-right {
   width: 56rpx;
   height: 56rpx;
   display: flex;
@@ -626,29 +899,9 @@ export default {
   gap: 4rpx;
 }
 
-.nav-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #FFFFFF;
-}
-
-.nav-subtitle {
-  font-size: 20rpx;
-  color: rgba(255,255,255,0.45);
-}
-
-.nav-right {
-  width: 56rpx;
-  height: 56rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-action {
-  color: rgba(255,255,255,0.6);
-}
-
+.nav-title { font-size: 30rpx; font-weight: 600; color: #FFFFFF; }
+.nav-subtitle { font-size: 20rpx; color: rgba(255,255,255,0.45); }
+.nav-action { color: rgba(255,255,255,0.6); }
 
 .location-bar {
   flex-shrink: 0;
@@ -664,52 +917,26 @@ export default {
   padding: 14rpx 18rpx;
 }
 
-.loc-icon {
-  width: 28rpx;
-  height: 28rpx;
-  flex-shrink: 0;
-}
+.loc-icon { width: 28rpx; height: 28rpx; flex-shrink: 0; }
+.loc-text { font-size: 22rpx; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loc-refresh { flex-shrink: 0; }
 
-.loc-text {
-  font-size: 22rpx;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.loc-refresh {
-  flex-shrink: 0;
-}
-
-// 状态颜色
-.location-bar.loading {
-  background: rgba(37, 99, 235, 0.15);
-  border: 1rpx solid rgba(37, 99, 235, 0.3);
-
-  .loc-icon, .loc-text { color: #60A5FA; }
-}
-
-.location-bar.success {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1rpx solid rgba(16, 185, 129, 0.3);
-
-  .loc-icon, .loc-text { color: #34D399; }
-}
-
-.location-bar.failed {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1rpx solid rgba(239, 68, 68, 0.3);
-
-  .loc-icon, .loc-text, .loc-refresh { color: #F87171; }
-}
-
+.location-bar.loading { background: rgba(37, 99, 235, 0.15); border: 1rpx solid rgba(37, 99, 235, 0.3); }
+.location-bar.loading .loc-icon,
+.location-bar.loading .loc-text { color: #60A5FA; }
+.location-bar.success { background: rgba(16, 185, 129, 0.15); border: 1rpx solid rgba(16, 185, 129, 0.3); }
+.location-bar.success .loc-icon,
+.location-bar.success .loc-text { color: #34D399; }
+.location-bar.failed { background: rgba(239, 68, 68, 0.15); border: 1rpx solid rgba(239, 68, 68, 0.3); }
+.location-bar.failed .loc-icon,
+.location-bar.failed .loc-text,
+.location-bar.failed .loc-refresh { color: #F87171; }
 
 .watermark-info-bar {
   flex-shrink: 0;
   display: flex;
   gap: 12rpx;
-  padding: 16rpx 20rpx;
+  padding: 16rpx 20rpx 10rpx;
 }
 
 .info-chip {
@@ -725,19 +952,48 @@ export default {
   white-space: nowrap;
 }
 
+.info-chip-accent {
+  color: #93C5FD;
+  border-color: rgba(59,130,246,0.2);
+  background: rgba(37,99,235,0.12);
+}
+
+.filter-strip {
+  flex-shrink: 0;
+  display: flex;
+  gap: 12rpx;
+  padding: 0 20rpx 16rpx;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96rpx;
+  height: 56rpx;
+  padding: 0 18rpx;
+  border-radius: 28rpx;
+  border: 1rpx solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.04);
+  font-size: 22rpx;
+}
+
+.filter-pill.active {
+  background: rgba(37,99,235,0.18);
+  border-color: rgba(59,130,246,0.4);
+  color: #BFDBFE;
+}
 
 .content-area {
   flex: 1;
   overflow-y: auto;
-  padding: 16rpx 20rpx;
+  padding: 0 20rpx 16rpx;
 }
 
-
-.photo-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
+.photo-grid { display: flex; flex-direction: column; gap: 16rpx; }
 
 .photo-card {
   display: flex;
@@ -747,89 +1003,69 @@ export default {
   background: rgba(255,255,255,0.05);
   border: 1rpx solid rgba(255,255,255,0.08);
   border-radius: 16rpx;
-  transition: background 0.2s;
 }
 
-.photo-card:active {
-  background: rgba(255,255,255,0.1);
-}
+.photo-card.discarded { opacity: 0.6; border-color: rgba(248,113,113,0.2); }
+.photo-thumb-wrapper { position: relative; width: 120rpx; height: 120rpx; flex-shrink: 0; border-radius: 12rpx; overflow: hidden; }
+.photo-thumb { width: 100%; height: 100%; border-radius: 12rpx; }
 
-.photo-thumb-wrapper {
-  position: relative;
-  width: 120rpx;
-  height: 120rpx;
-  flex-shrink: 0;
-  border-radius: 12rpx;
-  overflow: hidden;
-}
-
-.photo-thumb {
-  width: 100%;
-  height: 100%;
-  border-radius: 12rpx;
-}
-
-.watermark-badge {
+.watermark-badge,
+.photo-index,
+.evidence-badge {
   position: absolute;
-  top: 6rpx;
-  right: 6rpx;
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.badge-done {
-  background: rgba(16, 185, 129, 0.85);
-  color: #FFFFFF;
-}
-
-.badge-pending {
-  background: rgba(245, 158, 11, 0.85);
-  color: #FFFFFF;
-}
-
-.photo-index {
-  position: absolute;
-  bottom: 6rpx;
-  left: 6rpx;
-  min-width: 36rpx;
-  height: 36rpx;
-  padding: 0 8rpx;
-  background: rgba(0,0,0,0.55);
   border-radius: 18rpx;
+  padding: 0 10rpx;
+  color: #FFFFFF;
+  font-size: 18rpx;
+}
+
+.watermark-badge { top: 6rpx; right: 6rpx; min-width: 36rpx; height: 36rpx; }
+.badge-done { background: rgba(16,185,129,0.85); }
+.badge-pending { background: rgba(245,158,11,0.85); }
+.photo-index { bottom: 6rpx; left: 6rpx; min-width: 36rpx; height: 36rpx; background: rgba(0,0,0,0.55); }
+.evidence-badge { bottom: 6rpx; right: 6rpx; height: 36rpx; background: rgba(220,38,38,0.85); }
+
+.photo-meta { flex: 1; display: flex; flex-direction: column; gap: 8rpx; min-width: 0; }
+.photo-topline { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.photo-time { font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.9); }
+.photo-status { font-size: 20rpx; }
+.status-normal { color: #34D399; }
+.status-draft { color: #FBBF24; }
+.status-discarded { color: #F87171; }
+.photo-loc,
+.photo-remark,
+.photo-event { font-size: 20rpx; color: rgba(255,255,255,0.46); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.photo-remark { color: rgba(255,255,255,0.72); }
+
+.tag-row,
+.chip-row {
   display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.mini-tag,
+.select-chip {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 46rpx;
+  padding: 0 16rpx;
+  border-radius: 24rpx;
+  background: rgba(255,255,255,0.06);
+  border: 1rpx solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
   font-size: 20rpx;
-  color: #FFFFFF;
-  font-weight: 600;
 }
 
-.photo-meta {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  min-width: 0;
+.select-chip.active {
+  background: rgba(37,99,235,0.18);
+  border-color: rgba(59,130,246,0.35);
+  color: #BFDBFE;
 }
-
-.photo-time {
-  font-size: 24rpx;
-  font-weight: 600;
-  color: rgba(255,255,255,0.9);
-}
-
-.photo-loc {
-  font-size: 20rpx;
-  color: rgba(255,255,255,0.4);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 
 .empty-state {
   display: flex;
@@ -840,34 +1076,11 @@ export default {
   text-align: center;
 }
 
-.empty-icon-wrap {
-  margin-bottom: 32rpx;
-}
-
-.empty-svg {
-  width: 160rpx;
-  height: 160rpx;
-}
-
-.empty-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  margin-bottom: 12rpx;
-  display: block;
-}
-
-.empty-desc {
-  font-size: 24rpx;
-  color: rgba(255,255,255,0.4);
-  line-height: 1.6;
-  display: block;
-}
-
-.bottom-safe {
-  height: 160rpx;
-}
-
+.empty-icon-wrap { margin-bottom: 32rpx; }
+.empty-svg { width: 160rpx; height: 160rpx; }
+.empty-title { font-size: 30rpx; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 12rpx; display: block; }
+.empty-desc { font-size: 24rpx; color: rgba(255,255,255,0.4); line-height: 1.6; display: block; }
+.bottom-safe { height: 160rpx; }
 
 .bottom-action-bar {
   flex-shrink: 0;
@@ -896,30 +1109,12 @@ export default {
   border: 1rpx solid rgba(255,255,255,0.15);
   border-radius: 50%;
   color: rgba(255,255,255,0.7);
-  transition: background 0.2s;
 }
 
-.action-btn-small:active {
-  background: rgba(255,255,255,0.16);
-}
+.action-btn-small svg { width: 36rpx; height: 36rpx; }
+.action-btn-small.action-delete { color: #F87171; border-color: rgba(248,113,113,0.25); background: rgba(239,68,68,0.1); }
+.action-label { font-size: 20rpx; color: rgba(255,255,255,0.45); }
 
-.action-btn-small svg {
-  width: 36rpx;
-  height: 36rpx;
-}
-
-.action-btn-small.action-delete {
-  color: #F87171;
-  border-color: rgba(248, 113, 113, 0.25);
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.action-label {
-  font-size: 20rpx;
-  color: rgba(255,255,255,0.45);
-}
-
-// 核心拍照按钮 - 三层圆环
 .capture-btn-outer {
   width: 140rpx;
   height: 140rpx;
@@ -928,11 +1123,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
-}
-
-.capture-btn-outer:active {
-  background: rgba(255,255,255,0.15);
 }
 
 .capture-btn-inner {
@@ -957,8 +1147,91 @@ export default {
   box-shadow: 0 4rpx 20rpx rgba(37, 99, 235, 0.45);
 }
 
-.capture-btn-core svg {
-  width: 48rpx;
-  height: 48rpx;
+.capture-btn-core svg { width: 48rpx; height: 48rpx; }
+
+.editor-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 30;
 }
+
+.editor-sheet {
+  width: 100%;
+  max-height: 82vh;
+  background: #111827;
+  border-radius: 28rpx 28rpx 0 0;
+  overflow: hidden;
+}
+
+.editor-header,
+.editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+}
+
+.editor-header { border-bottom: 1rpx solid rgba(255,255,255,0.08); }
+.editor-title { font-size: 30rpx; font-weight: 600; color: #FFFFFF; }
+.editor-close { font-size: 24rpx; color: rgba(255,255,255,0.5); }
+.editor-scroll { max-height: 58vh; padding: 0 24rpx 24rpx; }
+.editor-preview { width: 100%; height: 320rpx; border-radius: 20rpx; margin: 24rpx 0; }
+.editor-section { margin-bottom: 24rpx; }
+.editor-label { display: block; font-size: 24rpx; color: rgba(255,255,255,0.78); margin-bottom: 14rpx; }
+
+.editor-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16rpx;
+  color: #FFFFFF;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.picker-row,
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+  padding: 0 20rpx;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16rpx;
+  color: rgba(255,255,255,0.78);
+}
+
+.picker-arrow { color: #93C5FD; }
+
+.switch-pill {
+  min-width: 84rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+}
+
+.switch-pill.on {
+  background: rgba(220,38,38,0.18);
+  color: #FCA5A5;
+}
+
+.editor-meta {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+}
+
+.editor-footer { border-top: 1rpx solid rgba(255,255,255,0.08); gap: 16rpx; }
+.editor-btn { flex: 1; height: 84rpx; line-height: 84rpx; border-radius: 18rpx; font-size: 28rpx; }
+.editor-btn::after { border: none; }
+.editor-btn-light { background: rgba(255,255,255,0.08); color: #E5E7EB; }
+.editor-btn-primary { background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%); color: #FFFFFF; }
 </style>

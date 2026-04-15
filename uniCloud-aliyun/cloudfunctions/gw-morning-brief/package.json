@@ -1,0 +1,7 @@
+{
+  "name": "gw-morning-brief",
+  "version": "1.0.0",
+  "description": "候鸟生态早报生成函数",
+  "main": "index.js",
+  "dependencies": {}
+}

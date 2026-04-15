@@ -1,138 +1,213 @@
 <template>
   <view class="page">
-    <view class="nav-bar">
-      <view @click="goBack"><text class="back">‹ 返回</text></view>
-      <text class="title">举报详情</text>
-      <view style="width:80rpx"/>
+    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
+    <view class="navbar">
+      <view class="nav-btn" @click="goBack">返回</view>
+      <view class="nav-center">
+        <text class="nav-title">报告详情</text>
+        <text class="nav-sub">{{ report.id || '未找到报告' }}</text>
+      </view>
+      <view class="nav-btn right" @click="editReport" v-if="report.id">编辑</view>
     </view>
 
-    <view v-if="loading" class="loading"><text>加载中...</text></view>
+    <scroll-view scroll-y class="scroll">
+      <view v-if="report.id">
+        <view class="card">
+          <view class="row"><text class="label">标题</text><text class="value strong">{{ report.title || '未命名报告' }}</text></view>
+          <view class="row"><text class="label">模板</text><text class="value">{{ templateLabel(report.template) }}</text></view>
+          <view class="row"><text class="label">状态</text><text class="badge" :class="'s-' + report.status">{{ statusLabel(report.status) }}</text></view>
+          <view class="row"><text class="label">创建时间</text><text class="value">{{ report.createdAt || '未知' }}</text></view>
+          <view class="row"><text class="label">更新时间</text><text class="value">{{ report.updatedAt || report.createdAt || '未知' }}</text></view>
+        </view>
 
-    <view v-else-if="report._id">
-      <view class="card">
-        <view class="row"><text class="lbl">举报类型</text><text class="val">{{ typeLabel }}</text></view>
-        <view class="row"><text class="lbl">举报时间</text><text class="val">{{ formatTime(report.create_time) }}</text></view>
-        <view class="row"><text class="lbl">事发地点</text><text class="val">{{ report.location && report.location.address }}</text></view>
-        <view class="row"><text class="lbl">当前状态</text><view class="status-tag" :class="'s' + report.status"><text>{{ statusLabel }}</text></view></view>
-      </view>
+        <view class="card event" v-if="currentEvent">
+          <text class="section-title">关联事件包</text>
+          <text class="event-title">{{ currentEvent.title || '未命名事件' }}</text>
+          <text class="event-meta">{{ eventTypeLabel(currentEvent.type) }} · {{ eventStatusLabel(currentEvent.status) }}</text>
+          <text class="event-meta">{{ currentEvent.locationText || '地点未填写' }}</text>
+          <text class="event-meta" v-if="currentEvent.happenTime">{{ currentEvent.happenTime }}</text>
+        </view>
 
-      <view class="card">
-        <text class="card-title">情况描述</text>
-        <text class="desc">{{ report.description }}</text>
-      </view>
-
-      <view class="card" v-if="report.images && report.images.length > 0">
-        <text class="card-title">现场图片</text>
-        <scroll-view scroll-x class="img-scroll">
-          <view class="img-list">
-            <image v-for="(img, i) in report.images" :key="i" :src="img" mode="aspectFill" class="report-img" @click="previewImg(i)"/>
+        <view class="card">
+          <text class="section-title">素材统计</text>
+          <view class="stats">
+            <view class="stat"><text class="stat-num">{{ materialCounts.photos }}</text><text class="stat-label">照片</text></view>
+            <view class="stat"><text class="stat-num">{{ materialCounts.videos }}</text><text class="stat-label">视频</text></view>
+            <view class="stat"><text class="stat-num">{{ materialCounts.transcripts }}</text><text class="stat-label">笔录</text></view>
           </view>
-        </scroll-view>
+        </view>
+
+        <view class="card" v-if="report.summary">
+          <text class="section-title">内容摘要</text>
+          <text class="paragraph">{{ report.summary }}</text>
+        </view>
+
+        <view class="card" v-if="report.content">
+          <text class="section-title">报告正文</text>
+          <text class="paragraph preserve">{{ report.content }}</text>
+        </view>
+
+        <view class="card" v-if="report.conclusion">
+          <text class="section-title">报告结论</text>
+          <text class="paragraph">{{ report.conclusion }}</text>
+        </view>
       </view>
 
-      <view class="card" v-if="report.remark">
-        <text class="card-title">处理备注</text>
-        <text class="desc">{{ report.remark }}</text>
+      <view v-else class="empty">
+        <text class="empty-title">未找到报告</text>
+        <text class="empty-desc">当前记录可能已删除，或传入的报告编号无效。</text>
       </view>
 
-      <!-- 处理按钮（待处理状态才显示）-->
-      <view class="bottom-bar" v-if="report.status === 0">
-        <view class="btn btn-reject" @click="handleReport(2)"><text>驳回</text></view>
-        <view class="btn btn-approve" @click="handleReport(1)"><text>标记已处理</text></view>
-      </view>
-    </view>
+      <view class="safe-bottom" />
+    </scroll-view>
   </view>
 </template>
 
 <script>
 export default {
+  name: 'ReportDetail',
   data() {
-    return { loading: true, reportId: '', report: {}, remark: '' }
-  },
-
-  computed: {
-    typeLabel() {
-      const map = { illegal_hunting: '非法捕猎', habitat_destruction: '栖息地破坏', illegal_trade: '非法交易', other: '其他' }
-      return map[this.report.type] || this.report.type
-    },
-    statusLabel() {
-      return ['待处理', '已处理', '已驳回'][this.report.status] || '未知'
+    return {
+      statusBarHeight: 0,
+      reportId: '',
+      report: {},
+      allEvents: []
     }
   },
-
-  onLoad(options) {
-    this.reportId = options.id
-    this.loadDetail()
+  computed: {
+    currentEvent() {
+      if (!this.report.eventId) return null
+      return this.allEvents.find((item) => item.id === this.report.eventId) || null
+    },
+    materialCounts() {
+      return {
+        photos: Array.isArray(this.report.relatedPhotos) ? this.report.relatedPhotos.length : 0,
+        videos: Array.isArray(this.report.relatedVideos) ? this.report.relatedVideos.length : 0,
+        transcripts: Array.isArray(this.report.relatedTranscripts) ? this.report.relatedTranscripts.length : 0
+      }
+    }
   },
-
+  onLoad(options) {
+    this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    this.reportId = options && options.id ? options.id : ''
+    this.loadEvents()
+    this.loadReport()
+  },
+  onShow() {
+    this.loadEvents()
+    this.loadReport()
+  },
   methods: {
-    async loadDetail() {
-      this.loading = true
+    normalizeReport(item) {
+      const base = Object.assign({
+        id: '',
+        template: '',
+        title: '',
+        summary: '',
+        content: '',
+        conclusion: '',
+        eventId: '',
+        relatedPhotos: [],
+        relatedVideos: [],
+        relatedTranscripts: [],
+        status: 'draft',
+        createdAt: '',
+        updatedAt: ''
+      }, item || {})
+      base.relatedPhotos = Array.isArray(base.relatedPhotos) ? base.relatedPhotos : []
+      base.relatedVideos = Array.isArray(base.relatedVideos) ? base.relatedVideos : []
+      base.relatedTranscripts = Array.isArray(base.relatedTranscripts) ? base.relatedTranscripts : []
+      return base
+    },
+    loadReport() {
       try {
-        const res = await uniCloud.callFunction({
-          name: 'gw-report',
-          data: { action: 'getReportDetail', params: { reportId: this.reportId } }
-        })
-        if (res.result.code === 0) this.report = res.result.data
-      } catch (e) {} finally { this.loading = false }
+        const raw = uni.getStorageSync('gw_report_records')
+        const list = raw ? JSON.parse(raw) : []
+        const found = Array.isArray(list) ? list.find((item) => item.id === this.reportId) : null
+        this.report = found ? this.normalizeReport(found) : {}
+      } catch (e) {
+        this.report = {}
+      }
     },
-
-    async handleReport(status) {
-      uni.showModal({
-        title: status === 1 ? '标记已处理' : '驳回举报',
-        content: '请输入备注',
-        editable: true,
-        success: async res => {
-          if (!res.confirm) return
-          const policeInfo = uni.getStorageSync('gw_police_info') || {}
-          await uniCloud.callFunction({
-            name: 'gw-report',
-            data: {
-              action: 'updateReportStatus',
-              params: { reportId: this.reportId, status, remark: res.content || '', handler_id: policeInfo.officer_id || '' }
-            }
-          })
-          uni.showToast({ title: status === 1 ? '已标记处理' : '已驳回', icon: 'success' })
-          setTimeout(() => this.loadDetail(), 800)
-        }
-      })
+    loadEvents() {
+      try {
+        const raw = uni.getStorageSync('gw_event_records')
+        this.allEvents = raw ? JSON.parse(raw) : []
+      } catch (e) {
+        this.allEvents = []
+      }
     },
-
-    previewImg(index) {
-      uni.previewImage({ urls: this.report.images, current: index })
+    statusLabel(status) {
+      return { draft: '草稿', submitted: '已提交', approved: '已审批' }[status] || '未知'
     },
-
-    formatTime(ts) {
-      if (!ts) return ''
-      const d = new Date(ts)
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+    templateLabel(template) {
+      return {
+        incident: '事件报告',
+        patrol: '巡查日志',
+        investigation: '调查报告',
+        summary: '工作总结',
+        custom: '自定义'
+      }[template] || '自定义'
     },
-    goBack() { uni.navigateBack() }
+    eventTypeLabel(type) {
+      return {
+        patrol: '巡查处置',
+        clue: '线索核查',
+        poaching: '非法捕猎',
+        rescue: '救助放归',
+        other: '其他'
+      }[type] || '现场事件'
+    },
+    eventStatusLabel(status) {
+      return {
+        collecting: '采集中',
+        pending_sort: '待整理',
+        pending_report: '待成文',
+        archived: '已归档'
+      }[status] || '采集中'
+    },
+    editReport() {
+      if (!this.report.id) return
+      uni.navigateTo({ url: '/pages/police/workplace/report-generate?id=' + this.report.id })
+    },
+    goBack() {
+      uni.navigateBack({ delta: 1 })
+    }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.page { min-height: 100vh; background: #0F172A; padding-bottom: 160rpx; }
-.nav-bar { display: flex; align-items: center; justify-content: space-between; padding: 88rpx 32rpx 20rpx; }
-.back { font-size: 30rpx; color: #60A5FA; }
-.title { font-size: 34rpx; color: #F1F5F9; font-weight: 600; }
-.loading { display: flex; align-items: center; justify-content: center; height: 300rpx; text { color: #94A3B8; } }
-.card { background: #1E293B; margin: 16rpx 24rpx; border-radius: 16rpx; padding: 28rpx; }
-.card-title { display: block; font-size: 28rpx; font-weight: 600; color: #94A3B8; margin-bottom: 20rpx; }
-.row { display: flex; justify-content: space-between; align-items: center; padding: 12rpx 0; border-bottom: 1rpx solid rgba(255,255,255,0.06); &:last-child { border-bottom: none; } }
-.lbl { font-size: 26rpx; color: #64748B; }
-.val { font-size: 26rpx; color: #E2E8F0; max-width: 70%; text-align: right; }
-.desc { font-size: 28rpx; color: #CBD5E1; line-height: 1.7; }
-.status-tag { padding: 6rpx 20rpx; border-radius: 8rpx; }
-.s0 { background: rgba(245,158,11,0.15); text { color: #F59E0B; font-size: 22rpx; } }
-.s1 { background: rgba(16,185,129,0.15); text { color: #10B981; font-size: 22rpx; } }
-.s2 { background: rgba(107,114,128,0.15); text { color: #9CA3AF; font-size: 22rpx; } }
-.img-scroll { width: 100%; }
-.img-list { display: flex; gap: 16rpx; }
-.report-img { width: 200rpx; height: 200rpx; border-radius: 12rpx; flex-shrink: 0; }
-.bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1E293B; padding: 24rpx 32rpx; display: flex; gap: 20rpx; }
-.btn { flex: 1; height: 88rpx; border-radius: 12rpx; display: flex; align-items: center; justify-content: center; text { font-size: 30rpx; font-weight: 600; } }
-.btn-reject  { background: rgba(239,68,68,0.15); border: 2rpx solid rgba(239,68,68,0.3); text { color: #EF4444; } }
-.btn-approve { background: #2563EB; text { color: #FFFFFF; } }
+<style scoped>
+.page { min-height: 100vh; background: #0f172a; color: #fff; display: flex; flex-direction: column; }
+.status-bar, .navbar { background: #0f172a; }
+.navbar { height: 88rpx; padding: 0 20rpx; display: flex; align-items: center; }
+.nav-btn { width: 88rpx; font-size: 26rpx; color: rgba(255,255,255,0.72); }
+.nav-btn.right { text-align: right; }
+.nav-center { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.nav-title { font-size: 30rpx; font-weight: 600; }
+.nav-sub { font-size: 20rpx; color: rgba(255,255,255,0.35); }
+.scroll { flex: 1; padding: 18rpx 20rpx; box-sizing: border-box; }
+.card { margin-bottom: 18rpx; padding: 20rpx; border-radius: 16rpx; background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.08); }
+.event { background: rgba(15,118,110,0.14); border-color: rgba(45,212,191,0.22); }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 16rpx; padding: 10rpx 0; }
+.label { font-size: 22rpx; color: rgba(255,255,255,0.45); }
+.value { max-width: 68%; text-align: right; font-size: 22rpx; color: rgba(255,255,255,0.74); }
+.value.strong { font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.9); }
+.badge { padding: 6rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; }
+.s-draft { background: rgba(245,158,11,0.16); color: #fbbf24; }
+.s-submitted { background: rgba(37,99,235,0.16); color: #60a5fa; }
+.s-approved { background: rgba(16,185,129,0.16); color: #34d399; }
+.section-title { display: block; margin-bottom: 12rpx; font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.6); }
+.event-title { display: block; font-size: 28rpx; font-weight: 600; color: #ccfbf1; }
+.event-meta { display: block; margin-top: 8rpx; font-size: 22rpx; color: rgba(255,255,255,0.68); }
+.stats { display: flex; gap: 14rpx; }
+.stat { flex: 1; padding: 18rpx 12rpx; border-radius: 12rpx; background: rgba(255,255,255,0.04); text-align: center; }
+.stat-num { display: block; font-size: 34rpx; font-weight: 700; color: #93c5fd; }
+.stat-label { display: block; margin-top: 8rpx; font-size: 22rpx; color: rgba(255,255,255,0.46); }
+.paragraph { display: block; font-size: 24rpx; color: rgba(255,255,255,0.82); line-height: 1.8; }
+.paragraph.preserve { white-space: pre-wrap; }
+.empty { padding: 120rpx 40rpx; text-align: center; }
+.empty-title { display: block; font-size: 30rpx; font-weight: 600; color: rgba(255,255,255,0.62); }
+.empty-desc { display: block; margin-top: 12rpx; font-size: 22rpx; color: rgba(255,255,255,0.36); line-height: 1.7; }
+.safe-bottom { height: 70rpx; }
 </style>

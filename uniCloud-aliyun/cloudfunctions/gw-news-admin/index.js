@@ -2,6 +2,7 @@
 
 const db = uniCloud.database();
 const collection = db.collection('news');
+const briefCollection = db.collection('morning_briefs');
 
 async function triggerCrawler() {
   const result = await uniCloud.callFunction({
@@ -46,6 +47,49 @@ async function getNewsList(event) {
   };
 }
 
+async function triggerMorningBrief(event) {
+  const result = await uniCloud.callFunction({
+    name: 'gw-morning-brief',
+    data: {
+      action: 'generateDailyBrief',
+      refreshNews: event.refreshNews === true
+    }
+  });
+
+  return result.result || {
+    success: false,
+    message: '早报生成失败'
+  };
+}
+
+async function getLatestMorningBrief() {
+  const result = await briefCollection
+    .orderBy('dateKey', 'desc')
+    .limit(1)
+    .get();
+
+  const rows = (result.result && result.result.data) || result.data || [];
+  return {
+    success: true,
+    data: rows[0] || null
+  };
+}
+
+async function getMorningBriefDetail(event) {
+  const result = await uniCloud.callFunction({
+    name: 'gw-morning-brief',
+    data: {
+      action: 'getBriefDetail',
+      id: event.id
+    }
+  });
+
+  return result.result || {
+    success: false,
+    message: '获取早报详情失败'
+  };
+}
+
 async function deleteNews(event) {
   const id = event.id;
   if (!id) {
@@ -69,6 +113,12 @@ exports.main = async (event) => {
         return await triggerCrawler();
       case 'getNewsList':
         return await getNewsList(event);
+      case 'triggerMorningBrief':
+        return await triggerMorningBrief(event);
+      case 'getLatestMorningBrief':
+        return await getLatestMorningBrief();
+      case 'getMorningBriefDetail':
+        return await getMorningBriefDetail(event);
       case 'deleteNews':
         return await deleteNews(event);
       default:
