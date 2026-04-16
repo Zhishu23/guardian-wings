@@ -176,6 +176,7 @@ export default {
       officerId: 'GW-2025-0312',
       editorVisible: false,
       editorForm: null,
+      pendingEditId: '',
       eventTypes: [
         { value: 'suspicious', label: '可疑活动' },
         { value: 'poaching', label: '捕猎行为' },
@@ -213,8 +214,9 @@ export default {
       return found ? found.title : '未归档'
     }
   },
-  onLoad() {
+  onLoad(query) {
     this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    this.pendingEditId = query && query.editId ? query.editId : ''
     this.loadOfficerInfo()
     this.loadList()
     this.loadEventOptions()
@@ -223,6 +225,7 @@ export default {
   onShow() {
     this.loadList()
     this.loadEventOptions()
+    this.tryOpenPendingEditor()
   },
   methods: {
     loadOfficerInfo() {
@@ -410,6 +413,14 @@ export default {
     },
     loadList() {
       this.videoList = this.readStorageArray('gw_video_records').map((item) => this.normalizeVideo(item))
+      this.tryOpenPendingEditor()
+    },
+    tryOpenPendingEditor() {
+      if (!this.pendingEditId || this.editorVisible) return
+      const found = this.videoList.find((item) => item.id === this.pendingEditId)
+      if (!found) return
+      this.pendingEditId = ''
+      this.openEditor(found)
     },
     normalizeVideo(video) {
       return {

@@ -181,6 +181,10 @@
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "任务档案" }
     },
     {
+      "path": "pages/police/workplace/unfiled-materials",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "未归档素材" }
+    },
+    {
       "path": "pages/police/workplace/transcript",
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "笔录记录" }
     },

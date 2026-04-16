@@ -45,59 +45,30 @@
       :style="{ height: scrollHeight + 'px' }"
       :show-scrollbar="false"
     >
-      <view class="section-card" v-if="quickResumeItems.length > 0">
-        <view class="section-head">
-          <view class="section-line"></view>
-          <text class="section-title">快速继续</text>
-        </view>
-        <view class="resume-list">
-          <view
-            class="resume-item"
-            v-for="item in quickResumeItems"
-            :key="item.key"
-            @click="handleResume(item)"
-          >
-            <view class="resume-main">
-              <text class="resume-title">{{ item.title }}</text>
-              <text class="resume-meta">{{ item.meta }}</text>
-            </view>
-            <view class="resume-tag" :class="item.tagClass">
-              <text>{{ item.tag }}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
       <view class="section-card">
         <view class="section-head">
           <view class="section-line"></view>
-          <text class="section-title">最近事件</text>
-          <text class="section-link" @click="goEventManager">进入管理</text>
+          <text class="section-title">现场工具</text>
+          <text class="section-sub">离线可用</text>
         </view>
-        <view v-if="recentEvents.length > 0">
-          <view
-            class="event-item"
-            v-for="event in recentEvents"
-            :key="event.id"
-            @click="goEventManager"
-          >
-            <view class="event-main">
-              <view class="event-title-row">
-                <text class="event-title">{{ event.title }}</text>
-                <view class="event-status" :class="'event-status-' + event.statusClass">
-                  <text>{{ event.statusText }}</text>
-                </view>
-              </view>
-              <text class="event-meta">{{ event.meta }}</text>
-              <text class="event-sub">{{ event.subMeta }}</text>
+        <view class="tool-list">
+          <view class="tool-item" v-for="tool in fieldTools" :key="tool.key" @click="navigateTo(tool.url)">
+            <view class="tool-icon-wrap" :style="{ background: tool.bg }">
+              <svg :viewBox="tool.viewBox" fill="none" style="width:40rpx;height:40rpx;">
+                <path :d="tool.path" :fill="tool.color"/>
+              </svg>
             </view>
-            <svg viewBox="0 0 24 24" fill="none" style="width:28rpx;height:28rpx;">
-              <path d="M9 6L15 12L9 18" stroke="#C0C4CC" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <view class="tool-body">
+              <text class="tool-name">{{ tool.name }}</text>
+              <text class="tool-desc">{{ tool.desc }}</text>
+            </view>
+            <view class="tool-right">
+              <view class="tool-count">
+                <text>{{ tool.statusText }}</text>
+              </view>
+              <text class="tool-secondary">{{ tool.secondaryText }}</text>
+            </view>
           </view>
-        </view>
-        <view class="empty-tip" v-else>
-          <text class="empty-tip-text">暂无事件包，进入事件管理可开始整理现场资料</text>
         </view>
       </view>
 
@@ -136,58 +107,6 @@
             </view>
             <text class="quick-label">{{ item.label }}</text>
           </view>
-        </view>
-      </view>
-
-      <view class="section-card">
-        <view class="section-head">
-          <view class="section-line"></view>
-          <text class="section-title">现场工具</text>
-          <text class="section-sub">离线可用</text>
-        </view>
-        <view class="tool-list">
-          <view class="tool-item" v-for="tool in fieldTools" :key="tool.key" @click="navigateTo(tool.url)">
-            <view class="tool-icon-wrap" :style="{ background: tool.bg }">
-              <svg :viewBox="tool.viewBox" fill="none" style="width:40rpx;height:40rpx;">
-                <path :d="tool.path" :fill="tool.color"/>
-              </svg>
-            </view>
-            <view class="tool-body">
-              <text class="tool-name">{{ tool.name }}</text>
-              <text class="tool-desc">{{ tool.desc }}</text>
-            </view>
-            <view class="tool-right">
-              <view class="tool-count">
-                <text>{{ tool.statusText }}</text>
-              </view>
-              <text class="tool-secondary">{{ tool.secondaryText }}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <view class="section-card">
-        <view class="section-head">
-          <view class="section-line"></view>
-          <text class="section-title">最近文书</text>
-          <text class="section-link" @click="viewAllReports">查看全部</text>
-        </view>
-        <view v-if="recentReports.length > 0">
-          <view class="report-item" v-for="r in recentReports" :key="r.id" @click="viewReport(r)">
-            <view class="report-left">
-              <view class="report-status-dot" :class="'dot-' + r.statusClass"></view>
-              <view class="report-info">
-                <text class="report-title-text">{{ r.title }}</text>
-                <text class="report-meta">{{ r.type }} · {{ r.time }}</text>
-              </view>
-            </view>
-            <view class="report-badge" :class="'badge-' + r.statusClass">
-              <text>{{ r.statusText }}</text>
-            </view>
-          </view>
-        </view>
-        <view class="empty-tip" v-else>
-          <text class="empty-tip-text">暂无文书记录，点击报告生成即可新建</text>
         </view>
       </view>
 
@@ -252,14 +171,11 @@ export default {
       pendingTaskCount: 0,
       officerName: '',
       officerDept: '',
-      recentReports: [],
-      recentEvents: [],
       draftSummary: {
         report: 0,
         transcript: 0,
         material: 0
       },
-      quickResumeItems: [],
       statItems: [
         { val: '0', label: '待处理任务' },
         { val: '0', label: '进行中' },
@@ -294,6 +210,16 @@ export default {
       ],
       fieldTools: [
         {
+          key: 'event',
+          name: '事件包管理', desc: '整理素材、归并事件、继续处理',
+          url: '/pages/police/workplace/event-record',
+          bg: 'rgba(14,116,144,0.1)', color: '#0E7490',
+          viewBox: '0 0 24 24',
+          path: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z',
+          statusText: '事件 0 个',
+          secondaryText: '整理现场资料'
+        },
+        {
           key: 'photo',
           name: '拍照取证', desc: '现场拍摄、加水印、整理照片',
           url: '/pages/police/workplace/photo-capture',
@@ -324,24 +250,14 @@ export default {
           secondaryText: '可继续编辑'
         },
         {
-          key: 'event',
-          name: '事件管理', desc: '整理素材、归并事件、继续处理',
-          url: '/pages/police/workplace/event-record',
-          bg: 'rgba(14,116,144,0.1)', color: '#0E7490',
-          viewBox: '0 0 24 24',
-          path: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z',
-          statusText: '事件 0 个',
-          secondaryText: '整理现场资料'
-        },
-        {
           key: 'report',
           name: '报告生成', desc: '汇总素材，生成标准化文书',
           url: '/pages/police/workplace/report-generate',
           bg: 'rgba(124,58,237,0.1)', color: '#7C3AED',
           viewBox: '0 0 24 24',
           path: 'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z',
-          statusText: '待完善 0 份',
-          secondaryText: '支持草稿恢复'
+          statusText: '草稿 0 份',
+          secondaryText: '新建标准文书'
         }
       ]
     }
@@ -398,98 +314,18 @@ export default {
       const photos = this.readStorageArray('gw_photo_records')
       const events = this.readStorageArray('gw_event_records')
 
-      this.loadRecentReports(reports)
-      this.loadRecentEvents(events, reports, transcripts, videos, photos)
       this.loadDraftSummary(reports, transcripts, videos, photos, events)
-      this.loadQuickResume(events, reports, transcripts)
       this.updateToolStatus(reports, transcripts, videos, photos, events)
-    },
-
-    loadRecentReports(allReports) {
-      this.recentReports = allReports
-        .slice()
-        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))
-        .slice(0, 3)
-        .map((report) => {
-          const statusClass = this.normalizeReportStatus(report.status)
-          return {
-            id: report.id,
-            title: report.title || 'Untitled',
-            type: this.getTypeLabel(report.template),
-            statusClass,
-            statusText: this.getReportStatusText(report.status),
-            time: this.formatDateTime(report.updatedAt || report.createdAt)
-          }
-        })
-    },
-
-    loadRecentEvents(events, reports, transcripts, videos, photos) {
-      this.recentEvents = events
-        .slice()
-        .map((event) => this.normalizeEventRecord(event, reports, transcripts, videos, photos))
-        .sort((a, b) => this.getTimeValue(b.updatedAt) - this.getTimeValue(a.updatedAt))
-        .slice(0, 3)
     },
 
     loadDraftSummary(reports, transcripts, videos, photos, events) {
       this.draftSummary = {
         report: reports.filter((item) => this.isPendingReport(item.status)).length,
         transcript: transcripts.filter((item) => this.isDraftTranscript(item.status)).length,
-        material: videos.filter((item) => !item.eventId).length
-          + photos.filter((item) => !item.eventId).length
-          + transcripts.filter((item) => !item.eventId && this.isDraftTranscript(item.status)).length
-          + events.filter((item) => this.isPendingEvent(item.status)).length
+        material: videos.filter((item) => !item.eventId && item.status !== 'discarded').length
+          + photos.filter((item) => !item.eventId && item.status !== 'discarded').length
+          + transcripts.filter((item) => !item.eventId).length
       }
-    },
-
-    loadQuickResume(events, reports, transcripts) {
-      const resumeItems = []
-      const activeEvent = events
-        .slice()
-        .filter((item) => this.isPendingEvent(item.status))
-        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
-      if (activeEvent) {
-        resumeItems.push({
-          key: 'event',
-          title: activeEvent.title || 'Continue Event',
-          meta: this.getEventStatusText(activeEvent.status) + ' · ' + this.formatDateTime(activeEvent.updatedAt || activeEvent.createdAt),
-          tag: 'EVENT',
-          tagClass: 'tag-event',
-          action: () => this.goEventManager()
-        })
-      }
-
-      const draftReport = reports
-        .slice()
-        .filter((item) => this.isPendingReport(item.status))
-        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
-      if (draftReport) {
-        resumeItems.push({
-          key: 'report',
-          title: draftReport.title || 'Continue Report',
-          meta: this.getReportStatusText(draftReport.status) + ' · ' + this.formatDateTime(draftReport.updatedAt || draftReport.createdAt),
-          tag: 'REPORT',
-          tagClass: 'tag-report',
-          action: () => this.viewReport({ id: draftReport.id })
-        })
-      }
-
-      const draftTranscript = transcripts
-        .slice()
-        .filter((item) => this.isDraftTranscript(item.status))
-        .sort((a, b) => this.getTimeValue(b.updatedAt || b.createdAt) - this.getTimeValue(a.updatedAt || a.createdAt))[0]
-      if (draftTranscript) {
-        resumeItems.push({
-          key: 'transcript',
-          title: draftTranscript.title || draftTranscript.description || 'Continue Transcript',
-          meta: this.getTranscriptStatusText(draftTranscript.status) + ' · ' + this.formatDateTime(draftTranscript.updatedAt || draftTranscript.createdAt),
-          tag: 'NOTE',
-          tagClass: 'tag-transcript',
-          action: () => this.navigateTo(`/pages/police/workplace/transcript?editId=${draftTranscript.id}`)
-        })
-      }
-
-      this.quickResumeItems = resumeItems.slice(0, 2)
     },
 
     updateToolStatus(reports, transcripts, videos, photos, events) {
@@ -508,23 +344,6 @@ export default {
         if (tool.key === 'report') return Object.assign({}, tool, { statusText: '待完善 ' + pendingReports + ' 份', secondaryText: pendingReports > 0 ? '支持草稿恢复' : '新建标准文书' })
         return tool
       })
-    },
-
-    normalizeEventRecord(event, reports, transcripts, videos, photos) {
-      const photoCount = Array.isArray(event.photoIds) ? event.photoIds.length : photos.filter((item) => item.eventId === event.id).length
-      const videoCount = Array.isArray(event.videoIds) ? event.videoIds.length : videos.filter((item) => item.eventId === event.id).length
-      const transcriptCount = Array.isArray(event.transcriptIds) ? event.transcriptIds.length : transcripts.filter((item) => item.eventId === event.id).length
-      const reportCount = Array.isArray(event.reportIds) ? event.reportIds.length : reports.filter((item) => item.eventId === event.id).length
-
-      return {
-        id: event.id,
-        title: event.title || event.description || 'Untitled Event',
-        statusClass: this.normalizeEventStatus(event.status),
-        statusText: this.getEventStatusText(event.status),
-        meta: (event.type || '现场事件') + ' · ' + this.formatDateTime(event.updatedAt || event.createdAt || event.happenTime),
-        subMeta: '照片 ' + photoCount + ' · 视频 ' + videoCount + ' · 笔录 ' + transcriptCount + ' · 文书 ' + reportCount,
-        updatedAt: event.updatedAt || event.createdAt || event.happenTime
-      }
     },
 
     readStorageArray(key) {
@@ -571,21 +390,8 @@ export default {
       return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
     },
 
-    normalizeReportStatus(status) {
-      if (status === 'approved' || status === 'completed' || status === 'exported') return 'approved'
-      if (status === 'submitted' || status === 'pending_complete') return 'submitted'
-      return 'draft'
-    },
-
-    normalizeEventStatus(status) {
-      if (status === 'archived') return 'archived'
-      if (status === 'pending_report') return 'pending'
-      if (status === 'pending_sort') return 'sorting'
-      return 'collecting'
-    },
-
     isPendingReport(status) {
-      return !['approved', 'completed', 'exported'].includes(status)
+      return !['submitted', 'approved', 'completed', 'exported'].includes(status)
     },
 
     isDraftTranscript(status) {
@@ -596,61 +402,13 @@ export default {
       return !status || ['collecting', 'pending_sort', 'pending_report'].includes(status)
     },
 
-    getTypeLabel(type) {
-      const map = {
-        incident: '事件处置',
-        patrol: '现场巡查',
-        investigation: '线索核查',
-        summary: '工作简报',
-        custom: '自定义'
-      }
-      return map[type] || '报告'
-    },
-
-    getReportStatusText(status) {
-      const map = {
-        draft: '草稿',
-        pending_complete: '待完善',
-        submitted: '待完善',
-        approved: '已完成',
-        completed: '已完成',
-        exported: '已导出'
-      }
-      return map[status] || '草稿'
-    },
-
-    getTranscriptStatusText(status) {
-      const map = {
-        draft: '草稿',
-        editing: '编辑中',
-        complete: '已完成',
-        completed: '已完成',
-        syncing: '处理中'
-      }
-      return map[status] || '草稿'
-    },
-
-    getEventStatusText(status) {
-      const map = {
-        collecting: '采集中',
-        pending_sort: '待整理',
-        pending_report: '待成文',
-        archived: '已归档'
-      }
-      return map[status] || '采集中'
-    },
-
-    handleResume(item) {
-      if (item && typeof item.action === 'function') item.action()
-    },
-
     openDraftCategory(type) {
       const routes = {
         report: '/pages/police/workplace/report-list',
         transcript: '/pages/police/workplace/transcript',
-        material: '/pages/police/workplace/event-record'
+        material: '/pages/police/workplace/unfiled-materials'
       }
-      this.navigateTo(routes[type] || '/pages/police/workplace/event-record')
+      this.navigateTo(routes[type] || '/pages/police/workplace/unfiled-materials')
     },
 
     handleQuick(key) {
@@ -683,18 +441,6 @@ export default {
       uni.navigateTo({ url: '/pages/police/workplace/task-archive' })
     },
 
-    goEventManager() {
-      uni.navigateTo({ url: '/pages/police/workplace/event-record' })
-    },
-
-    viewAllReports() {
-      uni.navigateTo({ url: '/pages/police/workplace/report-list' })
-    },
-
-    viewReport(report) {
-      uni.navigateTo({ url: `/pages/police/workplace/report-detail?id=${report.id}` })
-    },
-
     switchTab(tab) {
       const routes = {
         task: '/pages/police/task-center/index',
@@ -709,287 +455,67 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.workplace-page { min-height: 100vh; background: #F2F6FC; }
-
-.custom-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 28rpx 20rpx;
-  background: linear-gradient(135deg, #0F2A5C 0%, #1B4B8C 60%, #2563EB 100%);
-}
-
+.workplace-page { min-height: 100vh; background: radial-gradient(circle at 10% -20%, #dbeafe 0%, #eef3fb 55%); }
+.custom-navbar { display: flex; justify-content: space-between; align-items: center; padding: 20rpx 28rpx 24rpx; background: linear-gradient(135deg, #0f2f6b 0%, #1d4ed8 65%, #2563eb 100%); }
 .navbar-left { display: flex; align-items: center; gap: 20rpx; }
-.officer-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  border: 2rpx solid rgba(255,255,255,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.avatar-text { font-size: 32rpx; font-weight: bold; color: #FFFFFF; }
+.officer-avatar { width: 80rpx; height: 80rpx; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2rpx solid rgba(255,255,255,0.42); display: flex; align-items: center; justify-content: center; }
+.avatar-text { font-size: 32rpx; font-weight: 700; color: #fff; }
 .officer-info { display: flex; flex-direction: column; gap: 6rpx; }
-.officer-name { font-size: 30rpx; font-weight: bold; color: #FFFFFF; }
+.officer-name { font-size: 30rpx; font-weight: 700; color: #fff; line-height: 1.3; }
 .officer-dept { display: flex; align-items: center; gap: 8rpx; }
-.dept-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #10B981; }
-.dept-text { font-size: 22rpx; color: rgba(255,255,255,0.8); }
-
+.dept-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #22c55e; }
+.dept-text { font-size: 22rpx; color: rgba(255,255,255,0.82); }
 .navbar-right { display: flex; gap: 12rpx; }
-.nav-icon-btn {
-  width: 72rpx;
-  height: 72rpx;
-  background: rgba(255,255,255,0.15);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.nav-badge {
-  position: absolute;
-  top: 8rpx;
-  right: 8rpx;
-  min-width: 28rpx;
-  height: 28rpx;
-  background: #EF4444;
-  border-radius: 14rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6rpx;
-  border: 2rpx solid #1B4B8C;
-  text {
-    font-size: 16rpx;
-    color: #FFFFFF;
-    font-weight: bold;
-  }
-}
+.nav-icon-btn { width: 72rpx; height: 72rpx; background: rgba(255,255,255,0.16); border: 1rpx solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+.nav-badge { position: absolute; top: 8rpx; right: 8rpx; min-width: 28rpx; height: 28rpx; background: #ef4444; border-radius: 14rpx; display: flex; align-items: center; justify-content: center; padding: 0 6rpx; border: 2rpx solid #1d4ed8; }
+.nav-badge text { font-size: 16rpx; color: #fff; font-weight: 700; }
 
-.stats-banner {
-  display: flex;
-  background: linear-gradient(135deg, #1B4B8C, #2563EB);
-  padding: 20rpx 28rpx 28rpx;
-}
-.stat-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6rpx;
-  border-right: 1rpx solid rgba(255,255,255,0.2);
-}
+.stats-banner { display: flex; margin: 0 24rpx; padding: 20rpx 8rpx 28rpx; background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.07)); border: 1rpx solid rgba(255,255,255,0.14); border-radius: 0 0 24rpx 24rpx; }
+.stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6rpx; border-right: 1rpx solid rgba(255,255,255,0.18); }
 .stat-item:last-child { border-right: none; }
-.stat-val { font-size: 34rpx; font-weight: bold; color: #FFFFFF; }
-.stat-label { font-size: 18rpx; color: rgba(255,255,255,0.7); }
+.stat-val { font-size: 36rpx; font-weight: 700; color: #0f172a; }
+.stat-label { font-size: 19rpx; color: rgba(15,23,42,0.74); }
+.content-scroll { width: 100%; box-sizing: border-box; overflow-x: hidden; }
 
-.content-scroll {
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
-}
-
-.section-card {
-  background: #FFFFFF;
-  border-radius: 20rpx;
-  margin: 20rpx 24rpx 0;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
-}
+.section-card { background: #fff; border: 1rpx solid #e7edf5; border-radius: 24rpx; margin: 20rpx 24rpx 0; padding: 30rpx 28rpx; box-shadow: 0 14rpx 32rpx rgba(15, 23, 42, 0.07); }
 .section-head { display: flex; align-items: center; gap: 14rpx; margin-bottom: 24rpx; }
-.section-line { width: 8rpx; height: 30rpx; background: linear-gradient(180deg, #1B4B8C, #2563EB); border-radius: 4rpx; }
-.section-title { font-size: 30rpx; font-weight: bold; color: #1A202C; flex: 1; }
-.section-sub { font-size: 22rpx; color: #10B981; }
-.section-link { font-size: 24rpx; color: #2563EB; }
-
-.resume-list { display: flex; flex-direction: column; gap: 16rpx; }
-.resume-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 22rpx 24rpx;
-  border-radius: 18rpx;
-  background: #F8FAFF;
-}
-.resume-main { flex: 1; min-width: 0; }
-.resume-title { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
-.resume-meta { display: block; font-size: 22rpx; color: #909399; }
-.resume-tag {
-  min-width: 92rpx;
-  height: 48rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 18rpx;
-  margin-left: 20rpx;
-  text { font-size: 20rpx; font-weight: 600; }
-}
-.tag-event { background: rgba(14,116,144,0.12); color: #0E7490; }
-.tag-report { background: rgba(124,58,237,0.12); color: #7C3AED; }
-.tag-transcript { background: rgba(217,119,6,0.12); color: #D97706; }
-
+.section-line { width: 8rpx; height: 32rpx; background: linear-gradient(180deg, #2563eb, #1d4ed8); border-radius: 4rpx; }
+.section-title { font-size: 30rpx; font-weight: 700; color: #0f172a; flex: 1; }
+.section-sub { font-size: 22rpx; color: #0ea5a3; }
 .draft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16rpx; }
-.draft-card {
-  background: linear-gradient(180deg, #F8FAFF 0%, #F3F7FF 100%);
-  border-radius: 18rpx;
-  padding: 24rpx 12rpx;
-  text-align: center;
-}
-.draft-value { display: block; font-size: 36rpx; font-weight: 700; color: #1B4B8C; margin-bottom: 8rpx; }
-.draft-label { display: block; font-size: 22rpx; line-height: 1.5; color: #4A5568; }
+.draft-card { background: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%); border: 1rpx solid #e4ecf9; border-radius: 18rpx; padding: 24rpx 12rpx; text-align: center; }
+.draft-value { display: block; font-size: 36rpx; font-weight: 700; color: #1e40af; margin-bottom: 8rpx; }
+.draft-label { display: block; font-size: 22rpx; line-height: 1.5; color: #475569; }
 
-.event-item {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  padding: 22rpx 0;
-  border-bottom: 1rpx solid #F2F6FC;
-}
-.event-item:last-child { border-bottom: none; }
-.event-main { flex: 1; min-width: 0; }
-.event-title-row { display: flex; align-items: center; gap: 16rpx; margin-bottom: 8rpx; }
-.event-title {
-  flex: 1;
-  min-width: 0;
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #1A202C;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.event-status { padding: 6rpx 14rpx; border-radius: 20rpx; }
-.event-status text { font-size: 20rpx; font-weight: 600; }
-.event-status-collecting { background: rgba(37,99,235,0.1); color: #2563EB; }
-.event-status-sorting { background: rgba(217,119,6,0.1); color: #D97706; }
-.event-status-pending { background: rgba(124,58,237,0.1); color: #7C3AED; }
-.event-status-archived { background: rgba(16,185,129,0.1); color: #059669; }
-.event-meta,
-.event-sub { display: block; font-size: 22rpx; color: #909399; line-height: 1.6; }
+.tool-item { display: flex; align-items: center; gap: 20rpx; padding: 22rpx 0; border-bottom: 1rpx solid #edf2f8; }
+.tool-item:last-child { border-bottom: none; }
+.tool-body { flex: 1; min-width: 0; }
 
 .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16rpx; }
-.quick-item { display: flex; flex-direction: column; align-items: center; gap: 12rpx; padding: 20rpx 0; }
-.quick-item:active { opacity: 0.7; }
+.quick-item { display: flex; flex-direction: column; align-items: center; gap: 12rpx; padding: 20rpx 0; border-radius: 16rpx; }
+.quick-item:active { background: #f4f8ff; }
 .quick-icon-wrap { width: 96rpx; height: 96rpx; border-radius: 24rpx; display: flex; align-items: center; justify-content: center; }
-.quick-label { font-size: 22rpx; color: #4A5568; font-weight: 500; text-align: center; }
+.quick-label { font-size: 22rpx; color: #334155; font-weight: 500; text-align: center; }
 
-.tool-item {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #F2F6FC;
-}
-.tool-item:last-child { border-bottom: none; }
-.tool-item:active { opacity: 0.8; }
+.tool-item:active { opacity: 0.82; }
 .tool-icon-wrap { width: 80rpx; height: 80rpx; border-radius: 18rpx; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.tool-body { flex: 1; min-width: 0; }
-.tool-name { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
-.tool-desc { display: block; font-size: 22rpx; color: #909399; line-height: 1.5; }
-.tool-right {
-  min-width: 132rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8rpx;
-}
-.tool-count {
-  background: rgba(37,99,235,0.08);
-  color: #2563EB;
-  font-size: 19rpx;
-  padding: 6rpx 14rpx;
-  border-radius: 18rpx;
-}
-.tool-secondary { font-size: 20rpx; color: #C0C4CC; }
-
-.report-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #F2F6FC;
-}
-.report-item:last-child { border-bottom: none; }
-.report-item:active { opacity: 0.7; }
-.report-left { display: flex; align-items: center; gap: 16rpx; flex: 1; }
-.report-status-dot { width: 16rpx; height: 16rpx; border-radius: 50%; flex-shrink: 0; }
-.dot-draft { background: #9CA3AF; }
-.dot-submitted { background: #2563EB; }
-.dot-approved { background: #10B981; }
-.report-info { flex: 1; }
-.report-title-text {
-  display: block;
-  font-size: 27rpx;
-  font-weight: 500;
-  color: #1A202C;
-  margin-bottom: 6rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 420rpx;
-}
-.report-meta { display: block; font-size: 22rpx; color: #909399; }
-.report-badge { font-size: 20rpx; padding: 6rpx 18rpx; border-radius: 20rpx; flex-shrink: 0; }
-.badge-draft { background: rgba(156,163,175,0.12); color: #6B7280; }
-.badge-submitted { background: rgba(37,99,235,0.1); color: #2563EB; }
-.badge-approved { background: rgba(16,185,129,0.1); color: #10B981; }
-
-.empty-tip { padding: 32rpx 0; text-align: center; }
-.empty-tip-text { font-size: 25rpx; color: #C0C4CC; line-height: 1.7; }
-
-.archive-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #FFFFFF;
-  border-radius: 20rpx;
-  margin: 20rpx 24rpx 0;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
-}
-.archive-entry:active { background: #F8FAFF; }
+.tool-name { display: block; font-size: 28rpx; font-weight: 600; color: #0f172a; margin-bottom: 6rpx; }
+.tool-desc { display: block; font-size: 22rpx; color: #64748b; line-height: 1.5; }
+.tool-right { min-width: 144rpx; display: flex; flex-direction: column; align-items: flex-end; gap: 8rpx; }
+.tool-count { background: rgba(37,99,235,0.08); color: #1d4ed8; font-size: 19rpx; padding: 6rpx 14rpx; border-radius: 18rpx; }
+.tool-secondary { font-size: 20rpx; color: #94a3b8; }
+.archive-entry { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1rpx solid #e7edf5; border-radius: 24rpx; margin: 20rpx 24rpx 0; padding: 28rpx; box-shadow: 0 14rpx 32rpx rgba(15, 23, 42, 0.07); }
+.archive-entry:active { background: #f8fbff; }
 .archive-left { display: flex; align-items: center; gap: 20rpx; }
 .archive-icon { width: 80rpx; height: 80rpx; border-radius: 18rpx; background: rgba(37,99,235,0.08); display: flex; align-items: center; justify-content: center; }
-.archive-title { display: block; font-size: 28rpx; font-weight: 600; color: #1A202C; margin-bottom: 6rpx; }
-.archive-sub { display: block; font-size: 22rpx; color: #909399; }
+.archive-title { display: block; font-size: 28rpx; font-weight: 600; color: #0f172a; margin-bottom: 6rpx; }
+.archive-sub { display: block; font-size: 22rpx; color: #64748b; }
 
-.police-tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 120rpx;
-  background: rgba(15,23,42,0.97);
-  backdrop-filter: blur(20rpx);
-  border-top: 1rpx solid rgba(255,255,255,0.08);
-  display: flex;
-  padding-bottom: env(safe-area-inset-bottom);
-  z-index: 1000;
-}
+.police-tabbar { position: fixed; bottom: 0; left: 0; right: 0; height: 120rpx; background: rgba(15,23,42,0.92); backdrop-filter: blur(24rpx); border-top: 1rpx solid rgba(255,255,255,0.08); display: flex; padding-bottom: env(safe-area-inset-bottom); z-index: 1000; }
 .tabbar-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6rpx; }
-.tabbar-icon-wrap { position: relative; width: 48rpx; height: 48rpx; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); }
-.tab-badge {
-  position: absolute;
-  top: -8rpx;
-  right: -14rpx;
-  min-width: 30rpx;
-  height: 30rpx;
-  background: #DC2626;
-  border-radius: 15rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6rpx;
-  text {
-    font-size: 16rpx;
-    color: #FFFFFF;
-    font-weight: bold;
-  }
-}
-.tabbar-label { font-size: 20rpx; color: rgba(255,255,255,0.4); }
-.tabbar-item.active .tabbar-icon-wrap { color: #3B82F6; }
-.tabbar-item.active .tabbar-label { color: #3B82F6; font-weight: 600; }
+.tabbar-icon-wrap { position: relative; width: 48rpx; height: 48rpx; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); }
+.tab-badge { position: absolute; top: -8rpx; right: -14rpx; min-width: 30rpx; height: 30rpx; background: #dc2626; border-radius: 15rpx; display: flex; align-items: center; justify-content: center; padding: 0 6rpx; }
+.tab-badge text { font-size: 16rpx; color: #fff; font-weight: 700; }
+.tabbar-label { font-size: 20rpx; color: rgba(255,255,255,0.45); }
+.tabbar-item.active .tabbar-icon-wrap, .tabbar-item.active .tabbar-label { color: #60a5fa; font-weight: 600; }
 </style>

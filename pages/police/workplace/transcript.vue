@@ -5,19 +5,33 @@
       <view class="nav-btn" @click="goBack">返回</view>
       <view class="nav-center">
         <text class="nav-title">笔录记录</text>
-        <text class="nav-sub">{{ current.id || '新建笔录' }}</text>
+        <text class="nav-sub">{{ currentTemplateText }}</text>
       </view>
-      <view class="nav-btn submit" @click="onSubmit">完成</view>
+      <view class="nav-actions">
+        <text class="nav-btn light" @click="startNew">新建</text>
+        <text class="nav-btn submit" @click="onSubmit">完成</text>
+      </view>
     </view>
 
     <scroll-view scroll-y class="scroll">
       <view class="header-card">
-        <view>
-          <text class="hc-id">{{ current.id }}</text>
+        <view class="header-main">
+          <view class="hc-title-row">
+            <text class="hc-title">{{ current.title || '新建笔录' }}</text>
+            <text class="title-switch-btn" @click="openTranscriptPicker">切换</text>
+          </view>
+          <text class="hc-id">模板：{{ currentTemplateText }}</text>
           <text class="hc-time">更新时间：{{ current.updatedAt || current.createdAt }}</text>
         </view>
-        <view class="hc-status" :class="'hs-' + current.status">
-          <text>{{ statusLabel(current.status) }}</text>
+        <view class="header-right">
+          <view class="hc-status" :class="'hs-' + current.status">
+            <text>{{ statusLabel(current.status) }}</text>
+          </view>
+          <view class="header-actions">
+            <text class="link" @click="startNew">新建笔录</text>
+            <text class="link" @click="onSaveDraft">保存草稿</text>
+            <text class="danger-link" v-if="isExistingTranscript" @click="deleteCurrent">删除</text>
+          </view>
         </view>
       </view>
 
@@ -98,39 +112,6 @@
       </view>
 
       <view class="section">
-        <view class="sec-head">
-          <text class="sec-label">关联素材</text>
-          <text class="sec-meta">照片 {{ linkedPhotos.length }} · 视频 {{ linkedVideos.length }}</text>
-        </view>
-        <view class="field-card">
-          <view class="material-line">
-            <text>关联照片</text>
-            <text class="link" @click="pickPhotos">选择</text>
-          </view>
-          <text class="material-desc" v-if="linkedPhotos.length === 0">暂未关联照片</text>
-          <view v-else class="material-list">
-            <view v-for="photo in linkedPhotos" :key="photo.id" class="material-item">
-              <text>{{ photo.remark || photo.batchTitle || '照片' }}</text>
-              <text class="mini-link" @click="removeLinkedPhoto(photo.id)">移除</text>
-            </view>
-          </view>
-        </view>
-        <view class="field-card">
-          <view class="material-line">
-            <text>关联视频</text>
-            <text class="link" @click="pickVideos">选择</text>
-          </view>
-          <text class="material-desc" v-if="linkedVideos.length === 0">暂未关联视频</text>
-          <view v-else class="material-list">
-            <view v-for="video in linkedVideos" :key="video.id" class="material-item">
-              <text>{{ video.remark || video.durationStr || '视频' }}</text>
-              <text class="mini-link" @click="removeLinkedVideo(video.id)">移除</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <view class="section">
         <text class="sec-label">其他笔录</text>
         <view class="other-list" v-if="otherTranscripts.length > 0">
           <view v-for="item in otherTranscripts" :key="item.id" class="other-item" @click="switchTo(item)">
@@ -161,9 +142,9 @@ export default {
       statusBarHeight: 0,
       officerId: 'GW-2025-0312',
       allTranscripts: [],
+      isExistingTranscript: false,
+      baselineSnapshot: '',
       eventOptions: [],
-      photoOptions: [],
-      videoOptions: [],
       current: this.createEmpty(),
       templates: [
         { value: 'patrol', label: '现场巡查记录', summary: '记录巡查时间、地点、发现情况与处置情况。' },
@@ -194,27 +175,40 @@ export default {
       const found = this.eventOptions.find((item) => item.id === this.current.eventId)
       return found ? found.title : '未归档'
     },
-    linkedPhotos() {
-      return this.photoOptions.filter((item) => this.current.linkedPhotoIds.includes(item.id))
-    },
-    linkedVideos() {
-      return this.videoOptions.filter((item) => this.current.linkedVideoIds.includes(item.id))
+    currentTemplateText() {
+      const found = this.templates.find((item) => item.value === this.current.template)
+      return found ? found.label : '未选择模板'
     }
   },
   onLoad(query) {
     this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
     this.loadOfficerInfo()
     this.loadRelatedData()
+    if (query && query.mode === 'new') {
+      this.current = this.createNew()
+      this.isExistingTranscript = false
+      this.baselineSnapshot = this.serializeCurrent(this.current)
+      return
+    }
     if (query && query.editId) {
       const found = this.allTranscripts.find((item) => item.id === query.editId)
       if (found) {
         this.current = this.normalizeTranscript(found)
+        this.isExistingTranscript = true
+        this.baselineSnapshot = this.serializeCurrent(this.current)
         return
       }
     }
+    const preferred = this.pickPreferredTranscript()
+    if (preferred) {
+      this.current = this.normalizeTranscript(preferred)
+      this.isExistingTranscript = true
+      this.baselineSnapshot = this.serializeCurrent(this.current)
+      return
+    }
     this.current = this.createNew()
-    this.allTranscripts.unshift(this.current)
-    this.saveAll()
+    this.isExistingTranscript = false
+    this.baselineSnapshot = this.serializeCurrent(this.current)
   },
   onShow() {
     this.loadRelatedData()
@@ -268,6 +262,19 @@ export default {
       const p = (n) => String(n).padStart(2, '0')
       return `GW-T-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.floor(Math.random() * 9000 + 1000)}`
     },
+    pickPreferredTranscript() {
+      if (!Array.isArray(this.allTranscripts) || this.allTranscripts.length === 0) return null
+      const sorted = this.allTranscripts
+        .slice()
+        .sort((a, b) => this.timeValue(b.updatedAt || b.createdAt) - this.timeValue(a.updatedAt || a.createdAt))
+      const draft = sorted.find((item) => (item.status || 'draft') === 'draft')
+      return draft || sorted[0]
+    },
+    timeValue(value) {
+      if (!value) return 0
+      const t = new Date(String(value).replace(/-/g, '/')).getTime()
+      return Number.isNaN(t) ? 0 : t
+    },
     loadOfficerInfo() {
       try {
         const raw = uni.getStorageSync('gw_police_info')
@@ -278,8 +285,6 @@ export default {
     loadRelatedData() {
       this.loadAll()
       this.eventOptions = this.readStorageArray('gw_event_records').map((item) => ({ id: item.id, title: item.title || item.description || '未命名事件' }))
-      this.photoOptions = this.readStorageArray('gw_photo_records')
-      this.videoOptions = this.readStorageArray('gw_video_records')
       this.allTranscripts = this.allTranscripts.map((item) => this.normalizeTranscript(item))
       if (this.current.id) {
         const latest = this.allTranscripts.find((item) => item.id === this.current.id)
@@ -332,52 +337,55 @@ export default {
         }
       })
     },
-    pickPhotos() {
-      if (this.photoOptions.length === 0) {
-        uni.showToast({ title: '暂无可选照片', icon: 'none' })
+    openTranscriptPicker() {
+      if (!Array.isArray(this.allTranscripts) || this.allTranscripts.length === 0) {
+        uni.showToast({ title: '暂无可切换笔录', icon: 'none' })
         return
       }
-      const list = this.photoOptions.slice(0, 8).map((item) => item.remark || item.batchTitle || item.id)
+      const records = this.allTranscripts.slice().sort((a, b) => this.timeValue(b.updatedAt || b.createdAt) - this.timeValue(a.updatedAt || a.createdAt))
+      const list = records.slice(0, 10).map((item) => item.title || item.summary || item.createdAt || '未命名笔录')
       uni.showActionSheet({
         itemList: list,
         success: (res) => {
-          const target = this.photoOptions[res.tapIndex]
-          if (!target) return
-          if (!this.current.linkedPhotoIds.includes(target.id)) {
-            this.current.linkedPhotoIds.push(target.id)
-            this.autoSave()
+          const target = records[res.tapIndex]
+          if (!target || target.id === this.current.id) return
+          if (this.isDirty()) {
+            uni.showModal({
+              title: '当前内容未保存',
+              content: '是否先保存当前笔录，再切换？',
+              success: (modalRes) => {
+                if (modalRes.confirm) this.onSaveDraft()
+                this.switchTo(target)
+              }
+            })
+            return
           }
+          this.switchTo(target)
         }
       })
-    },
-    pickVideos() {
-      if (this.videoOptions.length === 0) {
-        uni.showToast({ title: '暂无可选视频', icon: 'none' })
-        return
-      }
-      const list = this.videoOptions.slice(0, 8).map((item) => item.remark || item.durationStr || item.id)
-      uni.showActionSheet({
-        itemList: list,
-        success: (res) => {
-          const target = this.videoOptions[res.tapIndex]
-          if (!target) return
-          if (!this.current.linkedVideoIds.includes(target.id)) {
-            this.current.linkedVideoIds.push(target.id)
-            this.autoSave()
-          }
-        }
-      })
-    },
-    removeLinkedPhoto(id) {
-      this.current.linkedPhotoIds = this.current.linkedPhotoIds.filter((item) => item !== id)
-      this.autoSave()
-    },
-    removeLinkedVideo(id) {
-      this.current.linkedVideoIds = this.current.linkedVideoIds.filter((item) => item !== id)
-      this.autoSave()
     },
     switchTo(item) {
       this.current = this.normalizeTranscript(item)
+      this.isExistingTranscript = true
+      this.baselineSnapshot = this.serializeCurrent(this.current)
+    },
+    startNew() {
+      if (this.isDirty()) {
+        uni.showModal({
+          title: '当前内容未保存',
+          content: '是否先保存草稿，再新建笔录？',
+          success: (res) => {
+            if (res.confirm) this.onSaveDraft()
+            this.current = this.createNew()
+            this.isExistingTranscript = false
+            this.baselineSnapshot = this.serializeCurrent(this.current)
+          }
+        })
+        return
+      }
+      this.current = this.createNew()
+      this.isExistingTranscript = false
+      this.baselineSnapshot = this.serializeCurrent(this.current)
     },
     onSubmit() {
       if (!this.current.content && !this.current.summary) {
@@ -385,15 +393,63 @@ export default {
         return
       }
       this.current.status = 'complete'
-      this.autoSave()
+      this.persistCurrent()
       uni.showToast({ title: '笔录已完成', icon: 'success' })
+    },
+    onSaveDraft() {
+      this.current.status = 'draft'
+      this.persistCurrent()
+      uni.showToast({ title: '草稿已保存', icon: 'success' })
     },
     autoSave() {
       this.current.updatedAt = this.formatDateTime(new Date())
-      const idx = this.allTranscripts.findIndex((item) => item.id === this.current.id)
-      if (idx === -1) this.allTranscripts.unshift(this.normalizeTranscript(this.current))
-      else this.allTranscripts.splice(idx, 1, this.normalizeTranscript(this.current))
+    },
+    persistCurrent() {
+      this.current.updatedAt = this.formatDateTime(new Date())
+      const next = this.normalizeTranscript(this.current)
+      const idx = this.allTranscripts.findIndex((item) => item.id === next.id)
+      if (idx === -1) this.allTranscripts.unshift(next)
+      else this.allTranscripts.splice(idx, 1, next)
+      this.current = next
       this.saveAll()
+      this.isExistingTranscript = true
+      this.baselineSnapshot = this.serializeCurrent(this.current)
+    },
+    serializeCurrent(item) {
+      const base = this.normalizeTranscript(item || this.current)
+      return JSON.stringify({
+        template: base.template,
+        title: base.title,
+        targetName: base.targetName,
+        eventId: base.eventId,
+        recordTime: base.recordTime,
+        locationText: base.locationText,
+        participants: base.participants.slice().sort(),
+        summary: base.summary,
+        content: base.content,
+        suggestion: base.suggestion,
+        linkedPhotoIds: base.linkedPhotoIds.slice().sort(),
+        linkedVideoIds: base.linkedVideoIds.slice().sort(),
+        linkedReportIds: base.linkedReportIds.slice().sort(),
+        status: base.status
+      })
+    },
+    isDirty() {
+      return this.serializeCurrent(this.current) !== this.baselineSnapshot
+    },
+    deleteCurrent() {
+      if (!this.isExistingTranscript) return
+      uni.showModal({
+        title: '删除笔录',
+        content: '删除后不可恢复，是否继续？',
+        success: (res) => {
+          if (!res.confirm) return
+          this.allTranscripts = this.allTranscripts.filter((item) => item.id !== this.current.id)
+          this.saveAll()
+          uni.showToast({ title: '已删除', icon: 'success' })
+          uni.navigateBack({ delta: 1 })
+        }
+      })
     },
     saveAll() {
       try {
@@ -409,7 +465,7 @@ export default {
       const raw = uni.getStorageSync(key)
       if (!raw) return []
       try {
-        const parsed = JSON.parse(raw)
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw
         return Array.isArray(parsed) ? parsed : []
       } catch (e) {
         return []
@@ -421,54 +477,80 @@ export default {
       return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
     },
     goBack() {
-      uni.navigateBack({ delta: 1 })
+      if (!this.isDirty()) {
+        uni.navigateBack({ delta: 1 })
+        return
+      }
+      uni.showActionSheet({
+        itemList: this.isExistingTranscript ? ['保存并返回', '不保存并返回', '删除草稿'] : ['保存并返回', '不保存并返回'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            this.onSaveDraft()
+            uni.navigateBack({ delta: 1 })
+          } else if (res.tapIndex === 1) {
+            uni.navigateBack({ delta: 1 })
+          } else if (res.tapIndex === 2) {
+            this.deleteCurrent()
+          }
+        },
+        fail: () => {
+          uni.navigateBack({ delta: 1 })
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.page { min-height: 100vh; max-height: 100vh; background: #0F172A; display: flex; flex-direction: column; overflow: hidden; }
-.status-bar { background: #0F172A; flex-shrink: 0; }
+.page { min-height: 100vh; background: #eef3fb; display: flex; flex-direction: column; color: #0f172a; }
+.status-bar { background: linear-gradient(135deg, #0f2f6b, #1d4ed8); flex-shrink: 0; }
 .navbar, .field-picker, .sec-head, .other-item, .sheet-line { display: flex; align-items: center; }
-.navbar { padding: 14rpx 24rpx; }
-.nav-btn { width: 88rpx; color: rgba(255,255,255,0.72); font-size: 24rpx; }
-.nav-btn.submit { color: #34D399; text-align: right; }
-.nav-center { flex: 1; text-align: center; }
-.nav-title { display: block; font-size: 30rpx; font-weight: 600; color: #fff; }
-.nav-sub { display: block; font-size: 20rpx; color: rgba(255,255,255,0.38); }
-.scroll { flex: 1; padding: 16rpx 20rpx; }
-.header-card, .field-card, .other-item { background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.08); border-radius: 16rpx; }
+.navbar { padding: 14rpx 24rpx; background: linear-gradient(135deg, #0f2f6b, #1d4ed8); }
+.nav-actions { width: 192rpx; display: flex; justify-content: flex-end; gap: 12rpx; }
+.nav-btn { min-width: 88rpx; color: rgba(255,255,255,0.86); font-size: 24rpx; text-align: right; line-height: 1.35; }
+.nav-btn.light { color: #bfdbfe; }
+.nav-btn.submit { color: #86efac; text-align: right; font-weight: 600; }
+.nav-center { flex: 1; text-align: center; min-width: 0; }
+.nav-title { display: block; font-size: 34rpx; font-weight: 700; color: #fff; line-height: 1.35; white-space: nowrap; }
+.nav-sub { display: block; font-size: 22rpx; color: rgba(255,255,255,0.74); line-height: 1.35; }
+.scroll { flex: 1; min-height: 0; padding: 16rpx 20rpx; box-sizing: border-box; }
+.header-card, .field-card, .other-item { background: #fff; border: 1rpx solid #e6edf6; border-radius: 18rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.05); }
 .header-card { display: flex; justify-content: space-between; align-items: center; padding: 18rpx 20rpx; margin-bottom: 20rpx; }
-.hc-id { display: block; font-size: 24rpx; font-weight: 700; color: rgba(255,255,255,0.8); }
-.hc-time { display: block; font-size: 20rpx; color: rgba(255,255,255,0.32); margin-top: 4rpx; }
+.header-main { flex: 1; min-width: 0; }
+.hc-title-row { display: flex; align-items: center; gap: 12rpx; min-width: 0; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8rpx; }
+.header-actions { display: flex; gap: 16rpx; font-size: 20rpx; }
+.hc-title { display: block; flex: 1; min-width: 0; font-size: 28rpx; font-weight: 700; color: #0f172a; line-height: 1.4; }
+.title-switch-btn { flex-shrink: 0; padding: 6rpx 16rpx; border-radius: 999rpx; background: rgba(37,99,235,0.1); color: #1d4ed8; font-size: 20rpx; }
+.hc-id { display: block; font-size: 22rpx; font-weight: 600; color: #334155; margin-top: 4rpx; }
+.hc-time { display: block; font-size: 20rpx; color: #64748b; margin-top: 4rpx; }
 .hc-status { padding: 6rpx 16rpx; border-radius: 12rpx; font-size: 20rpx; }
-.hs-draft { background: rgba(245,158,11,0.14); color: #FBBF24; }
-.hs-complete, .hs-linked { background: rgba(16,185,129,0.14); color: #34D399; }
+.hs-draft { background: rgba(245,158,11,0.14); color: #b45309; }
+.hs-complete, .hs-linked { background: rgba(16,185,129,0.14); color: #047857; }
 .section { margin-bottom: 24rpx; }
-.sec-label { display: block; font-size: 22rpx; font-weight: 600; color: rgba(255,255,255,0.45); margin-bottom: 12rpx; }
+.sec-label { display: block; font-size: 22rpx; font-weight: 600; color: #475569; margin-bottom: 12rpx; }
 .sec-head { justify-content: space-between; margin-bottom: 12rpx; }
-.sec-meta { font-size: 20rpx; color: rgba(255,255,255,0.3); }
-.row, .grid, .material-list { display: flex; gap: 12rpx; flex-wrap: wrap; }
+.sec-meta { font-size: 20rpx; color: #64748b; }
+.row, .grid { display: flex; gap: 12rpx; flex-wrap: wrap; }
 .grid { flex-direction: row; }
 .grid .field-card { flex: 1; min-width: 0; }
-.pill, .phrase-pill { display: inline-flex; align-items: center; justify-content: center; min-height: 46rpx; padding: 0 18rpx; border-radius: 24rpx; background: rgba(255,255,255,0.06); border: 1rpx solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); font-size: 22rpx; }
-.pill.active, .phrase-pill { background: rgba(37,99,235,0.18); border-color: rgba(37,99,235,0.35); color: #93C5FD; }
+.pill, .phrase-pill { display: inline-flex; align-items: center; justify-content: center; min-height: 50rpx; padding: 0 18rpx; border-radius: 24rpx; background: #f8fafc; border: 1rpx solid #e2e8f0; color: #475569; font-size: 22rpx; }
+.pill.active, .phrase-pill { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.3); color: #1d4ed8; }
 .field-card { padding: 16rpx; margin-bottom: 12rpx; }
-.field-label { display: block; font-size: 22rpx; color: rgba(255,255,255,0.58); margin-bottom: 10rpx; }
-.field-input, .field-textarea { width: 100%; background: rgba(255,255,255,0.05); border-radius: 12rpx; color: rgba(255,255,255,0.86); padding: 14rpx 16rpx; box-sizing: border-box; }
-.field-picker { justify-content: space-between; gap: 12rpx; color: rgba(255,255,255,0.86); }
+.field-label { display: block; font-size: 24rpx; color: #334155; margin-bottom: 10rpx; line-height: 1.4; }
+.field-input, .field-textarea { width: 100%; background: #f8fafc; border: 1rpx solid #e2e8f0; border-radius: 12rpx; color: #0f172a; padding: 18rpx 18rpx; box-sizing: border-box; font-size: 26rpx; line-height: 1.45; min-height: 84rpx; }
+.field-picker { justify-content: space-between; gap: 12rpx; color: #0f172a; }
 .field-input.flex-1 { flex: 1; }
-.field-textarea { min-height: 180rpx; }
-.field-textarea.small { min-height: 100rpx; }
-.link, .mini-link { color: #93C5FD; font-size: 22rpx; }
-.material-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; color: rgba(255,255,255,0.8); }
-.material-desc, .empty-line text { font-size: 22rpx; color: rgba(255,255,255,0.32); }
-.material-item { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 12rpx 14rpx; background: rgba(255,255,255,0.05); border-radius: 12rpx; color: rgba(255,255,255,0.72); font-size: 22rpx; }
+.field-textarea { min-height: 220rpx; }
+.field-textarea.small { min-height: 140rpx; }
+.link, .mini-link { color: #1d4ed8; font-size: 22rpx; }
+.danger-link { color: #dc2626; font-size: 20rpx; }
+.empty-line text { font-size: 22rpx; color: #94a3b8; }
 .other-list { display: flex; flex-direction: column; gap: 10rpx; }
 .other-item { justify-content: space-between; padding: 14rpx 16rpx; }
 .other-main { flex: 1; min-width: 0; }
-.other-id { display: block; font-size: 21rpx; color: rgba(255,255,255,0.6); }
-.other-desc { display: block; font-size: 20rpx; color: rgba(255,255,255,0.36); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4rpx; }
+.other-id { display: block; font-size: 21rpx; color: #334155; }
+.other-desc { display: block; font-size: 20rpx; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4rpx; }
 .safe-bottom { height: 60rpx; }
 </style>

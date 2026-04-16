@@ -414,6 +414,34 @@ export default {
       this.isExistingReport = true
       this.baselineSnapshot = this.serializeCurrent(this.current)
     },
+    deleteCurrent() {
+      if (!this.isExistingReport) {
+        uni.navigateBack({ delta: 1 })
+        return
+      }
+      uni.showModal({
+        title: '删除草稿',
+        content: '删除后不可恢复，是否继续？',
+        success: (res) => {
+          if (!res.confirm) return
+          this.allReports = this.allReports.filter((item) => item.id !== this.current.id)
+          uni.setStorageSync('gw_report_records', JSON.stringify(this.allReports))
+          if (this.current.eventId) {
+            const idx = this.allEvents.findIndex((item) => item.id === this.current.eventId)
+            if (idx > -1) {
+              const event = Object.assign({}, this.allEvents[idx])
+              const reportIds = Array.isArray(event.reportIds) ? event.reportIds.filter((id) => id !== this.current.id) : []
+              event.reportIds = reportIds
+              event.updatedAt = this.nowText()
+              this.allEvents.splice(idx, 1, event)
+              uni.setStorageSync('gw_event_records', JSON.stringify(this.allEvents))
+            }
+          }
+          uni.showToast({ title: '已删除', icon: 'success' })
+          uni.navigateBack({ delta: 1 })
+        }
+      })
+    },
     loadReports() {
       try {
         const raw = uni.getStorageSync('gw_report_records')
@@ -482,14 +510,19 @@ export default {
         return
       }
       uni.showActionSheet({
-        itemList: ['保存并返回', '不保存并返回'],
+        itemList: this.isExistingReport ? ['保存并返回', '不保存并返回', '删除草稿'] : ['保存并返回', '不保存并返回'],
         success: (res) => {
           if (res.tapIndex === 0) {
             this.persistCurrent(true)
             uni.navigateBack({ delta: 1 })
           } else if (res.tapIndex === 1) {
             uni.navigateBack({ delta: 1 })
+          } else if (res.tapIndex === 2) {
+            this.deleteCurrent()
           }
+        },
+        fail: () => {
+          uni.navigateBack({ delta: 1 })
         }
       })
     }
@@ -498,46 +531,46 @@ export default {
 </script>
 
 <style scoped>
-.page { min-height: 100vh; background: #0f172a; color: #fff; display: flex; flex-direction: column; }
-.status-bar, .navbar { background: #0f172a; }
+.page { min-height: 100vh; background: #eef3fb; color: #0f172a; display: flex; flex-direction: column; }
+.status-bar, .navbar { background: linear-gradient(135deg, #0f2f6b, #1d4ed8); }
 .navbar { height: 88rpx; padding: 0 20rpx; display: flex; align-items: center; }
-.nav-btn { width: 88rpx; font-size: 26rpx; color: rgba(255,255,255,0.72); }
+.nav-btn { width: 88rpx; font-size: 26rpx; color: rgba(255,255,255,0.88); }
 .nav-btn.right { text-align: right; }
 .nav-center { flex: 1; display: flex; flex-direction: column; align-items: center; }
-.nav-title { font-size: 30rpx; font-weight: 600; }
-.nav-sub { font-size: 20rpx; color: rgba(255,255,255,0.35); }
+.nav-title { font-size: 32rpx; font-weight: 700; color: #fff; }
+.nav-sub { font-size: 20rpx; color: rgba(255,255,255,0.75); }
 .scroll { flex: 1; padding: 16rpx 20rpx; box-sizing: border-box; }
-.card, .section { margin-bottom: 18rpx; padding: 20rpx; border-radius: 16rpx; background: rgba(255,255,255,0.04); border: 1rpx solid rgba(255,255,255,0.08); }
-.event { background: rgba(15,118,110,0.14); border-color: rgba(45,212,191,0.22); }
+.card, .section { margin-bottom: 18rpx; padding: 22rpx; border-radius: 18rpx; background: #fff; border: 1rpx solid #e6edf6; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.05); }
+.event { background: linear-gradient(180deg, #f0fdfa, #ecfeff); border-color: #c9f2ef; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 16rpx; }
-.label, .hint { color: rgba(255,255,255,0.45); font-size: 22rpx; }
+.label, .hint { color: #64748b; font-size: 22rpx; }
 .hint { display: block; margin-top: 10rpx; }
-.mono, .val { font-size: 22rpx; color: rgba(255,255,255,0.74); }
+.mono, .val { font-size: 22rpx; color: #334155; }
 .mono { font-family: monospace; }
 .badge { padding: 6rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; }
-.s-draft { background: rgba(245,158,11,0.16); color: #fbbf24; }
-.s-submitted { background: rgba(37,99,235,0.16); color: #60a5fa; }
-.s-approved { background: rgba(16,185,129,0.16); color: #34d399; }
-.event-title { display: block; font-size: 28rpx; font-weight: 600; color: #ccfbf1; }
-.event-meta { display: block; margin-top: 8rpx; font-size: 22rpx; color: rgba(255,255,255,0.66); }
-.title { display: block; margin-bottom: 12rpx; font-size: 24rpx; font-weight: 600; color: rgba(255,255,255,0.6); }
+.s-draft { background: rgba(245,158,11,0.16); color: #b45309; }
+.s-submitted { background: rgba(37,99,235,0.16); color: #1d4ed8; }
+.s-approved { background: rgba(16,185,129,0.16); color: #047857; }
+.event-title { display: block; font-size: 28rpx; font-weight: 700; color: #0f766e; }
+.event-meta { display: block; margin-top: 8rpx; font-size: 22rpx; color: #475569; }
+.title { display: block; margin-bottom: 12rpx; font-size: 24rpx; font-weight: 700; color: #334155; }
 .title.no-gap { margin-bottom: 0; }
 .chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 12rpx; }
-.chip { padding: 12rpx 18rpx; border-radius: 999rpx; background: rgba(255,255,255,0.06); font-size: 22rpx; color: rgba(255,255,255,0.64); }
-.chip.active { background: rgba(37,99,235,0.24); color: #93c5fd; }
-.textarea { width: 100%; min-height: 140rpx; border-radius: 14rpx; padding: 16rpx; box-sizing: border-box; background: rgba(255,255,255,0.05); border: 1rpx solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.86); font-size: 24rpx; line-height: 1.6; }
+.chip { padding: 12rpx 18rpx; border-radius: 999rpx; background: #f8fafc; border: 1rpx solid #e2e8f0; font-size: 22rpx; color: #475569; }
+.chip.active { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.3); color: #1d4ed8; }
+.textarea { width: 100%; min-height: 140rpx; border-radius: 14rpx; padding: 16rpx; box-sizing: border-box; background: #f8fafc; border: 1rpx solid #e2e8f0; color: #0f172a; font-size: 24rpx; line-height: 1.6; }
 .textarea.compact { min-height: 92rpx; }
 .textarea.large { min-height: 280rpx; }
-.link { color: #60a5fa; font-size: 22rpx; }
-.material-chip { margin-top: 10rpx; padding: 12rpx 16rpx; border-radius: 12rpx; background: rgba(255,255,255,0.04); font-size: 22rpx; color: rgba(255,255,255,0.72); }
+.link { color: #1d4ed8; font-size: 22rpx; }
+.material-chip { margin-top: 10rpx; padding: 12rpx 16rpx; border-radius: 12rpx; background: #f8fafc; border: 1rpx solid #e2e8f0; font-size: 22rpx; color: #334155; }
 .safe-bottom { height: 80rpx; }
-.mask { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: flex; align-items: flex-end; z-index: 99; }
-.panel { width: 100%; max-height: 80vh; background: #1e293b; border-radius: 28rpx 28rpx 0 0; overflow: hidden; }
-.panel-head { height: 88rpx; padding: 0 22rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 1rpx solid rgba(255,255,255,0.08); }
-.panel-title { font-size: 28rpx; color: #fff; }
+.mask { position: fixed; inset: 0; background: rgba(15,23,42,0.42); display: flex; align-items: flex-end; z-index: 99; }
+.panel { width: 100%; max-height: 80vh; background: #fff; border-radius: 28rpx 28rpx 0 0; overflow: hidden; }
+.panel-head { height: 88rpx; padding: 0 22rpx; display: flex; align-items: center; justify-content: space-between; border-bottom: 1rpx solid #e2e8f0; }
+.panel-title { font-size: 28rpx; color: #0f172a; font-weight: 700; }
 .panel-scroll { max-height: calc(80vh - 88rpx); padding: 18rpx 20rpx; box-sizing: border-box; }
 .pick-section { margin-bottom: 20rpx; }
-.pick-title { display: block; margin-bottom: 12rpx; font-size: 24rpx; color: rgba(255,255,255,0.52); }
-.pick-item { margin-bottom: 10rpx; padding: 16rpx; border-radius: 12rpx; background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.74); font-size: 23rpx; }
-.pick-item.selected { background: rgba(37,99,235,0.2); color: #bfdbfe; }
+.pick-title { display: block; margin-bottom: 12rpx; font-size: 24rpx; color: #475569; }
+.pick-item { margin-bottom: 10rpx; padding: 16rpx; border-radius: 12rpx; background: #f8fafc; border: 1rpx solid #e2e8f0; color: #334155; font-size: 23rpx; }
+.pick-item.selected { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.3); color: #1d4ed8; }
 </style>

@@ -291,7 +291,8 @@ export default {
       canvasHeight: 1,
       editorVisible: false,
       editorForm: null,
-      currentBatchId: ''
+      currentBatchId: '',
+      pendingEditId: ''
     }
   },
 
@@ -326,9 +327,10 @@ export default {
     }
   },
 
-  onLoad() {
+  onLoad(query) {
     const info = uni.getSystemInfoSync()
     this.statusBarHeight = info.statusBarHeight
+    this.pendingEditId = query && query.editId ? query.editId : ''
     this.loadOfficerInfo()
     this.loadPhotoList()
     this.loadEventOptions()
@@ -339,6 +341,7 @@ export default {
   onShow() {
     this.loadPhotoList()
     this.loadEventOptions()
+    this.tryOpenPendingEditor()
   },
 
   onUnload() {
@@ -590,11 +593,21 @@ export default {
       const current = this.readStorageArray('gw_photo_records')
       if (current.length > 0) {
         this.photoList = current.map((item) => this.normalizePhoto(item))
+        this.tryOpenPendingEditor()
         return
       }
       const legacy = this.readStorageArray('guardian_wings_photos')
       this.photoList = legacy.map((item) => this.normalizePhoto(item))
       if (legacy.length > 0) this.savePhotoList()
+      this.tryOpenPendingEditor()
+    },
+
+    tryOpenPendingEditor() {
+      if (!this.pendingEditId || this.editorVisible) return
+      const found = this.photoList.find((item) => item.id === this.pendingEditId)
+      if (!found) return
+      this.pendingEditId = ''
+      this.openEditor(found)
     },
 
     openEditor(photo) {

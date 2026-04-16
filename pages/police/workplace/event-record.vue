@@ -4,25 +4,18 @@
     <view class="navbar">
       <view class="nav-btn" @click="goBack">返回</view>
       <view class="nav-center">
-        <text class="nav-title">事件管理</text>
-        <text class="nav-sub">现场素材归集与成包</text>
+        <text class="nav-title">事件包管理</text>
+        <text class="nav-sub">事件包创建、编辑与流转</text>
       </view>
       <view class="nav-btn right" @click="createEvent">新建</view>
     </view>
 
     <scroll-view scroll-y class="scroll">
       <view class="stats-grid">
-        <view class="stat-card"><text class="stat-num">{{ eventList.length }}</text><text class="stat-label">事件包</text></view>
+        <view class="stat-card"><text class="stat-num">{{ eventList.length }}</text><text class="stat-label">事件包总数</text></view>
         <view class="stat-card"><text class="stat-num">{{ pendingCount }}</text><text class="stat-label">待处理</text></view>
-        <view class="stat-card"><text class="stat-num">{{ unfiledCount }}</text><text class="stat-label">未归集素材</text></view>
+        <view class="stat-card"><text class="stat-num">{{ archivedCount }}</text><text class="stat-label">已归档</text></view>
         <view class="stat-card"><text class="stat-num">{{ reportList.length }}</text><text class="stat-label">报告数</text></view>
-      </view>
-
-      <view class="quick-row">
-        <view class="quick-btn primary" @click="createEvent"><text>新建事件包</text></view>
-        <view class="quick-btn" @click="goPhoto"><text>照片采集</text></view>
-        <view class="quick-btn" @click="goVideo"><text>视频记录</text></view>
-        <view class="quick-btn" @click="goTranscript"><text>笔录记录</text></view>
       </view>
 
       <view class="filter-row">
@@ -52,13 +45,14 @@
             <view class="action-btn" @click="editEvent(event)">编辑</view>
             <view class="action-btn" @click="openReport(event)">去成文</view>
             <view class="action-btn ghost" @click="archiveEvent(event)">归档</view>
+            <view class="action-btn danger" @click="deleteEvent(event)">删除</view>
           </view>
         </view>
       </view>
 
       <view v-else class="empty">
         <text class="empty-title">还没有事件包</text>
-        <text class="empty-desc">先新建事件，再把照片、视频和笔录归进来。</text>
+        <text class="empty-desc">点击右上角“新建”开始创建事件包。</text>
       </view>
 
       <view class="safe-bottom" />
@@ -209,10 +203,8 @@ export default {
     pendingCount() {
       return this.eventList.filter((item) => ['collecting', 'pending_sort', 'pending_report'].includes(this.normalizeStatus(item.status))).length
     },
-    unfiledCount() {
-      return this.photoList.filter((item) => item.status !== 'discarded' && !item.eventId).length +
-        this.videoList.filter((item) => item.status !== 'discarded' && !item.eventId).length +
-        this.transcriptList.filter((item) => item.status !== 'discarded' && !item.eventId).length
+    archivedCount() {
+      return this.eventList.filter((item) => this.normalizeStatus(item.status) === 'archived').length
     },
     linkedPhotos() {
       return this.photoList.filter((item) => this.form.photoIds.includes(item.id))
@@ -438,17 +430,27 @@ export default {
         uni.showToast({ title: '已归档', icon: 'success' })
       }
     },
+    deleteEvent(event) {
+      uni.showModal({
+        title: '删除事件包',
+        content: '删除后将解除素材关联且不可恢复，是否继续？',
+        success: (res) => {
+          if (!res.confirm) return
+          this.eventList = this.eventList.filter((item) => item.id !== event.id)
+          this.writeArray('gw_event_records', this.eventList)
+          this.syncMaterials(this.normalizeEvent(Object.assign({}, event, {
+            photoIds: [],
+            videoIds: [],
+            transcriptIds: [],
+            reportIds: []
+          })))
+          this.loadAll()
+          uni.showToast({ title: '已删除', icon: 'success' })
+        }
+      })
+    },
     goBack() {
       uni.navigateBack({ delta: 1 })
-    },
-    goPhoto() {
-      uni.navigateTo({ url: '/pages/police/workplace/photo-capture' })
-    },
-    goVideo() {
-      uni.navigateTo({ url: '/pages/police/workplace/video-record' })
-    },
-    goTranscript() {
-      uni.navigateTo({ url: '/pages/police/workplace/transcript' })
     },
     openReport(event) {
       uni.navigateTo({ url: '/pages/police/workplace/report-generate?eventId=' + (event.id || this.form.id) })
@@ -458,27 +460,25 @@ export default {
 </script>
 
 <style scoped>
-.page { min-height: 100vh; background: #f3f6fb; color: #1f2937; display: flex; flex-direction: column; }
-.status-bar, .navbar { background: linear-gradient(135deg, #0f766e, #155e75); }
+.page { min-height: 100vh; background: #eef3fb; color: #1f2937; display: flex; flex-direction: column; }
+.status-bar, .navbar { background: linear-gradient(135deg, #0f2f6b, #1d4ed8); }
 .navbar { height: 88rpx; padding: 0 24rpx; display: flex; align-items: center; color: #fff; }
 .nav-btn { width: 88rpx; font-size: 26rpx; }
 .nav-btn.right { text-align: right; font-weight: 600; }
 .nav-center { flex: 1; display: flex; flex-direction: column; align-items: center; }
 .nav-title { font-size: 32rpx; font-weight: 700; }
-.nav-sub { font-size: 20rpx; opacity: 0.82; }
+.nav-sub { font-size: 20rpx; opacity: 0.88; }
 .scroll { flex: 1; padding: 20rpx 24rpx; box-sizing: border-box; }
 .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16rpx; }
-.stat-card { background: #fff; border-radius: 20rpx; padding: 24rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.06); }
-.stat-num { display: block; font-size: 40rpx; font-weight: 700; color: #0f766e; }
+.stat-card { background: #fff; border: 1rpx solid #e6edf6; border-radius: 20rpx; padding: 24rpx; box-shadow: 0 12rpx 26rpx rgba(15,23,42,0.06); }
+.stat-num { display: block; font-size: 40rpx; font-weight: 700; color: #1d4ed8; }
 .stat-label { display: block; margin-top: 8rpx; font-size: 22rpx; color: #64748b; }
-.quick-row, .filter-row, .counts, .actions, .chip-row, .picker-row { display: flex; flex-wrap: wrap; gap: 12rpx; }
-.quick-row, .filter-row { margin-top: 18rpx; }
-.quick-btn, .filter-pill, .count-chip, .chip { padding: 14rpx 20rpx; border-radius: 999rpx; font-size: 22rpx; }
-.quick-btn { background: #fff; box-shadow: 0 8rpx 20rpx rgba(15,23,42,0.05); }
-.quick-btn.primary { background: #0f766e; color: #fff; }
+.filter-row, .counts, .actions, .chip-row, .picker-row { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.filter-row { margin-top: 18rpx; }
+.filter-pill, .count-chip, .chip { padding: 14rpx 20rpx; border-radius: 999rpx; font-size: 22rpx; }
 .filter-pill { background: #e2e8f0; color: #475569; }
-.filter-pill.active, .chip.active { background: #0f766e; color: #fff; }
-.event-card { margin-top: 18rpx; padding: 24rpx; background: #fff; border-radius: 22rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.06); }
+.filter-pill.active, .chip.active { background: #1d4ed8; color: #fff; }
+.event-card { margin-top: 18rpx; padding: 24rpx; background: #fff; border: 1rpx solid #e6edf6; border-radius: 22rpx; box-shadow: 0 10rpx 24rpx rgba(15,23,42,0.06); }
 .event-head { display: flex; justify-content: space-between; gap: 16rpx; }
 .event-main { flex: 1; }
 .event-title { display: block; font-size: 28rpx; font-weight: 700; color: #111827; }
@@ -489,9 +489,10 @@ export default {
 .s-pending_report { background: rgba(16,185,129,0.14); color: #059669; }
 .s-archived { background: rgba(100,116,139,0.14); color: #475569; }
 .count-chip { background: #f1f5f9; color: #334155; }
-.action-btn { flex: 1; text-align: center; padding: 14rpx 0; border-radius: 14rpx; background: #eff6ff; color: #2563eb; font-size: 24rpx; }
+.action-btn { flex: 1; text-align: center; padding: 14rpx 0; border-radius: 14rpx; background: #eff6ff; color: #1d4ed8; font-size: 24rpx; }
 .action-btn.ghost { background: #f8fafc; color: #64748b; }
-.empty { margin-top: 20rpx; padding: 60rpx 30rpx; background: #fff; border-radius: 22rpx; text-align: center; }
+.action-btn.danger { background: rgba(239,68,68,0.12); color: #DC2626; }
+.empty { margin-top: 20rpx; padding: 60rpx 30rpx; background: #fff; border: 1rpx solid #e6edf6; border-radius: 22rpx; text-align: center; }
 .empty-title { display: block; font-size: 30rpx; font-weight: 700; color: #0f172a; }
 .empty-desc { display: block; margin-top: 12rpx; font-size: 23rpx; color: #64748b; }
 .safe-bottom { height: 120rpx; }

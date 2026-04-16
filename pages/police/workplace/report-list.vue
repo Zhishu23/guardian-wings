@@ -39,6 +39,7 @@
           <view class="actions" @click.stop="">
             <view class="btn ghost" @click="openDetail(report)">查看</view>
             <view class="btn primary" @click="editReport(report)">继续编辑</view>
+            <view class="btn danger" @click="deleteReport(report)">删除</view>
           </view>
         </view>
       </view>
@@ -111,7 +112,7 @@ export default {
     loadReports() {
       try {
         const raw = uni.getStorageSync('gw_report_records')
-        const list = raw ? JSON.parse(raw) : []
+        const list = raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : []
         this.allReports = Array.isArray(list) ? list.map((item) => this.normalizeReport(item)) : []
       } catch (e) {
         this.allReports = []
@@ -159,6 +160,27 @@ export default {
     editReport(report) {
       uni.navigateTo({ url: '/pages/police/workplace/report-generate?id=' + report.id })
     },
+    deleteReport(report) {
+      uni.showModal({
+        title: '删除报告',
+        content: '删除后不可恢复，是否继续？',
+        success: (res) => {
+          if (!res.confirm) return
+          this.allReports = this.allReports.filter((item) => item.id !== report.id)
+          uni.setStorageSync('gw_report_records', JSON.stringify(this.allReports))
+          if (report.eventId) {
+            const nextEvents = this.allEvents.map((item) => {
+              if (item.id !== report.eventId) return item
+              const reportIds = Array.isArray(item.reportIds) ? item.reportIds.filter((id) => id !== report.id) : []
+              return Object.assign({}, item, { reportIds, updatedAt: report.updatedAt || report.createdAt || item.updatedAt })
+            })
+            this.allEvents = nextEvents
+            uni.setStorageSync('gw_event_records', JSON.stringify(nextEvents))
+          }
+          uni.showToast({ title: '已删除', icon: 'success' })
+        }
+      })
+    },
     createNew() {
       uni.navigateTo({ url: '/pages/police/workplace/report-generate' })
     },
@@ -200,6 +222,7 @@ export default {
 .btn { flex: 1; text-align: center; padding: 14rpx 0; border-radius: 12rpx; font-size: 24rpx; }
 .btn.ghost { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.74); }
 .btn.primary { background: rgba(37,99,235,0.24); color: #bfdbfe; }
+.btn.danger { background: rgba(239,68,68,0.18); color: #fca5a5; }
 .empty { padding: 120rpx 40rpx; text-align: center; }
 .empty-title { display: block; font-size: 30rpx; font-weight: 600; color: rgba(255,255,255,0.62); }
 .empty-desc { display: block; margin-top: 12rpx; font-size: 22rpx; color: rgba(255,255,255,0.36); line-height: 1.7; }
