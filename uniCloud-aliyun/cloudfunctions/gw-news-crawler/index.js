@@ -7,6 +7,7 @@ const db = uniCloud.database();
 const newsCollection = db.collection('news');
 
 const config = {
+  recentDays: 7,
   sources: [
     { name: '新华网', url: 'https://www.xinhuanet.com/' },
     { name: '中国新闻网', url: 'https://www.chinanews.com/' }
@@ -439,11 +440,15 @@ function isLikelyNewsImage(url, rawTag) {
   const raw = String(rawTag || '');
   const text = `${url} ${raw}`.toLowerCase();
 
+  if (/^data:/i.test(url) || /\.svg(\?|$)/i.test(url)) {
+    return false;
+  }
+
   if (!/\.(jpg|jpeg|png|webp)(\?|$)/i.test(url) && !/image|img|photo|pic/i.test(text)) {
     return false;
   }
 
-  if (/logo|icon|avatar|qrcode|qr|code|barcode|wechat|weixin|miniapp|appcode|share|thumb|sprite|banner-ad|advert|poster/.test(text)) {
+  if (/logo|icon|avatar|qrcode|qr|code|barcode|wechat|weixin|miniapp|appcode|share|thumb|sprite|banner-ad|advert|poster|header|footer|nav|channel|favicon/.test(text)) {
     return false;
   }
 
@@ -454,37 +459,120 @@ function isLikelyNewsImage(url, rawTag) {
   return true;
 }
 
-function extractCover(html, pageUrl) {
-  const metaImage = pickFirstMatch(html, [
-    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
-    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
-    /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
-    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
-    /<meta[^>]+itemprop=["']image["'][^>]+content=["']([^"']+)["']/i,
-    /<meta[^>]+content=["']([^"']+)["'][^>]+itemprop=["']image["']/i
-  ]);
+function isSuspiciousImageUrl(url) {
+  const text = String(url || '').toLowerCase();
+  return /placeholder|default|loading|lazy|blank|error|fallback|nopic|no[-_]?pic|spacer|pixel|1x1|thumb|thumbnail|sprite|icon|logo|qrcode|qr/.test(text);
+}
 
-  if (metaImage) {
-    const metaUrl = makeAbsoluteUrl(pageUrl, metaImage);
-    if (isLikelyNewsImage(metaUrl, metaImage)) {
-      return metaUrl;
+function decodeEscapedUrl(value) {
+  return String(value || '')
+    .replace(/\\u002f/gi, '/')
+    .replace(/\\\//g, '/')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .trim();
+}
+
+function extractSearchImageUrls(html) {
+  const urls = [];
+  const seen = new Set();
+  const content = String(html || '');
+  const patterns = [
+    /"murl":"(https?:\\\/\\\/[^"]+)"/gi,
+    /murl&quot;:&quot;(https?:\/\/[^&"]+)&quot;/gi,
+    /data-src=["'](https?:\/\/[^"']+)["']/gi,
+    /src=["'](https?:\/\/[^"']+)["']/gi
+  ];
+
+  patterns.forEach((pattern) => {
+    let match;
+    while ((match = pattern.exec(content)) !== null) {
+      const url = decodeEscapedUrl(match[1]);
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      urls.push(url);
     }
+  });
+
+  return urls;
+}
+
+async function searchCoverByTitle(title) {
+  const keyword = normalizeText(title).slice(0, 80);
+  if (!keyword) return '';
+
+  const searchUrl = `https://cn.bing.com/images/search?q=${encodeURIComponent(`${keyword} 新闻`)}`;
+  try {
+    const html = await httpGet(searchUrl);
+    const candidates = extractSearchImageUrls(html);
+    for (const url of candidates) {
+      if (isLikelyNewsImage(url, url) && !isSuspiciousImageUrl(url)) {
+        return url;
+      }
+    }
+  } catch (error) {
+    console.error('search cover failed:', error.message);
   }
+
+  return '';
+}
+
+function parseImageDimension(rawTag, attrName) {
+  const pattern = new RegExp(`${attrName}=["']?(\\d{2,5})["']?`, 'i');
+  const match = String(rawTag || '').match(pattern);
+  return match ? Number(match[1]) : 0;
+}
+
+function pickCoverFromFragment(fragment, pageUrl) {
+  if (!fragment) return '';
 
   const imgRegex = /<img\b[^>]*>/gi;
   let match;
-  while ((match = imgRegex.exec(html)) !== null) {
+  const candidates = [];
+  while ((match = imgRegex.exec(fragment)) !== null) {
     const tag = match[0];
     const src = pickFirstMatch(tag, [
       /data-src=["']([^"']+)["']/i,
+      /data-original=["']([^"']+)["']/i,
+      /data-url=["']([^"']+)["']/i,
       /src=["']([^"']+)["']/i
     ]);
+
     const candidate = makeAbsoluteUrl(pageUrl, src);
-    if (isLikelyNewsImage(candidate, tag)) {
-      return candidate;
+    if (!isLikelyNewsImage(candidate, tag)) {
+      continue;
     }
+    if (isSuspiciousImageUrl(candidate)) {
+      continue;
+    }
+
+    const width = parseImageDimension(tag, 'width');
+    const height = parseImageDimension(tag, 'height');
+    if ((width && width < 120) || (height && height < 120)) {
+      continue;
+    }
+
+    let score = (width * height) + (width ? 1000 : 0) + (height ? 1000 : 0);
+    if (/\/20\d{2}\//.test(candidate)) score += 600;
+    if (/\/(upload|uploads|article|news|img|image|photo)\//i.test(candidate)) score += 400;
+    if (/gif(\?|$)/i.test(candidate)) score -= 1200;
+    candidates.push({ candidate, score });
   }
 
+  if (!candidates.length) return '';
+
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates[0].candidate;
+}
+
+function extractCover(html, pageUrl, articleFragment) {
+  // 1) Strong priority: image inside extracted article body.
+  const bodyCover = pickCoverFromFragment(articleFragment, pageUrl);
+  if (bodyCover) {
+    return bodyCover;
+  }
+
+  // Only trust article-body images from source page.
   return '';
 }
 
@@ -494,6 +582,15 @@ function formatDate(ts) {
   const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
+}
+
+function isWithinRecentDays(ts, days) {
+  const time = Number(ts);
+  if (!Number.isFinite(time)) {
+    return false;
+  }
+  const recentWindowMs = Math.max(Number(days) || 0, 1) * 24 * 60 * 60 * 1000;
+  return time >= Date.now() - recentWindowMs;
 }
 
 function createBaseNewsItem({ title, link, source }) {
@@ -605,9 +702,12 @@ function buildEnrichedNewsItem(item, detailHtml) {
   }
 
   const publishTime = extractMetaPublishTime(detailHtml) || item.publishTime || Date.now();
+  if (!isWithinRecentDays(publishTime, config.recentDays)) {
+    return null;
+  }
   return {
     ...item,
-    cover: extractCover(detailHtml, item.link),
+    cover: extractCover(detailHtml, item.link, article.fragment),
     summary: buildSummaryFromParagraphs(contentBlocks, item.title),
     content: buildArticleHtml(contentBlocks),
     contentText,
@@ -633,7 +733,16 @@ async function enrichNewsItem(item) {
       return null;
     }
 
-    return buildEnrichedNewsItem(item, detailHtml);
+    const enriched = buildEnrichedNewsItem(item, detailHtml);
+    if (!enriched) {
+      return null;
+    }
+
+    if (!enriched.cover) {
+      enriched.cover = await searchCoverByTitle(enriched.title || item.title);
+    }
+
+    return enriched;
   } catch (error) {
     console.error(`detail fetch failed: ${item.link}`, error.message);
     return null;

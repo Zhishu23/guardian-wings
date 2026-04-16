@@ -236,9 +236,14 @@ export default {
       this.newsLoading = true
       try {
         const db = uniCloud.database()
+        const dbCmd = db.command
+        const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
         const res = await db.collection('news')
-          .orderBy('createTime', 'desc')
-          .limit(10)
+          .where({
+            publishTime: dbCmd.gte(oneWeekAgo)
+          })
+          .orderBy('publishTime', 'desc')
+          .limit(20)
           .get()
     
         const list = (res.result && res.result.data) ? res.result.data : (res.data || [])
@@ -252,14 +257,16 @@ export default {
           cover:   item.cover  || '',
           tag:     item.tag    || '新闻',
           tagType: item.tagType || 'news',
-          content: item.content || ''
+          content: item.content || '',
+          publishTime: item.publishTime || item.createTime || 0
         }))
-    
-        const bannerSource = this.newsList.filter(news => news.cover).slice(0, 3)
-        const fallbackSource = bannerSource.length > 0 ? bannerSource : this.newsList.slice(0, 3)
 
-        // 轮播优先展示带封面的新闻，无图时再回退默认图
-        this.bannerList = fallbackSource.map(news => ({
+        const latestThree = [...this.newsList]
+          .sort((a, b) => (b.publishTime || 0) - (a.publishTime || 0))
+          .slice(0, 3)
+
+        // 轮播按发布时间展示最新三条，无图时回退默认图
+        this.bannerList = latestThree.map(news => ({
           id:    news.id,
           image: news.cover || '/static/banners/default.jpg',
           title: news.title,
