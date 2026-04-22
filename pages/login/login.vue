@@ -11,24 +11,14 @@
     <view class="header-section">
       <view class="logo-container">
         <view class="logo-icon">
-          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#1B4B8C;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
-              </linearGradient>
-            </defs>
-            <!-- 盾牌底座 -->
-            <path d="M60 10 L25 25 L25 50 C25 75 60 100 60 100 C60 100 95 75 95 50 L95 25 Z" 
-                  fill="url(#logoGradient)" stroke="#FFFFFF" stroke-width="2"/>
-            <!-- 翅膀左侧 -->
-            <path d="M40 45 Q30 40 25 35 Q30 42 40 50" fill="#FFFFFF" opacity="0.9"/>
-            <!-- 翅膀右侧 -->
-            <path d="M80 45 Q90 40 95 35 Q90 42 80 50" fill="#FFFFFF" opacity="0.9"/>
-            <!-- 中央鸟形 -->
-            <circle cx="60" cy="50" r="8" fill="#FFFFFF"/>
-            <path d="M60 42 L60 35 M55 47 L50 47 M65 47 L70 47" stroke="#1B4B8C" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <view class="logo-icon">
+            <image 
+              src="/static/icons/logo-sticker2.png" 
+              mode="aspectFit"
+              class="logo-image"
+			  style="width:100%; height:100%; display:block;"
+            ></image>
+          </view>
         </view>
         <text class="app-name">Guardian Wings</text>
         <text class="app-name-cn">翼路平安</text>
@@ -48,10 +38,7 @@
       >
         <view class="card-decoration" />
         <view class="card-icon">
-          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="28" fill="#3B82F6" opacity="0.1"/>
-            <path d="M32 20c-4 0-7 3-7 7s3 7 7 7 7-3 7-7-3-7-7-7zm0 20c-5 0-15 2-15 7v3h30v-3c0-5-10-7-15-7z" fill="#3B82F6"/>
-          </svg>
+          <text style="font-size:64rpx;line-height:1;">🌐</text>
         </view>
         <view class="card-content">
           <text class="card-title">公众版</text>
@@ -66,9 +53,7 @@
           </view>
         </view>
         <view class="card-arrow">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-          </svg>
+          <uni-icons type="right" size="20" color="rgba(255,255,255,0.6)" />
         </view>
       </view>
 
@@ -80,11 +65,7 @@
       >
         <view class="card-decoration police-deco" />
         <view class="card-icon">
-          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="28" fill="#FF7A00" opacity="0.1"/>
-            <path d="M32 12l-12 6v10c0 8 12 14 12 14s12-6 12-14V18l-12-6z" fill="none" stroke="#FF7A00" stroke-width="3"/>
-            <path d="M26 28l4 4 8-8" stroke="#FF7A00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          </svg>
+          <text style="font-size:64rpx;line-height:1;">👮</text>
         </view>
         <view class="card-content">
           <text class="card-title">警务工作版</text>
@@ -99,9 +80,7 @@
           </view>
         </view>
         <view class="card-arrow">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-          </svg>
+          <uni-icons type="right" size="20" color="rgba(255,255,255,0.6)" />
         </view>
       </view>
     </view>
@@ -110,32 +89,22 @@
     <view class="action-section">
       <button class="action-btn primary-btn" @click="handleContinue">
         <text>继续</text>
-        <svg class="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 6l6 6-6 6" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        </svg>
+        <uni-icons type="right" size="20" color="#FFFFFF" />
       </button>
     </view>
 
     <!-- 底部信息 -->
     <view class="footer-info">
       <view class="info-row">
-        <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" fill="#9CA3AF"/>
-        </svg>
+        <uni-icons type="locked-filled" size="14" color="#9CA3AF" />
         <text class="info-text">数据传输加密</text>
       </view>
       <view class="info-row">
-        <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" fill="#9CA3AF"/>
-          <path d="M12 6v6l4 2" stroke="white" stroke-width="1.5"/>
-        </svg>
+        <uni-icons type="auth-filled" size="14" color="#9CA3AF" />
         <text class="info-text">公安部备案</text>
       </view>
       <view class="info-row">
-        <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="4" width="18" height="18" rx="2" fill="#9CA3AF"/>
-          <path d="M8 2v4M16 2v4M3 10h18" stroke="white" stroke-width="1.5"/>
-        </svg>
+        <uni-icons type="info-filled" size="14" color="#9CA3AF" />
         <text class="info-text">隐私保护承诺</text>
       </view>
     </view>
@@ -180,14 +149,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
+	page, .login-page {
+	  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Noto Sans CJK SC", sans-serif;
+	  font-smoothing: antialiased;
+	}
 .login-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #0F172A 0%, #1E293B 50%, #334155 100%);
   position: relative;
   overflow: hidden;
-  padding: 48rpx 32rpx;
+  padding: 40rpx 32rpx 48rpx;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 /* 背景装饰 */
@@ -241,7 +215,8 @@ export default {
 .header-section {
   position: relative;
   z-index: 1;
-  margin-bottom: 64rpx;
+  margin-bottom: 100rpx;
+  margin-top: 64rpx;
 }
 
 .logo-container {
@@ -251,16 +226,16 @@ export default {
 }
 
 .logo-icon {
-  width: 160rpx;
-  height: 160rpx;
-  margin-bottom: 24rpx;
-  filter: drop-shadow(0 8rpx 24rpx rgba(59,130,246,0.3));
-  animation: logoGlow 3s ease-in-out infinite;
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 32rpx;
+  filter: drop-shadow(0 12rpx 28rpx rgba(59,130,246,0.4));
+  animation: logoFloat 3s ease-in-out infinite;
 }
 
-@keyframes logoGlow {
-  0%, 100% { filter: drop-shadow(0 8rpx 24rpx rgba(59,130,246,0.3)); }
-  50% { filter: drop-shadow(0 12rpx 32rpx rgba(59,130,246,0.5)); }
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 12rpx 28rpx rgba(59,130,246,0.4)); }
+  50% { transform: translateY(-8rpx) scale(1.02); filter: drop-shadow(0 18rpx 36rpx rgba(59,130,246,0.6)); }
 }
 
 .logo-icon svg {
@@ -269,25 +244,29 @@ export default {
 }
 
 .app-name {
-  font-size: 44rpx;
+  font-size: 48rpx;         
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 8rpx;
-  letter-spacing: 2rpx;
+  margin-bottom: 12rpx;
+  letter-spacing: 3rpx;    
+  font-family: 'Times New Roman', Georgia, serif;
+  text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1);
 }
 
 .app-name-cn {
-  font-size: 32rpx;
-  font-weight: 300;
-  color: rgba(255,255,255,0.9);
+  font-size: 36rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
   margin-bottom: 16rpx;
-  letter-spacing: 4rpx;
+  letter-spacing: 6rpx;     
+  font-family: "PingFang SC", "Noto Sans CJK SC", system-ui;
 }
 
 .app-slogan {
-  font-size: 24rpx;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 1rpx;
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 2rpx;    
+  font-weight: 400;
 }
 
 /* 角色选择区域 */
@@ -300,11 +279,12 @@ export default {
 }
 
 .section-title {
-  font-size: 28rpx;
-  color: rgba(255,255,255,0.8);
+  font-size: 30rpx;
+  color: rgba(255,255,255,0.85);
   text-align: center;
-  margin-bottom: 32rpx;
+  margin-bottom: 40rpx;
   font-weight: 500;
+  letter-spacing: 2rpx;
 }
 
 .role-card {
@@ -387,15 +367,18 @@ export default {
 }
 
 .card-title {
-  font-size: 32rpx;
-  font-weight: 600;
+  font-size: 34rpx;
+  font-weight: 700;
   color: #FFFFFF;
+  letter-spacing: 2rpx;
+  line-height: 1.3;
 }
 
 .card-desc {
   font-size: 24rpx;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.75);
   line-height: 1.5;
+  letter-spacing: 1rpx;
 }
 
 .card-features {
@@ -405,12 +388,14 @@ export default {
 }
 
 .feature-tag {
-  padding: 6rpx 16rpx;
+  padding: 6rpx 20rpx;
   background: rgba(59,130,246,0.2);
   border-radius: 8rpx;
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #93C5FD;
   border: 1rpx solid rgba(59,130,246,0.3);
+  letter-spacing: 1rpx;
+  font-weight: 500;
 }
 
 .police-tag {
@@ -499,7 +484,9 @@ export default {
 }
 
 .info-text {
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: rgba(255,255,255,0.5);
+  letter-spacing: 1.5rpx;
+  font-weight: 400;
 }
 </style>

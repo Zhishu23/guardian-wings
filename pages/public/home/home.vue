@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <view class="home-page">
     <!-- 顶部导航栏 -->
     <view class="top-nav">
@@ -12,21 +12,14 @@
           </view>
           <text class="nav-title">翼路平安</text>
         </view>
-        <text class="nav-subtitle">国家林草局指导 · 候鸟保护平台</text>
       </view>
       <view class="nav-actions">
         <view class="action-icon" @click="goNotification">
           <view class="badge-dot" v-if="hasNotification"></view>
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM20 18V10C20 6.13 16.87 3 13 3H11C7.13 3 4 6.13 4 10V18L2 20V21H22V20L20 18Z" 
-                  fill="#FFFFFF"/>
-          </svg>
+          <uni-icons type="notification" size="22" color="#FFFFFF" />
         </view>
         <view class="action-icon" @click="goSearch">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" 
-                  fill="#FFFFFF"/>
-          </svg>
+          <uni-icons type="search" size="22" color="#FFFFFF" />
         </view>
       </view>
     </view>
@@ -73,7 +66,7 @@
           @click="goValueDetail(item)"
         >
           <view class="card-icon-bg" :style="{ backgroundColor: item.bgColor }">
-            <view class="icon-wrapper" v-html="item.icon"></view>
+            <text class="icon-emoji">{{ item.icon }}</text>
           </view>
           
           <view class="card-content">
@@ -87,12 +80,6 @@
             </svg>
           </view>
         </view>
-      </view>
-      
-      <view class="official-guide">
-        <view class="guide-line"></view>
-        <text class="guide-text">国家林业和草原局指导</text>
-        <view class="guide-line"></view>
       </view>
     </view>
 
@@ -164,8 +151,14 @@
 import TabBar from '@/components/common/tab-bar.vue'
 
 export default {
-  components: {
-    TabBar
+  components: { TabBar },
+
+  onLoad() {
+    uni.hideTabBar({ animation: false })   
+  },
+  
+  onShow() {
+    uni.hideTabBar({ animation: false })  
   },
   
   data() {
@@ -178,42 +171,28 @@ export default {
         {
           title: '生物多样性',
           desc: '守护生命之源',
-          icon: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="18" stroke="#67C23A" stroke-width="2.5" fill="none"/>
-            <path d="M16 28C18 22 24 18 28 16" stroke="#67C23A" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M32 20C30 26 24 30 20 32" stroke="#67C23A" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>`,
+          icon: '🌿',
           bgColor: 'rgba(103, 194, 58, 0.1)',
           path: '/pages/public/science/biodiversity'
         },
         {
           title: '打击捕猎',
           desc: '依法严厉打击',
-          icon: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="18" stroke="#F56C6C" stroke-width="2.5" fill="none"/>
-            <path d="M18 18L30 30M30 18L18 30" stroke="#F56C6C" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>`,
+          icon: '⚖️',
           bgColor: 'rgba(245, 108, 108, 0.1)',
           path: '/pages/public/science/poaching'
         },
         {
           title: '公众参与',
           desc: '共建美好家园',
-          icon: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="18" stroke="#409EFF" stroke-width="2.5" fill="none"/>
-            <circle cx="24" cy="18" r="4" stroke="#409EFF" stroke-width="2.5" fill="none"/>
-            <path d="M16 32C16 28.5 19 26 24 26C29 26 32 28.5 32 32" stroke="#409EFF" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          </svg>`,
+          icon: '👥',
           bgColor: 'rgba(64, 158, 255, 0.1)',
           path: '/pages/public/science/public-participation'
         },
         {
           title: '价值观',
           desc: '守护与秩序',
-          icon: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="18" stroke="#1B4B8C" stroke-width="2.5" fill="none"/>
-            <path d="M24 12L30 18V24C30 28 26 30 24 32C22 30 18 28 18 24V18L24 12Z" stroke="#1B4B8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          </svg>`,
+          icon: '🌟',
           bgColor: 'rgba(27, 75, 140, 0.1)',
           path: '/pages/public/science/values'
         }
@@ -381,6 +360,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 24rpx 32rpx;
+  padding-top: calc(var(--status-bar-height) + 24rpx);  
   background: linear-gradient(135deg, #1B4B8C 0%, #2563EB 100%);
   position: sticky;
   top: 0;
@@ -600,12 +580,9 @@ export default {
   flex-shrink: 0;
 }
 
-.icon-wrapper {
-  width: 40rpx;
-  height: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.icon-emoji {
+  font-size: 40rpx;
+  line-height: 1;
 }
 
 .card-content {

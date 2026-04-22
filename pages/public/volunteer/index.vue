@@ -213,8 +213,14 @@
 import TabBar from '@/components/common/tab-bar.vue'
 
 export default {
-  components: { TabBar },
+  components: {
+    TabBar
+  },
 
+  onShow() {
+    uni.hideTabBar({ animation: false })
+  },
+  
   data() {
     return {
       currentTab: 'available',
@@ -483,7 +489,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.volunteer-page { min-height: 100vh; background: #F5F7FA; padding-bottom: 120rpx; }
+.volunteer-page { min-height: 100vh; background: #F5F7FA; padding-bottom: 120rpx; padding-top: var(--status-bar-height); }
 .tab-header { position: sticky; top: 0; z-index: 10; display: flex; background: #FFFFFF; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); }
 .tab-item { flex: 1; padding: 32rpx 0; text-align: center; position: relative; }
 .tab-text { font-size: 30rpx; color: #6B7280; font-weight: 500; }

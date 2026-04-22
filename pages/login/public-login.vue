@@ -10,14 +10,7 @@
     <!-- 品牌区 -->
     <view class="brand-area">
       <view class="brand-logo">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 4L8 10V22C8 32 24 44 24 44C24 44 40 32 40 22V10L24 4Z"
-            fill="rgba(255,255,255,0.25)" stroke="#FFFFFF" stroke-width="2.5"
-            stroke-linejoin="round"/>
-          <path d="M17 23L21 27L31 18"
-            stroke="#FFFFFF" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <text style="font-size:48rpx;line-height:1;">🛡️</text>
       </view>
       <view class="brand-text">
         <text class="brand-name">翼路平安</text>
@@ -36,11 +29,9 @@
 
       <!-- 手机号 -->
       <view class="input-wrap" :class="{ focused: focusField === 'mobile' }">
-        <view class="input-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" style="width:36rpx;height:36rpx;">
-            <path d="M17 2H7C5.9 2 5 2.9 5 4V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V4C19 2.9 18.1 2 17 2ZM12 21C11.45 21 11 20.55 11 20S11.45 19 12 19 13 19.45 13 20 12.55 21 12 21ZM17 18H7V5H17V18Z" fill="#1B4B8C"/>
-          </svg>
-        </view>
+      <view class="input-icon-wrap">
+        <uni-icons type="phone" size="18" color="#1B4B8C" />
+      </view>
         <input
           class="input-field"
           v-model="form.mobile"
@@ -56,9 +47,7 @@
       <!-- 密码 -->
       <view class="input-wrap" :class="{ focused: focusField === 'password' }">
         <view class="input-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" style="width:36rpx;height:36rpx;">
-            <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15.1 8H8.9V6C8.9 4.29 10.29 2.9 12 2.9C13.71 2.9 15.1 4.29 15.1 6V8Z" fill="#1B4B8C"/>
-          </svg>
+          <uni-icons type="locked" size="18" color="#1B4B8C" />
         </view>
         <input
           class="input-field"
@@ -70,14 +59,8 @@
           @blur="focusField = ''"
         />
         <view class="eye-btn" @click="showPwd = !showPwd">
-          <svg viewBox="0 0 24 24" fill="none" style="width:36rpx;height:36rpx;">
-            <path v-if="showPwd"
-              d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
-              fill="#909399"/>
-            <path v-else
-              d="M12 7C14.76 7 17 9.24 17 12C17 12.65 16.87 13.26 16.64 13.83L19.56 16.75C21.07 15.49 22.26 13.86 23 12C21.27 7.61 17 4.5 12 4.5C10.6 4.5 9.26 4.75 8.02 5.2L10.17 7.35C10.74 7.13 11.35 7 12 7ZM2 4.27L4.28 6.55L4.74 7.01C3.08 8.3 1.78 10.02 1 12C2.73 16.39 7 19.5 12 19.5C13.55 19.5 15.03 19.2 16.38 18.66L16.8 19.08L19.73 22L21 20.73L3.27 3L2 4.27ZM7.53 9.8L9.08 11.35C9.03 11.56 9 11.78 9 12C9 13.66 10.34 15 12 15C12.22 15 12.44 14.97 12.65 14.92L14.2 16.47C13.53 16.8 12.79 17 12 17C9.24 17 7 14.76 7 12C7 11.21 7.2 10.47 7.53 9.8ZM11.84 9.02L14.99 12.17L15.01 12.01C15.01 10.35 13.67 9.01 12.01 9.01L11.84 9.02Z"
-              fill="#909399"/>
-          </svg>
+          <uni-icons v-if="showPwd" type="eye" size="18" color="#909399" />
+          <uni-icons v-else type="eye-slash" size="18" color="#909399" />
         </view>
       </view>
 
@@ -85,9 +68,7 @@
       <view class="options-row">
         <view class="remember-row" @click="remember = !remember">
           <view class="checkbox-wrap" :class="{ checked: remember }">
-            <svg v-if="remember" viewBox="0 0 24 24" fill="none" style="width:26rpx;height:26rpx;">
-              <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="#FFFFFF"/>
-            </svg>
+            <text v-if="remember" style="color:#FFFFFF;font-size:22rpx;font-weight:bold;">✓</text>
           </view>
           <text class="remember-text">记住我</text>
         </view>
@@ -97,9 +78,7 @@
       <!-- 协议 -->
       <view class="agreement-row" @click="agreed = !agreed">
         <view class="checkbox-wrap sm" :class="{ checked: agreed }">
-          <svg v-if="agreed" viewBox="0 0 24 24" fill="none" style="width:20rpx;height:20rpx;">
-            <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="#FFFFFF"/>
-          </svg>
+          <text v-if="agreed" style="color:#FFFFFF;font-size:18rpx;font-weight:bold;">✓</text>
         </view>
         <text class="agree-normal">我已阅读并同意</text>
         <text class="agree-link" @click.stop="openAgreement('user')">《用户协议》</text>
@@ -123,14 +102,12 @@
       <view class="social-row">
         <view class="social-item" @click="wechatLogin">
           <!-- 真实微信图标 -->
-          <view class="social-icon wechat-bg">
-            <svg viewBox="0 0 24 24" fill="none" style="width:44rpx;height:44rpx;">
-              <path d="M8.69 11.52C9.35 11.52 9.89 10.98 9.89 10.32C9.89 9.66 9.35 9.12 8.69 9.12C8.03 9.12 7.49 9.66 7.49 10.32C7.49 10.98 8.03 11.52 8.69 11.52Z" fill="white"/>
-              <path d="M13.31 11.52C13.97 11.52 14.51 10.98 14.51 10.32C14.51 9.66 13.97 9.12 13.31 9.12C12.65 9.12 12.11 9.66 12.11 10.32C12.11 10.98 12.65 11.52 13.31 11.52Z" fill="white"/>
-              <path d="M16.5 14.1C16.5 14.1 16.04 14.37 15.5 14.37C14.96 14.37 14.5 14.1 14.5 14.1L13.5 14.6L13.88 13.47C13.04 13.03 12.5 12.33 12.5 11.55C12.5 10.14 13.97 9 15.76 9C17.55 9 19.02 10.14 19.02 11.55C19.02 12.52 18.38 13.37 17.38 13.83L17.68 14.72L16.5 14.1Z" fill="white"/>
-              <path d="M15.76 8C13.43 8 11.5 9.59 11.5 11.55C11.5 12.24 11.73 12.89 12.14 13.44L11.5 15.5L13.56 14.5C14.21 14.81 14.96 15 15.76 15C18.09 15 20.02 13.41 20.02 11.45C20.02 9.49 18.09 8 15.76 8Z" stroke="white" stroke-width="0.5" fill="none"/>
-              <path d="M11 6C7.69 6 5 8.24 5 11C5 12.38 5.62 13.63 6.63 14.55L6 16.97L8.42 15.71C9.22 15.9 10.09 16 11 16C11.34 16 11.67 15.98 12 15.95C11.73 15.39 11.5 14.78 11.5 14.13C11.5 11.57 13.93 9.5 17 9.5C17.01 9.5 17.01 9.5 17.01 9.5C16.32 7.49 13.9 6 11 6Z" fill="white"/>
-            </svg>
+          <view class="social-icon wechat-bg" style="overflow:hidden;display:flex;align-items:center;justify-content:center;">
+            <image 
+              src="/static/icons/wechat.png" 
+              mode="aspectFill" 
+              style="width:100%;height:100%;display:block;"
+            />
           </view>
           <text class="social-label">微信登录</text>
         </view>
@@ -292,7 +269,8 @@ page { background: #FFFFFF; }
 /* 品牌区 */
 .brand-area {
   display: flex; align-items: center; gap: 20rpx;
-  padding-top: 96rpx; margin-bottom: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 32rpx);  
+  margin-bottom: 32rpx;
   position: relative; z-index: 1;
 }
 .brand-logo {

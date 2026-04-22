@@ -12,9 +12,7 @@
         <view class="avatar-wrap" @click="goEditProfile">
           <image :src="userInfo.avatar || '/static/icons/avatar.png'" mode="aspectFill" class="avatar-img" />
           <view class="avatar-edit-dot">
-            <svg viewBox="0 0 24 24" style="width:24rpx;height:24rpx;">
-              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/>
-            </svg>
+            <uni-icons type="checkmark-circle-filled" size="12" color="#4CD964" />
           </view>
         </view>
         <view class="user-text" @click="goEditProfile">
@@ -26,9 +24,7 @@
         </view>
         <!-- 右上角齿轮 → 跳设置 -->
         <view class="settings-btn" @click="nav('/pages/public/mine/edit-profile')">
-          <svg viewBox="0 0 24 24" style="width:44rpx;height:44rpx;">
-            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" fill="white" opacity="0.85"/>
-          </svg>
+          <uni-icons type="settings" size="22" color="rgba(255,255,255,0.8)" />
         </view>
       </view>
 
@@ -71,7 +67,7 @@
             <text class="menu-label">我的举报</text>
             <view class="menu-right">
               <view class="badge" v-if="stats.pendingReports > 0"><text>{{ stats.pendingReports }}</text></view>
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -81,7 +77,7 @@
             </view>
             <text class="menu-label">我的活动</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -92,7 +88,7 @@
             <text class="menu-label">我的成就</text>
             <view class="menu-right">
               <text class="menu-value">{{ userInfo.points || 0 }} 积分</text>
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -102,7 +98,7 @@
             </view>
             <text class="menu-label">我的收藏</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
         </view>
@@ -118,7 +114,7 @@
             </view>
             <text class="menu-label">紧急救助</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -128,7 +124,7 @@
             </view>
             <text class="menu-label">法律法规</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -138,7 +134,7 @@
             </view>
             <text class="menu-label">意见反馈</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
 
@@ -150,7 +146,7 @@
             </view>
             <text class="menu-label">设置</text>
             <view class="menu-right">
-              <svg viewBox="0 0 24 24" style="width:32rpx;height:32rpx;"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <uni-icons type="right" size="16" color="#C7C7CC" />
             </view>
           </view>
         </view>
@@ -170,8 +166,14 @@
 import TabBar from '@/components/common/tab-bar.vue'
 
 export default {
-  components: { TabBar },
+  components: {
+    TabBar
+  },
 
+  onShow() {
+    uni.hideTabBar({ animation: false })
+  },
+  
   data() {
     return {
       userInfo: {},
@@ -306,7 +308,7 @@ export default {
 .bg-circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.06); }
 .bg-circle-1 { width: 480rpx; height: 480rpx; top: -160rpx; right: -120rpx; }
 .bg-circle-2 { width: 320rpx; height: 320rpx; top: 200rpx; left: -80rpx; }
-.status-bar { height: 88rpx; position: relative; z-index: 1; }
+.status-bar { height: var(--status-bar-height); position: relative; z-index: 1; }
 .user-section { position: relative; z-index: 1; padding: 24rpx 32rpx 48rpx; }
 .user-row { display: flex; align-items: center; gap: 24rpx; margin-bottom: 48rpx; }
 .avatar-wrap { position: relative; flex-shrink: 0; }

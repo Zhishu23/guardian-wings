@@ -163,7 +163,14 @@
 import TabBar from '@/components/common/tab-bar.vue'
 
 export default {
-  components: { TabBar },
+  components: {
+    TabBar
+  },
+
+  onShow() {
+    uni.hideTabBar({ animation: false })
+  },
+  
   data() {
     return {
       submitting: false,
@@ -391,6 +398,7 @@ export default {
   min-height: 100vh;
   background: linear-gradient(180deg, #F0F9FF 0%, #F5F7FA 100%);
   padding-bottom: 180rpx;
+  padding-top: var(--status-bar-height);   
 }
 .info-banner {
   display: flex;

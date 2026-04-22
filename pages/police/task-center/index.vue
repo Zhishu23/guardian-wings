@@ -7,9 +7,7 @@
     <view class="custom-navbar">
       <view class="navbar-left">
         <view class="navbar-badge">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" fill="#2B6CB0"/>
-          </svg>
+          <text style="font-size:36rpx;line-height:1;">🛡️</text>
         </view>
         <view class="navbar-title-group">
           <text class="navbar-title">任务中心</text>
@@ -18,9 +16,7 @@
       </view>
       <view class="navbar-actions">
         <view class="action-icon" @click="showFilter">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" fill="#2D3748"/>
-          </svg>
+          <uni-icons type="bars" size="20" color="#2D3748" />
         </view>
       </view>
     </view>
@@ -31,9 +27,7 @@
       <view class="warning-board" v-if="warningList.length > 0">
         <view class="board-header">
           <view class="header-icon pulse-animation">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7v3c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="#E53E3E"/>
-            </svg>
+            <text style="font-size:36rpx;line-height:1;">🚨</text>
           </view>
           <text class="header-title">实时警报</text>
           <view class="header-badge">
@@ -61,9 +55,7 @@
             >
               <view class="warning-main">
                 <view class="warning-icon-wrapper">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#E53E3E"/>
-                  </svg>
+                  <text style="font-size:32rpx;line-height:1;">⚠️</text>
                 </view>
                 <view class="warning-content">
                   <view class="warning-title-row">
@@ -72,10 +64,7 @@
                   </view>
                   <text class="warning-desc">{{ warning.content }}</text>
                   <view class="warning-expire">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                      <circle cx="12" cy="12" r="10" fill="none" stroke="#718096" stroke-width="2"/>
-                      <path d="M12 6v6l4 2" stroke="#718096" stroke-width="2"/>
-                    </svg>
+                    <uni-icons type="clock" size="14" color="#718096" />
                     <text>有效期: {{ warning.expireTime || '2025-12-22 11:58:00' }}</text>
                   </view>
                 </view>
@@ -167,15 +156,11 @@
 
             <view class="task-info-grid">
               <view class="info-item">
-                <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4A5568"/>
-                </svg>
+                <uni-icons type="location" size="16" color="#4A5568" />
                 <text class="info-text">{{ task.location }}</text>
               </view>
               <view class="info-item">
-                <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#4A5568"/>
-                </svg>
+                <uni-icons type="person" size="16" color="#4A5568" />
                 <text class="info-text">负责人: {{ task.reporter }}</text>
               </view>
             </view>
@@ -727,7 +712,7 @@ export default {
 }
 
 .warning-swiper {
-  height: 300rpx;
+  height: 340rpx;
 }
 
 .warning-item {
@@ -1114,12 +1099,13 @@ export default {
 
 .priority-corner {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 8rpx 24rpx;
-  border-radius: 0 24rpx 0 24rpx;
+  top: 16rpx;         
+  right: 16rpx;         
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx; 
   font-size: 20rpx;
   font-weight: 600;
+  z-index: 2;           
 }
 
 .priority-high.priority-corner {
@@ -1142,7 +1128,7 @@ export default {
   flex-direction: column;
   gap: 16rpx;
   margin-bottom: 20rpx;
-  padding-right: 80rpx;
+  padding-right: 100rpx; 
 }
 
 .task-meta {
@@ -1195,12 +1181,13 @@ export default {
 .task-desc {
   font-size: 26rpx;
   color: #4A5568;
-  line-height: 1.6;
+  line-height: 1.5;
   margin-bottom: 24rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;   
   overflow: hidden;
+  word-break: break-word;  
 }
 
 .task-info-grid {
@@ -1214,6 +1201,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 12rpx;
+  margin-bottom: 8rpx;  
 }
 
 .info-icon {
@@ -1226,6 +1214,7 @@ export default {
   font-size: 24rpx;
   color: #4A5568;
   flex: 1;
+  line-height: 1.4;     
 }
 
 .task-footer {

@@ -180,10 +180,17 @@
 
 <script>
 import TabBar from '@/components/common/tab-bar.vue'
+import { recognizeBirdImage } from '@/utils/birdRecognize.js'
 
 export default {
-  components: { TabBar },
+  components: {
+    TabBar
+  },
 
+  onShow() {
+    uni.hideTabBar({ animation: false })
+  },
+  
   data() {
     return {
       searchKeyword:  '',
@@ -275,23 +282,54 @@ export default {
 
     // ── 识别 ──
     openCamera() {
-      uni.chooseImage({ count: 1, sourceType: ['camera'], success: res => this.recognizeBird(res.tempFilePaths[0]) })
+      uni.chooseImage({
+        count: 1,
+        sourceType: ['camera'],
+        sizeType: ['compressed'],  
+        success: res => this.recognizeBird(res.tempFilePaths[0])
+      })
     },
     chooseImage() {
-      uni.chooseImage({ count: 1, sourceType: ['album'], success: res => this.recognizeBird(res.tempFilePaths[0]) })
+      uni.chooseImage({
+        count: 1,
+        sourceType: ['album'],// ← 加这行
+        success: res => this.recognizeBird(res.tempFilePaths[0])
+      })
     },
-    recognizeBird(imagePath) {
+    async recognizeBird(imagePath) {
       uni.showLoading({ title: '识别中...' })
-      setTimeout(async () => {
-        uni.hideLoading()
-        if (this.birdList.length > 0) {
-          const bird = this.birdList[Math.floor(Math.random() * this.birdList.length)]
-          this.addToHistory(bird)
-          this.goDetail(bird)
+      try {
+        const result = await recognizeBirdImage(imagePath)
+    
+        // 在本地鸟类库匹配
+        const matched = this.birdList.find(b =>
+          b.name === result.chineseName ||
+          b.alias === result.chineseName ||
+          (b.latinName && b.latinName === result.latinName)
+        )
+    
+        const confidence = Math.round(result.confidence)
+    
+        if (matched) {
+          // 本地有数据，直接跳转详情
+          this.addToHistory(matched)
+          uni.hideLoading()
+          uni.showToast({ title: `识别成功：${result.chineseName}（${confidence}%）`, icon: 'none', duration: 1500 })
+          setTimeout(() => this.goDetail(matched), 1000)
         } else {
-          uni.showToast({ title: '暂无鸟类数据', icon: 'none' })
+          // 本地没有，展示 API 返回结果
+          uni.hideLoading()
+          uni.showModal({
+            title: `🐦 ${result.chineseName}`,
+            content: `置信度：${confidence}%\n英文名：${result.englishName || '暂无'}\n学名：${result.latinName || '暂无'}\n\n（本地暂无该鸟类详细资料）`,
+            showCancel: false,
+            confirmText: '知道了'
+          })
         }
-      }, 2000)
+      } catch (e) {
+        uni.hideLoading()
+        uni.showToast({ title: e.message || '识别失败，请重试', icon: 'none', duration: 2500 })
+      }
     },
     jumpToDongNiao() {
       uni.showModal({
@@ -428,7 +466,7 @@ export default {
 
 <style scoped lang="scss">
 .page { background: #f5f5f5; min-height: 100vh; padding-bottom: 120rpx; }
-.search-section { display: flex; align-items: center; gap: 16rpx; padding: 24rpx; background: #fff; }
+.search-section { display: flex; align-items: center; gap: 16rpx; padding: 24rpx; padding-top: calc(var(--status-bar-height) + 24rpx); background: #fff; }
 .search-bar { flex: 1; display: flex; align-items: center; background: #f5f5f5; border-radius: 24rpx; padding: 16rpx 24rpx; }
 .search-icon { font-size: 32rpx; margin-right: 12rpx; }
 .search-input { flex: 1; font-size: 28rpx; color: #333; }
