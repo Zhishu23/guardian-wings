@@ -13,6 +13,20 @@ const API_KEY = 'bHJDpW3xAohRnOzbVVJ489pl'
 // API 基础地址
 const BASE_URL = 'https://ai.open.hhodata.com/api/v2'
 
+function normalizeApiResponse(payload) {
+  if (Array.isArray(payload)) {
+    return {
+      status: String(payload[0] || ''),
+      data: payload[1]
+    }
+  }
+
+  return {
+    status: String((payload && payload.status) || ''),
+    data: payload && payload.data
+  }
+}
+
 // ── 获取设备唯一ID（用于 did 参数，必须1-32位字母或数字）──
 function getDeviceId() {
   try {
@@ -50,7 +64,7 @@ function uploadImage(imagePath) {
           
           let result
           try {
-            result = JSON.parse(raw)
+            result = normalizeApiResponse(JSON.parse(raw))
           } catch (parseErr) {
             reject(new Error('API返回格式异常：' + raw.substring(0, 50)))
             return
@@ -66,11 +80,10 @@ function uploadImage(imagePath) {
             return
           }
 
-          const status = String(result.status || result[0] || '')
+          const status = result.status
           
           if (status === '1000') {
-            // 正常返回，识别ID在 data[1]
-            const recognitionId = (result.data && result.data[1]) || (Array.isArray(result) && result[1])
+            const recognitionId = result.data
             if (recognitionId) {
               resolve(recognitionId)
             } else {
@@ -119,7 +132,7 @@ function getResult(recognitionId, retryCount = 0) {
         },
         data: `resultid=${encodeURIComponent(recognitionId)}`,
         success: (res) => {
-          const result = res.data
+          const result = normalizeApiResponse(res.data)
           if (result.status === '1001') {
             // 结果还未生成，继续重试
             getResult(recognitionId, retryCount + 1).then(resolve).catch(reject)
@@ -131,7 +144,7 @@ function getResult(recognitionId, retryCount = 0) {
           } else if (result.status === '1009') {
             reject(new Error('检测到鸟类但无法识别，请尝试更清晰的正面照片'))
           } else {
-            reject(new Error(`识别失败：${result.status}`))
+            reject(new Error(`识别失败：${result.status || 'unknown'}`))
           }
         },
         fail: (err) => {
@@ -154,9 +167,9 @@ function getEncyclopedia(animalId, animalClass = 'B') {
       },
       data: `animalid=${animalId}&class=${animalClass}`,
       success: (res) => {
-        const result = res.data
-        if (result.status === '1000' && result.data && result.data[1]) {
-          resolve(result.data[1]) // 返回百科信息对象
+        const result = normalizeApiResponse(res.data)
+        if (result.status === '1000' && result.data) {
+          resolve(result.data) // 返回百科信息对象
         } else {
           resolve(null) // 百科查询失败不影响主流程
         }
