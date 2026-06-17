@@ -57,7 +57,7 @@
         </view>
       </view>
 
-      <!-- 警务版卡片 -->
+      <!-- 公务段卡片 -->
       <view 
         class="role-card police-card"
         :class="{ 'selected': selectedRole === 'police' }"
@@ -68,7 +68,7 @@
           <text style="font-size:64rpx;line-height:1;">👮</text>
         </view>
         <view class="card-content">
-          <text class="card-title">警务工作版</text>
+          <text class="card-title">公务段</text>
           <text class="card-desc">任务处理 • 预警接收 • 协同办案</text>
           <view class="card-features">
             <view class="feature-tag police-tag">
@@ -138,7 +138,7 @@ export default {
           url: '/pages/login/public-login'
         })
       } else if (this.selectedRole === 'police') {
-        // 警务版：跳转到警务登录页
+        // 公务段：跳转到公务段登录页
         uni.navigateTo({
           url: '/pages/login/police-login'
         })

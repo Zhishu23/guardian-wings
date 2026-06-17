@@ -22,7 +22,7 @@
     },
     {
       "path": "pages/login/police-login",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "警务登录" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "公务段登录" }
     },
     {
       "path": "pages/public/home/home",

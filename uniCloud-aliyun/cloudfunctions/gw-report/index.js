@@ -131,7 +131,7 @@ async function getReportDetail(params) {
 
     const report = res.data[0]
 
-    // 权限校验：只能查看自己的举报（警务端调用时可不传 user_id 跳过校验）
+    // 权限校验：只能查看自己的举报（公务段调用时可不传 user_id 跳过校验）
     if (user_id && report.user_id !== user_id) {
       return { code: 403, msg: '无权查看此举报' }
     }
@@ -144,7 +144,7 @@ async function getReportDetail(params) {
 }
 
 // ─────────────────────────────────────────────
-// 4. 更新举报状态（警务端使用）
+// 4. 更新举报状态（公务段使用）
 // ─────────────────────────────────────────────
 async function updateReportStatus(params) {
   const { reportId, status, remark = '', handler_id } = params

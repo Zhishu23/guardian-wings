@@ -27,7 +27,7 @@
             <path d="M24 30l6 6 10-12" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
           </svg>
         </view>
-        <text class="page-title">警务工作版</text>
+        <text class="page-title">公务段</text>
         <text class="page-subtitle">Guardian Wings · 执法协作平台</text>
         <view class="security-badge">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -218,7 +218,7 @@ export default {
       this.remember = e.detail.value.length > 0
     },
 
-    // ── 警务端登录 ──────────────────────────
+    // ── 公务段登录 ──────────────────────────
     async handleLogin() {
       const { policeId, password, department } = this.form
 

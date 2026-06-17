@@ -166,7 +166,7 @@ exports.main = async (event, context) => {
         }
       }
 
-      // ── 警务端登录（修复：返回完整字段）──────
+      // ── 公务段登录（修复：返回完整字段）──────
       case 'policeLogin': {
         const { policeId, password, department } = params
         if (!policeId || !password || !department) {

@@ -74,7 +74,7 @@
     "isAnonymous": {
       "bsonType": "bool",
       "title": "是否匿名",
-      "description": "true: 匿名举报，警务端不显示联系方式",
+      "description": "true: 匿名举报，公务段不显示联系方式",
       "defaultValue": false
     },
     "contact": {
@@ -104,7 +104,7 @@
     "result": {
       "bsonType": "string",
       "title": "处理结果",
-      "description": "警务端填写的处理结果说明（可选）",
+      "description": "公务段填写的处理结果说明（可选）",
       "maxLength": 500
     },
     "handledBy": {

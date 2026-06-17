@@ -1,6 +1,6 @@
 {
   "name": "gw-chat",
   "version": "1.0.0",
-  "description": "警务端群聊协作云函数",
+  "description": "公务段群聊协作云函数",
   "main": "index.js"
 }

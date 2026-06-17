@@ -202,7 +202,7 @@
       </view>
 
       <view class="version-info">
-        <text>翼路平安 警务版 v1.0.0</text>
+        <text>翼路平安 公务段 v1.0.0</text>
       </view>
 
       <view style="height:60rpx;"></view>
@@ -324,7 +324,7 @@ export default {
     handleLogout() {
       uni.showModal({
         title: '退出登录',
-        content: '确定要退出警务端登录吗？',
+        content: '确定要退出公务段登录吗？',
         confirmText: '确认退出',
         confirmColor: '#EF4444',
         success: res => {
