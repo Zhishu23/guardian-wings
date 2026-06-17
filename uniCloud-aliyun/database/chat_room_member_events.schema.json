@@ -1,0 +1,66 @@
+{
+  "bsonType": "object",
+  "required": ["room_id", "event_type", "create_time"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "成员事件唯一ID，自动生成"
+    },
+    "room_id": {
+      "bsonType": "string",
+      "title": "群聊ID",
+      "foreignKey": "chat_rooms._id"
+    },
+    "operator_id": {
+      "bsonType": "string",
+      "title": "操作人 officer_id"
+    },
+    "operator_name": {
+      "bsonType": "string",
+      "title": "操作人姓名"
+    },
+    "target_id": {
+      "bsonType": "string",
+      "title": "目标成员 officer_id"
+    },
+    "target_name": {
+      "bsonType": "string",
+      "title": "目标成员姓名"
+    },
+    "event_type": {
+      "bsonType": "string",
+      "title": "事件类型",
+      "enum": [
+        "invite_created",
+        "invite_accepted",
+        "invite_declined",
+        "invite_cancelled",
+        "invite_expired",
+        "member_joined",
+        "member_left",
+        "member_removed",
+        "role_changed",
+        "owner_transferred"
+      ]
+    },
+    "event_desc": {
+      "bsonType": "string",
+      "title": "事件描述",
+      "maxLength": 300
+    },
+    "extra": {
+      "bsonType": "object",
+      "title": "扩展信息"
+    },
+    "create_time": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "forceDefaultValue": { "$env": "now" }
+    }
+  }
+}

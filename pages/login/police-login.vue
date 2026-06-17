@@ -253,6 +253,8 @@ export default {
         if (res.result.code === 0) {
           // 保存警务信息
           this.$store.dispatch('police/policeLogin', res.result.policeInfo)
+          uni.setStorageSync('gw_police_info', JSON.stringify(res.result.policeInfo))
+          uni.setStorageSync('gw_token', res.result.token)
           // 保存通用 token
           this.$store.dispatch('user/login', {
             uid:          res.result.uid,

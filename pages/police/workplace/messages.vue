@@ -1,81 +1,141 @@
 <template>
   <view class="page">
+    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }" />
+
     <view class="top-nav">
       <view class="back-btn" @click="goBack">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M15 18L9 12L15 6" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </view>
-      <text class="nav-title">通知中心</text>
-      <text class="nav-action" @click="markAllRead">全部已读</text>
-    </view>
-
-    <!-- 加密提示 -->
-    <view class="security-bar">
-      <svg viewBox="0 0 24 24" fill="none" style="width:28rpx;height:28rpx;flex-shrink:0;">
-        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="#10B981"/>
-      </svg>
-      <text class="security-text">通知内容由平台加密下发 · 仅本人可见</text>
-    </view>
-
-    <!-- 类型筛选 -->
-    <view class="filter-tabs">
-      <view
-        class="filter-tab"
-        v-for="tab in filterTabs"
-        :key="tab.key"
-        :class="{active: activeFilter === tab.key}"
-        @click="activeFilter = tab.key"
-      >
-        <text>{{ tab.label }}</text>
-        <view class="filter-dot" v-if="tab.unread > 0"><text>{{ tab.unread }}</text></view>
+      <view class="nav-main">
+        <text class="nav-title">消息中心</text>
+        <text class="nav-sub">任务群聊 · 部门协作</text>
+      </view>
+      <view class="create-btn" @click="showCreateSheet">
+        <text>+</text>
       </view>
     </view>
 
-    <!-- 通知列表 -->
-    <scroll-view scroll-y class="notif-scroll" :show-scrollbar="false">
-      <view
-        class="notif-item"
-        v-for="item in filteredList"
-        :key="item.id"
-        :class="{'unread': !item.read}"
-        @click="readNotif(item)"
-      >
-        <view class="notif-icon-wrap" :class="'icon-' + item.type">
-          <svg :viewBox="item.viewBox" fill="none" style="width:36rpx;height:36rpx;">
-            <path :d="item.iconPath" fill="currentColor"/>
-          </svg>
-        </view>
+    <view class="summary-bar">
+      <view class="summary-item">
+        <text class="summary-value">{{ roomList.length }}</text>
+        <text class="summary-label">会话</text>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <text class="summary-value">{{ totalUnread }}</text>
+        <text class="summary-label">未读</text>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <text class="summary-value">{{ onlineLabel }}</text>
+        <text class="summary-label">状态</text>
+      </view>
+    </view>
 
-        <view class="notif-body">
-          <view class="notif-top">
-            <text class="notif-title">{{ item.title }}</text>
-            <text class="notif-time">{{ item.time }}</text>
+    <view class="invitation-banner" v-if="pendingInviteCount > 0" @click="openInvitations">
+      <view class="invite-icon">
+        <text>{{ pendingInviteCount }}</text>
+      </view>
+      <view class="invite-main">
+        <text>你有 {{ pendingInviteCount }} 条入群邀请待处理</text>
+        <text>接受后可进入对应群聊参与沟通</text>
+      </view>
+      <uni-icons type="right" size="18" color="#94A3B8" />
+    </view>
+
+    <view class="search-box">
+      <uni-icons type="search" size="18" color="#94A3B8" />
+      <input
+        class="search-input"
+        v-model="keyword"
+        placeholder="搜索群名、部门或任务"
+        confirm-type="search"
+      />
+      <view class="clear-btn" v-if="keyword" @click="keyword = ''">
+        <uni-icons type="clear" size="18" color="#94A3B8" />
+      </view>
+    </view>
+
+    <scroll-view scroll-x class="filter-scroll" :show-scrollbar="false">
+      <view class="filter-row">
+        <view
+          class="filter-chip"
+          v-for="tab in filterTabs"
+          :key="tab.key"
+          :class="{ active: activeFilter === tab.key }"
+          @click="activeFilter = tab.key"
+        >
+          <text>{{ tab.label }}</text>
+          <view class="chip-badge" v-if="tab.key === 'unread' && totalUnread > 0">
+            <text>{{ totalUnread }}</text>
           </view>
-          <text class="notif-content">{{ item.content }}</text>
-          <view class="notif-tags">
-            <view class="notif-type-tag" :class="'tag-' + item.type">
-              <text>{{ item.typeLabel }}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <scroll-view
+      scroll-y
+      class="room-scroll"
+      :class="{ 'with-invite': pendingInviteCount > 0 }"
+      :show-scrollbar="false"
+      refresher-enabled
+      :refresher-triggered="refreshing"
+      @refresherrefresh="onPullRefresh"
+    >
+      <view v-if="loading && roomList.length === 0" class="loading-wrap">
+        <view class="loading-dot"></view>
+        <text>正在加载群聊...</text>
+      </view>
+
+      <view
+        v-for="room in filteredRooms"
+        :key="room.id"
+        class="room-card"
+        :class="{ unread: room.unread_count > 0 }"
+        @click="openRoom(room)"
+      >
+        <view class="room-avatar" :class="'avatar-' + room.type">
+          <text>{{ getRoomInitial(room) }}</text>
+        </view>
+        <view class="room-body">
+          <view class="room-top">
+            <view class="room-name-wrap">
+              <text class="room-name">{{ room.name }}</text>
+              <view class="room-tag" :class="'tag-' + room.type">
+                <text>{{ getTypeLabel(room.type) }}</text>
+              </view>
             </view>
-            <view class="notif-priority" v-if="item.priority === 'high'">
-              <text>🔴 紧急</text>
+            <text class="room-time">{{ room.last_message_time_text }}</text>
+          </view>
+          <view class="room-bottom">
+            <text class="room-message">{{ room.last_message || '暂无消息' }}</text>
+            <view class="unread-badge" v-if="room.unread_count > 0">
+              <text>{{ room.unread_count > 99 ? '99+' : room.unread_count }}</text>
             </view>
           </view>
+          <view class="room-meta">
+            <text>{{ room.member_count || 1 }} 人</text>
+            <text v-if="room.dept"> · {{ room.dept }}</text>
+            <text v-if="room.task_id"> · 已关联任务</text>
+          </view>
         </view>
-
-        <view class="unread-dot" v-if="!item.read"></view>
       </view>
 
-      <view class="list-end" v-if="filteredList.length > 0">
-        <text>— 已显示全部通知 —</text>
+      <view v-if="!loading && filteredRooms.length === 0" class="empty-wrap">
+        <view class="empty-icon">
+          <uni-icons type="chatbubble" size="48" color="#CBD5E1" />
+        </view>
+        <text class="empty-title">{{ keyword ? '没有匹配的群聊' : '暂无群聊会话' }}</text>
+        <text class="empty-desc">先创建一个部门协作群，第一期会用云函数轮询刷新消息</text>
+        <view class="empty-actions">
+          <button class="primary-btn" @click="createDepartmentRoom">创建部门群</button>
+          <button class="secondary-btn" @click="createTempRoom">临时处置群</button>
+        </view>
       </view>
 
-      <view class="empty-wrap" v-if="filteredList.length === 0">
-        <svg viewBox="0 0 24 24" fill="none" style="width:100rpx;height:100rpx;">
-          <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM20 18V10C20 6.13 16.87 3 13 3H11C7.13 3 4 6.13 4 10V18L2 20V21H22V20L20 18Z" fill="#DCDFE6"/>
-        </svg>
-        <text class="empty-text">暂无通知</text>
-      </view>
+      <view class="bottom-space"></view>
     </scroll-view>
   </view>
 </template>
@@ -84,213 +144,760 @@
 export default {
   data() {
     return {
+      statusBarHeight: 0,
+      loading: false,
+      refreshing: false,
       activeFilter: 'all',
+      keyword: '',
+      roomList: [],
+      pendingInviteCount: 0,
+      pollTimer: null,
+      lastErrorToastAt: 0,
       filterTabs: [
-        { key: 'all',    label: '全部',   unread: 3 },
-        { key: 'alert',  label: '预警',   unread: 1 },
-        { key: 'task',   label: '任务',   unread: 2 },
-        { key: 'system', label: '系统',   unread: 0 }
-      ],
-      notifList: [
-        {
-          id: 'N001', type: 'alert', typeLabel: '风险预警',
-          title: '高风险线索预警',
-          content: '平台检测到辖区内存在疑似非法捕猎活动，风险等级：红色，请及时核查处置。',
-          time: '10:32', read: false, priority: 'high',
-          viewBox: '0 0 24 24',
-          iconPath: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'
-        },
-        {
-          id: 'N002', type: 'task', typeLabel: '任务通知',
-          title: '新任务已下发',
-          content: '指挥中心已向您下发新任务：湿地保护区巡逻（3月15日上午），请查看任务详情并确认接收。',
-          time: '09:15', read: false, priority: 'normal',
-          viewBox: '0 0 24 24',
-          iconPath: 'M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z'
-        },
-        {
-          id: 'N003', type: 'task', typeLabel: '任务通知',
-          title: '任务状态更新',
-          content: '您提交的《候鸟迁徙监测报告》已通过审核，任务状态已更新为"已完成"。',
-          time: '昨天 16:40', read: false, priority: 'normal',
-          viewBox: '0 0 24 24',
-          iconPath: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
-        },
-        {
-          id: 'N004', type: 'system', typeLabel: '系统通知',
-          title: '平台维护公告',
-          content: '翼路平安平台将于本周六凌晨2:00-4:00进行系统维护升级，届时部分功能暂时不可用，请提前做好安排。',
-          time: '昨天 09:00', read: true, priority: 'normal',
-          viewBox: '0 0 24 24',
-          iconPath: 'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z'
-        },
-        {
-          id: 'N005', type: 'alert', typeLabel: '风险预警',
-          title: '候鸟迁徙高峰预警',
-          content: '气象部门预报：本周辖区将迎候鸟迁徙高峰，请加强沿线湿地巡护力度，重点防范非法捕猎活动。',
-          time: '2月19日', read: true, priority: 'normal',
-          viewBox: '0 0 24 24',
-          iconPath: 'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'
-        }
+        { key: 'all', label: '全部' },
+        { key: 'task', label: '任务群' },
+        { key: 'department', label: '部门群' },
+        { key: 'temp', label: '临时群' },
+        { key: 'unread', label: '未读' }
       ]
     }
   },
 
   computed: {
-    filteredList() {
-      if (this.activeFilter === 'all') return this.notifList
-      return this.notifList.filter(n => n.type === this.activeFilter)
+    totalUnread() {
+      return this.roomList.reduce((sum, room) => sum + (Number(room.unread_count) || 0), 0)
+    },
+
+    onlineLabel() {
+      return this.pollTimer ? '在线' : '待机'
+    },
+
+    filteredRooms() {
+      let list = this.roomList
+      if (this.activeFilter === 'unread') {
+        list = list.filter(room => room.unread_count > 0)
+      } else if (this.activeFilter !== 'all') {
+        list = list.filter(room => room.type === this.activeFilter)
+      }
+
+      const kw = this.keyword.trim().toLowerCase()
+      if (kw) {
+        list = list.filter(room =>
+          String(room.name || '').toLowerCase().includes(kw) ||
+          String(room.dept || '').toLowerCase().includes(kw) ||
+          String(room.task_id || '').toLowerCase().includes(kw)
+        )
+      }
+
+      return list
     }
   },
 
-  methods: {
-    goBack() { uni.navigateBack() },
+  onLoad() {
+    const sys = uni.getSystemInfoSync()
+    this.statusBarHeight = sys.statusBarHeight || 0
+    this.loadRooms()
+    this.loadInvitationSummary(true)
+  },
 
-    readNotif(item) {
-      if (!item.read) {
-        item.read = true
-        this.updateFilterCounts()
+  onShow() {
+    this.loadRooms(true)
+    this.loadInvitationSummary(true)
+    this.startPolling()
+  },
+
+  onHide() {
+    this.stopPolling()
+  },
+
+  onUnload() {
+    this.stopPolling()
+  },
+
+  methods: {
+    goBack() {
+      uni.navigateBack()
+    },
+
+    readPoliceInfo() {
+      let parsed = {}
+      try {
+        const raw = uni.getStorageSync('gw_police_info')
+        parsed = raw ? (typeof raw === 'string' ? JSON.parse(raw) : raw) : {}
+      } catch (e) {}
+
+      const storePolice = (this.$store && this.$store.state && this.$store.state.police) || {}
+      return {
+        officer_id: parsed.officer_id || parsed._id || storePolice.officer_id || '',
+        name: parsed.name || storePolice.name || '警务人员',
+        department: parsed.department || storePolice.department || '',
+        badge_no: parsed.badge_no || storePolice.badge_no || ''
       }
-      // 任务类通知可跳转到任务中心
-      if (item.type === 'task') {
+    },
+
+    ensurePolice() {
+      const police = this.readPoliceInfo()
+      if (!police.officer_id) {
         uni.showModal({
-          title: item.title,
-          content: item.content,
-          confirmText: '前往任务',
-          cancelText: '关闭',
+          title: '需要登录',
+          content: '请先登录警务账号后再使用群聊。',
+          confirmText: '去登录',
           success: res => {
-            if (res.confirm) uni.redirectTo({ url: '/pages/police/task-center/index' })
+            if (res.confirm) uni.redirectTo({ url: '/pages/login/police-login' })
           }
         })
-      } else {
-        uni.showModal({
-          title: item.title,
-          content: item.content,
-          showCancel: false,
-          confirmText: '知道了'
+        return null
+      }
+      return police
+    },
+
+    async loadRooms(silent = false) {
+      const police = this.ensurePolice()
+      if (!police) return
+      if (!silent) this.loading = true
+      try {
+        const res = await uniCloud.callFunction({
+          name: 'gw-chat',
+          data: {
+            action: 'getRoomList',
+            params: {
+              officer_id: police.officer_id,
+              page: 1,
+              pageSize: 50
+            }
+          }
         })
+        if (res.result && res.result.code === 0) {
+          this.roomList = res.result.data.list || []
+        } else if (!silent) {
+          this.showServiceNotice((res.result && res.result.msg) || '群聊加载失败')
+        }
+      } catch (e) {
+        if (!silent) this.showServiceNotice('群聊服务暂不可用，请检查网络')
+        console.error('loadRooms error:', e)
+      } finally {
+        this.loading = false
+        this.refreshing = false
       }
     },
 
-    markAllRead() {
-      this.notifList.forEach(n => n.read = true)
-      this.updateFilterCounts()
-      uni.showToast({ title: '已全部标为已读', icon: 'success' })
+    async loadInvitationSummary(silent = false) {
+      const police = this.ensurePolice()
+      if (!police) return
+      try {
+        const res = await uniCloud.callFunction({
+          name: 'gw-chat',
+          data: {
+            action: 'getMyInvitations',
+            params: {
+              officer_id: police.officer_id,
+              status: 'pending',
+              page: 1,
+              pageSize: 20
+            }
+          }
+        })
+        if (res.result && res.result.code === 0) {
+          const list = res.result.data.list || []
+          this.pendingInviteCount = list.filter(item => item.status === 'pending').length
+        } else if (!silent) {
+          this.showServiceNotice((res.result && res.result.msg) || '入群邀请加载失败')
+        }
+      } catch (e) {
+        if (!silent) this.showServiceNotice('入群邀请暂不可用，请检查网络')
+        console.error('loadInvitationSummary error:', e)
+      }
     },
 
-    updateFilterCounts() {
-      const counts = { all: 0, alert: 0, task: 0, system: 0 }
-      this.notifList.forEach(n => {
-        if (!n.read) { counts.all++; counts[n.type]++ }
+    startPolling() {
+      if (this.pollTimer) return
+      this.pollTimer = setInterval(() => {
+        this.loadRooms(true)
+        this.loadInvitationSummary(true)
+      }, 12000)
+    },
+
+    stopPolling() {
+      if (this.pollTimer) {
+        clearInterval(this.pollTimer)
+        this.pollTimer = null
+      }
+    },
+
+    async onPullRefresh() {
+      this.refreshing = true
+      await Promise.all([
+        this.loadRooms(true),
+        this.loadInvitationSummary(true)
+      ])
+      this.refreshing = false
+    },
+
+    showCreateSheet() {
+      uni.showActionSheet({
+        itemList: ['创建部门协作群', '创建临时处置群'],
+        success: res => {
+          if (res.tapIndex === 0) this.createDepartmentRoom()
+          if (res.tapIndex === 1) this.createTempRoom()
+        }
       })
-      this.filterTabs.forEach(t => t.unread = counts[t.key] || 0)
+    },
+
+    async createDepartmentRoom() {
+      const police = this.ensurePolice()
+      if (!police) return
+      await this.createRoom({
+        type: 'department',
+        name: `${police.department || '警务'}协作群`,
+        dept: police.department
+      })
+    },
+
+    async createTempRoom() {
+      const police = this.ensurePolice()
+      if (!police) return
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      await this.createRoom({
+        type: 'temp',
+        name: `临时处置群 ${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+      })
+    },
+
+    async createRoom(extra) {
+      const police = this.ensurePolice()
+      if (!police) return
+      uni.showLoading({ title: '创建中...' })
+      try {
+        const res = await uniCloud.callFunction({
+          name: 'gw-chat',
+          data: {
+            action: 'createRoom',
+            params: {
+              ...extra,
+              creator_id: police.officer_id,
+              creator_name: police.name,
+              creator_badge_no: police.badge_no,
+              members: [{
+                officer_id: police.officer_id,
+                officer_name: police.name,
+                badge_no: police.badge_no
+              }]
+            }
+          }
+        })
+        uni.hideLoading()
+        if (res.result && res.result.code === 0) {
+          const room = res.result.data.room
+          uni.showToast({ title: '群聊已创建', icon: 'success' })
+          this.loadRooms(true)
+          setTimeout(() => this.openRoom(room), 500)
+        } else {
+          this.showServiceNotice((res.result && res.result.msg) || '创建失败', true)
+        }
+      } catch (e) {
+        uni.hideLoading()
+        this.showServiceNotice('创建失败，请检查网络后重试', true)
+        console.error('createRoom error:', e)
+      }
+    },
+
+    showServiceNotice(message, force = false) {
+      const now = Date.now()
+      if (!force && now - this.lastErrorToastAt < 20000) return
+      this.lastErrorToastAt = now
+      uni.showToast({
+        title: message,
+        icon: 'none',
+        duration: 2200
+      })
+    },
+
+    openRoom(room) {
+      uni.navigateTo({
+        url: `/pages/police/workplace/group-chat?roomId=${room.id}&roomName=${encodeURIComponent(room.name)}`
+      })
+    },
+
+    openInvitations() {
+      uni.navigateTo({ url: '/pages/police/workplace/room-invitations' })
+    },
+
+    getTypeLabel(type) {
+      const map = {
+        task: '任务',
+        department: '部门',
+        warning: '预警',
+        temp: '临时'
+      }
+      return map[type] || '群聊'
+    },
+
+    getRoomInitial(room) {
+      if (room.type === 'task') return '任'
+      if (room.type === 'department') return '部'
+      if (room.type === 'warning') return '警'
+      return '群'
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.page { background: #F2F6FC;
-        min-height: 100vh; 
-		width: 100%;           /* 加这行 */
-		overflow-x: hidden;    /* 加这行 */
-	  }
+.page {
+  min-height: 100vh;
+  background: #EEF3F8;
+  overflow-x: hidden;
+}
+
+.status-bar {
+  background: #0F2A5C;
+}
 
 .top-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 24rpx 28rpx;
-  background: linear-gradient(135deg, #0F2A5C, #1B4B8C);
-  position: sticky; top: 0; z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 22rpx 28rpx 28rpx;
+  background: linear-gradient(135deg, #0F2A5C 0%, #1B4B8C 64%, #2563EB 100%);
 }
-.back-btn {
-  width: 72rpx; height: 72rpx; border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center;
-}
-.back-btn svg { width: 40rpx; height: 40rpx; }
-.nav-title { font-size: 32rpx; font-weight: bold; color: #FFFFFF; }
-.nav-action { font-size: 24rpx; color: rgba(255,255,255,0.8); }
 
-.security-bar {
-  display: flex; align-items: center; gap: 12rpx;
-  background: rgba(16,185,129,0.06); border-bottom: 1rpx solid rgba(16,185,129,0.15);
-  padding: 16rpx 28rpx;
+.back-btn,
+.create-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
-.security-text { font-size: 22rpx; color: #059669; }
 
-.filter-tabs {
-  display: flex; background: #FFFFFF;
+.back-btn svg {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.create-btn text {
+  font-size: 46rpx;
+  line-height: 1;
+  color: #FFFFFF;
+  font-weight: 300;
+}
+
+.nav-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.nav-sub {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.summary-bar {
+  display: flex;
+  align-items: center;
+  margin: -18rpx 24rpx 20rpx;
+  padding: 24rpx 16rpx;
+  background: #FFFFFF;
+  border-radius: 18rpx;
+  box-shadow: 0 10rpx 28rpx rgba(15, 42, 92, 0.12);
+  position: relative;
+  z-index: 2;
+}
+
+.summary-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.summary-value {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0F2A5C;
+}
+
+.summary-label {
+  font-size: 21rpx;
+  color: #64748B;
+}
+
+.summary-divider {
+  width: 1rpx;
+  height: 44rpx;
+  background: #E2E8F0;
+}
+
+.invitation-banner {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin: 0 24rpx 18rpx;
+  padding: 22rpx 24rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #BFDBFE;
+  border-left: 6rpx solid #2563EB;
+  border-radius: 18rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 23, 42, 0.05);
+}
+
+.invite-icon {
+  width: 58rpx;
+  height: 58rpx;
+  border-radius: 50%;
+  background: #2563EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.invite-icon text {
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.invite-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.invite-main text:first-child {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.invite-main text:last-child {
+  font-size: 22rpx;
+  color: #64748B;
+}
+
+.search-box {
+  margin: 0 24rpx 18rpx;
+  height: 78rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
   padding: 0 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
-}
-.filter-tab {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8rpx;
-  padding: 28rpx 0; font-size: 26rpx; color: #909399;
-  position: relative;
-}
-.filter-tab.active {
-  color: #1B4B8C; font-weight: 600;
-}
-.filter-tab.active::after {
-  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 48rpx; height: 5rpx; background: #1B4B8C; border-radius: 3rpx;
-}
-.filter-dot {
-  min-width: 32rpx; height: 32rpx; border-radius: 16rpx;
-  background: #EF4444; padding: 0 8rpx;
-  display: flex; align-items: center; justify-content: center;
-  text { font-size: 16rpx; color: #FFFFFF; font-weight: bold; }
+  background: #FFFFFF;
+  border: 1rpx solid #E2E8F0;
+  border-radius: 16rpx;
+  box-sizing: border-box;
 }
 
-.notif-scroll { height: calc(100vh - 280rpx); 
-                padding: 16rpx 24rpx;
-				width: 100%;           /* 加这行 */
-			    box-sizing: border-box; /* 加这行 */
-			  }
-
-.notif-item {
-  display: flex; align-items: flex-start; gap: 20rpx;
-  background: #FFFFFF; border-radius: 16rpx;
-  padding: 28rpx; margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
-  position: relative;
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #0F172A;
 }
-.notif-item.unread { border-left: 4rpx solid #1B4B8C; }
-.notif-item:active { opacity: 0.85; }
 
-.notif-icon-wrap {
-  width: 72rpx; height: 72rpx; border-radius: 18rpx;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+.clear-btn {
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.icon-alert  { background: rgba(239,68,68,0.1);  color: #EF4444; }
-.icon-task   { background: rgba(37,99,235,0.1);  color: #2563EB; }
-.icon-system { background: rgba(107,114,128,0.1); color: #6B7280; }
 
-.notif-body { flex: 1; }
-.notif-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10rpx; }
-.notif-title { font-size: 28rpx; font-weight: 600; color: #1A202C; flex: 1; margin-right: 16rpx; }
-.notif-time { font-size: 20rpx; color: #C0C4CC; white-space: nowrap; }
-.notif-content { display: block; font-size: 24rpx; color: #606266; line-height: 1.7; margin-bottom: 14rpx; }
-.notif-tags { display: flex; align-items: center; gap: 12rpx; }
-.notif-type-tag {
-  font-size: 19rpx; padding: 4rpx 14rpx; border-radius: 8rpx;
+.filter-scroll {
+  white-space: nowrap;
+  margin-bottom: 14rpx;
 }
-.tag-alert  { background: rgba(239,68,68,0.08);  color: #EF4444; }
-.tag-task   { background: rgba(37,99,235,0.08);  color: #2563EB; }
-.tag-system { background: rgba(107,114,128,0.08); color: #6B7280; }
-.notif-priority { font-size: 19rpx; }
 
-.unread-dot {
-  position: absolute; top: 20rpx; right: 20rpx;
-  width: 16rpx; height: 16rpx; border-radius: 50%;
+.filter-row {
+  display: inline-flex;
+  gap: 14rpx;
+  padding: 0 24rpx;
+}
+
+.filter-chip {
+  min-width: 120rpx;
+  height: 62rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 0 24rpx;
+  background: #FFFFFF;
+  color: #64748B;
+  border: 1rpx solid #E2E8F0;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  box-sizing: border-box;
+}
+
+.filter-chip.active {
+  background: #1B4B8C;
+  border-color: #1B4B8C;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.chip-badge {
+  min-width: 30rpx;
+  height: 30rpx;
+  padding: 0 8rpx;
+  border-radius: 15rpx;
   background: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.list-end { text-align: center; padding: 32rpx; font-size: 22rpx; color: #C0C4CC; }
+.chip-badge text {
+  color: #FFFFFF;
+  font-size: 17rpx;
+}
 
+.room-scroll {
+  height: calc(100vh - 360rpx);
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
+
+.room-scroll.with-invite {
+  height: calc(100vh - 456rpx);
+}
+
+.room-card {
+  display: flex;
+  gap: 20rpx;
+  padding: 26rpx;
+  margin-bottom: 18rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #E5EAF2;
+  border-radius: 18rpx;
+  box-shadow: 0 4rpx 14rpx rgba(15, 23, 42, 0.05);
+}
+
+.room-card.unread {
+  border-left: 6rpx solid #2563EB;
+}
+
+.room-card:active {
+  transform: scale(0.99);
+  opacity: 0.9;
+}
+
+.room-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.room-avatar text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.avatar-task { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+.avatar-department { background: linear-gradient(135deg, #0EA5A3, #047857); }
+.avatar-warning { background: linear-gradient(135deg, #EF4444, #B91C1C); }
+.avatar-temp { background: linear-gradient(135deg, #64748B, #334155); }
+
+.room-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-top,
+.room-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.room-name-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.room-name {
+  font-size: 29rpx;
+  font-weight: 650;
+  color: #0F172A;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-tag {
+  height: 32rpx;
+  padding: 0 12rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.room-tag text {
+  font-size: 18rpx;
+  font-weight: 600;
+}
+
+.tag-task { background: rgba(37, 99, 235, 0.1); text { color: #2563EB; } }
+.tag-department { background: rgba(14, 165, 163, 0.1); text { color: #0F766E; } }
+.tag-warning { background: rgba(239, 68, 68, 0.1); text { color: #DC2626; } }
+.tag-temp { background: rgba(100, 116, 139, 0.12); text { color: #475569; } }
+
+.room-time {
+  font-size: 21rpx;
+  color: #94A3B8;
+  white-space: nowrap;
+}
+
+.room-bottom {
+  margin-top: 12rpx;
+}
+
+.room-message {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  color: #64748B;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unread-badge {
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 10rpx;
+  border-radius: 18rpx;
+  background: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unread-badge text {
+  color: #FFFFFF;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.room-meta {
+  margin-top: 12rpx;
+  font-size: 21rpx;
+  color: #94A3B8;
+}
+
+.loading-wrap,
 .empty-wrap {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 120rpx 0; gap: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 24rpx;
 }
-.empty-text { font-size: 28rpx; color: #C0C4CC; }
+
+.loading-wrap text {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: #64748B;
+}
+
+.loading-dot {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 5rpx solid #DCE6F2;
+  border-top-color: #2563EB;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 650;
+  color: #0F172A;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  max-width: 560rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #64748B;
+  line-height: 1.6;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 18rpx;
+  margin-top: 30rpx;
+}
+
+.primary-btn,
+.secondary-btn {
+  height: 76rpx;
+  padding: 0 28rpx;
+  border-radius: 14rpx;
+  font-size: 25rpx;
+  border: none;
+}
+
+.primary-btn {
+  background: #1B4B8C;
+  color: #FFFFFF;
+}
+
+.secondary-btn {
+  background: #FFFFFF;
+  color: #1B4B8C;
+  border: 1rpx solid #C8D6E8;
+}
+
+.primary-btn::after,
+.secondary-btn::after {
+  border: none;
+}
+
+.bottom-space {
+  height: 80rpx;
+}
 </style>

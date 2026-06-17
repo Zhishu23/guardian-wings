@@ -165,6 +165,22 @@
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "消息中心" }
     },
     {
+      "path": "pages/police/workplace/group-chat",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "群聊协作" }
+    },
+    {
+      "path": "pages/police/workplace/room-info",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "群信息" }
+    },
+    {
+      "path": "pages/police/workplace/invite-members",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "邀请成员" }
+    },
+    {
+      "path": "pages/police/workplace/room-invitations",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "入群邀请" }
+    },
+    {
       "path": "pages/police/workplace/photo-capture",
       "style": { "navigationStyle": "custom", "navigationBarTitleText": "照片采集" }
     },

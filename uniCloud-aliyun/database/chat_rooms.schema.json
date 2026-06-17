@@ -1,0 +1,79 @@
+{
+  "bsonType": "object",
+  "required": ["name", "type", "created_by", "member_ids"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "群聊唯一ID，自动生成"
+    },
+    "name": {
+      "bsonType": "string",
+      "title": "群聊名称",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "type": {
+      "bsonType": "string",
+      "title": "群聊类型",
+      "enum": ["task", "department", "warning", "temp"],
+      "defaultValue": "temp"
+    },
+    "task_id": {
+      "bsonType": "string",
+      "title": "关联任务ID"
+    },
+    "dept": {
+      "bsonType": "string",
+      "title": "关联部门"
+    },
+    "created_by": {
+      "bsonType": "string",
+      "title": "创建人 officer_id"
+    },
+    "created_by_name": {
+      "bsonType": "string",
+      "title": "创建人姓名"
+    },
+    "member_ids": {
+      "bsonType": "array",
+      "title": "成员 officer_id 列表",
+      "items": { "bsonType": "string" }
+    },
+    "member_count": {
+      "bsonType": "int",
+      "title": "成员数量",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "last_message": {
+      "bsonType": "string",
+      "title": "最后一条消息摘要",
+      "maxLength": 200
+    },
+    "last_message_time": {
+      "bsonType": "timestamp",
+      "title": "最后消息时间"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "群状态",
+      "enum": ["active", "closed"],
+      "defaultValue": "active"
+    },
+    "create_time": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "forceDefaultValue": { "$env": "now" }
+    },
+    "update_time": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": { "$env": "now" }
+    }
+  }
+}

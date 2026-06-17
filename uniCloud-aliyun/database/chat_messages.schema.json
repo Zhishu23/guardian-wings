@@ -1,0 +1,80 @@
+{
+  "bsonType": "object",
+  "required": ["room_id", "sender_id", "message_type", "create_time"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "消息唯一ID，自动生成"
+    },
+    "room_id": {
+      "bsonType": "string",
+      "title": "群聊ID",
+      "foreignKey": "chat_rooms._id"
+    },
+    "sender_id": {
+      "bsonType": "string",
+      "title": "发送人 officer_id"
+    },
+    "sender_name": {
+      "bsonType": "string",
+      "title": "发送人姓名"
+    },
+    "sender_badge_no": {
+      "bsonType": "string",
+      "title": "发送人警号"
+    },
+    "message_type": {
+      "bsonType": "string",
+      "title": "消息类型",
+      "enum": ["text", "system", "task", "image", "location"],
+      "defaultValue": "text"
+    },
+    "content": {
+      "bsonType": "string",
+      "title": "文本内容",
+      "maxLength": 2000
+    },
+    "file_url": {
+      "bsonType": "string",
+      "title": "文件地址"
+    },
+    "location": {
+      "bsonType": "object",
+      "title": "位置消息",
+      "properties": {
+        "address": { "bsonType": "string" },
+        "latitude": { "bsonType": "double" },
+        "longitude": { "bsonType": "double" }
+      }
+    },
+    "task_id": {
+      "bsonType": "string",
+      "title": "关联任务ID"
+    },
+    "client_msg_id": {
+      "bsonType": "string",
+      "title": "客户端消息ID，用于幂等"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "消息状态",
+      "enum": ["normal", "recalled", "deleted"],
+      "defaultValue": "normal"
+    },
+    "create_time": {
+      "bsonType": "timestamp",
+      "title": "发送时间",
+      "forceDefaultValue": { "$env": "now" }
+    },
+    "update_time": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": { "$env": "now" }
+    }
+  }
+}

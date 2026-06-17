@@ -1,0 +1,96 @@
+{
+  "bsonType": "object",
+  "required": ["room_id", "officer_id"],
+  "permission": {
+    "read": "auth.role.indexOf('police') > -1 || auth.role.indexOf('admin') > -1",
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "成员关系唯一ID，自动生成"
+    },
+    "room_id": {
+      "bsonType": "string",
+      "title": "群聊ID",
+      "foreignKey": "chat_rooms._id"
+    },
+    "officer_id": {
+      "bsonType": "string",
+      "title": "警员 officer_id"
+    },
+    "officer_name": {
+      "bsonType": "string",
+      "title": "警员姓名"
+    },
+    "badge_no": {
+      "bsonType": "string",
+      "title": "警号"
+    },
+    "role": {
+      "bsonType": "string",
+      "title": "群内角色",
+      "enum": ["owner", "admin", "member"],
+      "defaultValue": "member"
+    },
+    "status": {
+      "bsonType": "string",
+      "title": "成员状态",
+      "enum": ["active", "left", "removed", "disabled"],
+      "defaultValue": "active"
+    },
+    "last_read_time": {
+      "bsonType": "timestamp",
+      "title": "最后已读时间"
+    },
+    "last_active_time": {
+      "bsonType": "timestamp",
+      "title": "最后活跃时间"
+    },
+    "joined_at": {
+      "bsonType": "timestamp",
+      "title": "加入时间",
+      "forceDefaultValue": { "$env": "now" }
+    },
+    "invited_by": {
+      "bsonType": "string",
+      "title": "邀请人 officer_id"
+    },
+    "invite_id": {
+      "bsonType": "string",
+      "title": "入群邀请ID",
+      "foreignKey": "chat_room_invitations._id"
+    },
+    "history_visible_from": {
+      "bsonType": "timestamp",
+      "title": "历史消息可见起点"
+    },
+    "removed_by": {
+      "bsonType": "string",
+      "title": "移除人 officer_id"
+    },
+    "removed_reason": {
+      "bsonType": "string",
+      "title": "移除原因"
+    },
+    "removed_at": {
+      "bsonType": "timestamp",
+      "title": "移除时间"
+    },
+    "left_at": {
+      "bsonType": "timestamp",
+      "title": "主动退出时间"
+    },
+    "update_time": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "forceDefaultValue": { "$env": "now" }
+    },
+    "mute": {
+      "bsonType": "bool",
+      "title": "是否免打扰",
+      "defaultValue": false
+    }
+  }
+}
