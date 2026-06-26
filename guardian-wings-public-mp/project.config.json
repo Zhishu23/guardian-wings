@@ -26,7 +26,12 @@
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "static/birds"
+      }
+    ],
     "include": []
   },
   "appid": "wxdfb4915de4d4c674",
