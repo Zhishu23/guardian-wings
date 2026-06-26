@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="home-page">
     <!-- 顶部导航栏 -->
     <view class="top-nav">
@@ -158,28 +158,28 @@ export default {
           desc: '守护生命之源',
           icon: '🌿',
           bgColor: 'rgba(103, 194, 58, 0.1)',
-          path: '/pages/public/science/biodiversity'
+          path: '/subpackages/science/biodiversity'
         },
         {
           title: '打击捕猎',
           desc: '依法严厉打击',
           icon: '⚖️',
           bgColor: 'rgba(245, 108, 108, 0.1)',
-          path: '/pages/public/science/poaching'
+          path: '/subpackages/science/poaching'
         },
         {
           title: '公众参与',
           desc: '共建美好家园',
           icon: '👥',
           bgColor: 'rgba(64, 158, 255, 0.1)',
-          path: '/pages/public/science/public-participation'
+          path: '/subpackages/science/public-participation'
         },
         {
           title: '价值观',
           desc: '守护与秩序',
           icon: '🌟',
           bgColor: 'rgba(27, 75, 140, 0.1)',
-          path: '/pages/public/science/values'
+          path: '/subpackages/science/values'
         }
       ],
       hasNotification: true
@@ -275,7 +275,7 @@ export default {
     goNewsDetail(id) {
       console.log('跳转新闻详情，ID:', id)
       uni.navigateTo({
-        url: `/pages/public/home/news-detail?id=${id}`,
+        url: `/subpackages/home/news-detail?id=${id}`,
         success: () => {
           console.log('跳转成功')
         },
@@ -304,14 +304,14 @@ export default {
     
     viewAllNews() {
       uni.navigateTo({
-        url: '/pages/public/home/all-news'
+        url: '/subpackages/home/all-news'
       })
     },
 
     goMorningBrief() {
       if (!this.morningBrief._id) return
       uni.navigateTo({
-        url: `/pages/public/home/morning-brief-detail?id=${this.morningBrief._id}`
+        url: `/subpackages/home/morning-brief-detail?id=${this.morningBrief._id}`
       })
     },
     

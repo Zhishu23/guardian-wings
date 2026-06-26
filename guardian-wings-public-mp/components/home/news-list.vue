@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="news-section">
     <view class="section-header">
       <text class="section-title">最新动态</text>
@@ -59,12 +59,12 @@ export default {
   methods: {
     goDetail(item) {
       uni.navigateTo({
-        url: `/pages/public/home/news-detail?id=${item.id}`
+        url: `/subpackages/home/news-detail?id=${item.id}`
       })
     },
     goAllNews() {
       uni.navigateTo({
-        url: `/pages/public/home/all-news`
+        url: `/subpackages/home/all-news`
       })
     }
   }

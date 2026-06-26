@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="report-page">
     <view class="info-banner">
       <uni-icons type="info-filled" size="24" color="#2D6A4F" />
@@ -360,7 +360,7 @@ export default {
         uni.hideLoading()
 
         if (res.result.code === 0) {
-          uni.navigateTo({ url: '/pages/public/report/report-success' })
+          uni.navigateTo({ url: '/subpackages/report/report-success' })
         } else {
           uni.showToast({ title: res.result.msg || '提交失败', icon: 'none' })
         }

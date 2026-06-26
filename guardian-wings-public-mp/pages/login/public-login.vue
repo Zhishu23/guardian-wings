@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="login-page">
 
     <!-- 顶部渐变装饰 -->
@@ -104,7 +104,7 @@
           <!-- 真实微信图标 -->
           <view class="social-icon wechat-bg" style="overflow:hidden;display:flex;align-items:center;justify-content:center;">
             <image 
-              src="/static/icons/wechat.png" 
+              src="/static/login/weixin.png"
               mode="aspectFill" 
               style="width:100%;height:100%;display:block;"
             />
@@ -157,7 +157,7 @@ export default {
       uni.navigateTo({ url: '/pages/login/forgot-password' })
     },
     openAgreement(type) {
-      uni.navigateTo({ url: '/pages/public/law/index' })
+      uni.navigateTo({ url: '/subpackages/common/law' })
     },
     wechatLogin() {
       uni.showToast({ title: '微信登录功能开发中', icon: 'none' })

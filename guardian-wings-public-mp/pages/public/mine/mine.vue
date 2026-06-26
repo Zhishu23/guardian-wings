@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="mine-page">
     <view class="header-bg">
       <view class="bg-circle bg-circle-1" />
@@ -23,14 +23,14 @@
           </view>
         </view>
         <!-- 右上角齿轮 → 跳设置 -->
-        <view class="settings-btn" @click="nav('/pages/public/mine/edit-profile')">
+        <view class="settings-btn" @click="nav('/subpackages/mine/edit-profile')">
           <uni-icons type="settings" size="22" color="rgba(255,255,255,0.8)" />
         </view>
       </view>
 
       <!-- 数据统计 -->
       <view class="stats-row">
-        <view class="stat-item" @click="nav('/pages/public/report/my-reports')">
+        <view class="stat-item" @click="nav('/subpackages/report/my-reports')">
           <view class="stat-num-row">
             <text class="stat-num">{{ stats.reports }}</text>
             <text class="stat-unit">条</text>
@@ -44,7 +44,7 @@
           </view>
           <text class="stat-label">志愿活动</text>
         </view>
-        <view class="stat-item" @click="nav('/pages/public/mine/achievement')">
+        <view class="stat-item" @click="nav('/subpackages/mine/achievement')">
           <view class="stat-num-row">
             <text class="stat-num">{{ userInfo.points || 0 }}</text>
             <text class="stat-unit">分</text>
@@ -60,7 +60,7 @@
       <view class="section-card">
         <view class="section-header"><text class="section-title">我的服务</text></view>
         <view class="menu-list">
-          <view class="menu-item" @click="nav('/pages/public/report/my-reports')">
+          <view class="menu-item" @click="nav('/subpackages/report/my-reports')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#FF6B6B,#EE0979);">
               <uni-icons type="info-filled" size="24" color="#FFFFFF" />
             </view>
@@ -81,7 +81,7 @@
             </view>
           </view>
 
-          <view class="menu-item" @click="nav('/pages/public/mine/achievement')">
+          <view class="menu-item" @click="nav('/subpackages/mine/achievement')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#F7971E,#FFD200);">
               <uni-icons type="medal-filled" size="24" color="#FFFFFF" />
             </view>
@@ -92,7 +92,7 @@
             </view>
           </view>
 
-          <view class="menu-item" @click="nav('/pages/public/mine/bookmarks')">
+          <view class="menu-item" @click="nav('/subpackages/mine/bookmarks')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#11998e,#38ef7d);">
               <uni-icons type="star-filled" size="24" color="#FFFFFF" />
             </view>
@@ -108,7 +108,7 @@
       <view class="section-card">
         <view class="section-header"><text class="section-title">常用功能</text></view>
         <view class="menu-list">
-          <view class="menu-item" @click="nav('/pages/public/emergency/index')">
+          <view class="menu-item" @click="nav('/subpackages/common/emergency')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#FF416C,#FF4B2B);">
               <uni-icons type="plus-filled" size="24" color="#FFFFFF" />
             </view>
@@ -118,7 +118,7 @@
             </view>
           </view>
 
-          <view class="menu-item" @click="nav('/pages/public/law/index')">
+          <view class="menu-item" @click="nav('/subpackages/common/law')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#536976,#292E49);">
               <uni-icons type="paperclip" size="24" color="#FFFFFF" />
             </view>
@@ -138,7 +138,7 @@
             </view>
           </view>
 
-          <view class="menu-item" @click="nav('/pages/public/mine/settings')">
+          <view class="menu-item" @click="nav('/subpackages/mine/settings')">
             <view class="menu-icon-wrap" style="background:linear-gradient(135deg,#5C6BC0,#3949AB);">
               <uni-icons type="settings-filled" size="24" color="#FFFFFF" />
             </view>
@@ -259,11 +259,11 @@ export default {
     },
 
     goEditProfile() {
-      uni.navigateTo({ url: '/pages/public/mine/edit-profile' })
+      uni.navigateTo({ url: '/subpackages/mine/edit-profile' })
     },
 
     goSettings() {
-      uni.navigateTo({ url: '/pages/public/mine/settings' })
+      uni.navigateTo({ url: '/subpackages/mine/settings' })
     },
 
     goMyActivities() {

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="volunteer-page">
     <view class="tab-header">
       <view
@@ -454,7 +454,7 @@ export default {
     },
 
     goActivityDetail(id) {
-      uni.navigateTo({ url: `/pages/public/volunteer/activity-detail?id=${id}` })
+      uni.navigateTo({ url: `/subpackages/volunteer/activity-detail?id=${id}` })
     },
 
     getActivityStatusLabel(status) {

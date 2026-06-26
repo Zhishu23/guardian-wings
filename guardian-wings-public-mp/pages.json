@@ -6,147 +6,59 @@
   "pages": [
     {
       "path": "pages/public/home/home",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "首页" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "首页"
+      }
     },
     {
       "path": "pages/public/report/report",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "举报" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "举报"
+      }
     },
     {
       "path": "pages/public/bird/bird",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "识鸟百科" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "识鸟百科"
+      }
     },
     {
       "path": "pages/public/volunteer/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "志愿活动" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "志愿活动"
+      }
     },
     {
       "path": "pages/public/mine/mine",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的"
+      }
     },
     {
       "path": "pages/login/public-login",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "登录" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登录"
+      }
     },
     {
       "path": "pages/login/register",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "注册" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "注册"
+      }
     },
     {
       "path": "pages/login/forgot-password",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "找回密码" }
-    },
-    {
-      "path": "pages/public/home/news-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "新闻详情" }
-    },
-    {
-      "path": "pages/public/home/all-news",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "全部新闻" }
-    },
-    {
-      "path": "pages/public/home/morning-brief-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "早报详情" }
-    },
-    {
-      "path": "pages/public/report/my-reports",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的举报" }
-    },
-    {
-      "path": "pages/public/report/report-success",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "举报成功" }
-    },
-    {
-      "path": "pages/public/report/report-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "举报详情" }
-    },
-    {
-      "path": "pages/public/bird/bird-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "鸟类详情" }
-    },
-    {
-      "path": "pages/public/volunteer/activity-detail",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "活动详情" }
-    },
-    {
-      "path": "pages/public/volunteer/my-activities",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的活动" }
-    },
-    {
-      "path": "pages/public/mine/achievement",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的成就" }
-    },
-    {
-      "path": "pages/public/mine/bookmarks",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的收藏" }
-    },
-    {
-      "path": "pages/public/mine/profile",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "个人资料" }
-    },
-    {
-      "path": "pages/public/mine/edit-profile",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "编辑资料" }
-    },
-    {
-      "path": "pages/public/mine/settings",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "设置" }
-    },
-    {
-      "path": "pages/public/mine/account-security",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "账户安全" }
-    },
-    {
-      "path": "pages/public/mine/change-password",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "修改密码" }
-    },
-    {
-      "path": "pages/public/mine/change-mobile",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "更换手机号" }
-    },
-    {
-      "path": "pages/public/mine/user-agreement",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "用户协议" }
-    },
-    {
-      "path": "pages/public/mine/privacy-policy",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "隐私政策" }
-    },
-    {
-      "path": "pages/public/mine/about",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "关于我们" }
-    },
-    {
-      "path": "pages/public/law/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "法律法规" }
-    },
-    {
-      "path": "pages/public/emergency/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "应急救助" }
-    },
-    {
-      "path": "pages/public/notification/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "通知" }
-    },
-    {
-      "path": "pages/public/search/index",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "搜索" }
-    },
-    {
-      "path": "pages/public/science/biodiversity",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "生物多样性" }
-    },
-    {
-      "path": "pages/public/science/poaching",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "打击捕猎" }
-    },
-    {
-      "path": "pages/public/science/public-participation",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "公众参与" }
-    },
-    {
-      "path": "pages/public/science/values",
-      "style": { "navigationStyle": "custom", "navigationBarTitleText": "价值观" }
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "找回密码"
+      }
     }
   ],
   "tabBar": {
@@ -156,11 +68,26 @@
     "backgroundColor": "#FFFFFF",
     "borderStyle": "black",
     "list": [
-      { "pagePath": "pages/public/home/home", "text": "首页" },
-      { "pagePath": "pages/public/report/report", "text": "举报" },
-      { "pagePath": "pages/public/bird/bird", "text": "识鸟" },
-      { "pagePath": "pages/public/volunteer/index", "text": "活动" },
-      { "pagePath": "pages/public/mine/mine", "text": "我的" }
+      {
+        "pagePath": "pages/public/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/public/report/report",
+        "text": "举报"
+      },
+      {
+        "pagePath": "pages/public/bird/bird",
+        "text": "识鸟"
+      },
+      {
+        "pagePath": "pages/public/volunteer/index",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/public/mine/mine",
+        "text": "我的"
+      }
     ]
   },
   "globalStyle": {
@@ -170,5 +97,238 @@
     "backgroundColor": "#F5F7FA",
     "backgroundTextStyle": "light"
   },
-  "uniIdRouter": {}
+  "uniIdRouter": {},
+  "subPackages": [
+    {
+      "root": "subpackages/home",
+      "pages": [
+        {
+          "path": "news-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "新闻详情"
+          }
+        },
+        {
+          "path": "all-news",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "全部新闻"
+          }
+        },
+        {
+          "path": "morning-brief-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "早报详情"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/report",
+      "pages": [
+        {
+          "path": "my-reports",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的举报"
+          }
+        },
+        {
+          "path": "report-success",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "举报成功"
+          }
+        },
+        {
+          "path": "report-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "举报详情"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/bird",
+      "pages": [
+        {
+          "path": "bird-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "鸟类详情"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/volunteer",
+      "pages": [
+        {
+          "path": "activity-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "活动详情"
+          }
+        },
+        {
+          "path": "my-activities",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的活动"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/mine",
+      "pages": [
+        {
+          "path": "achievement",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的成就"
+          }
+        },
+        {
+          "path": "bookmarks",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "我的收藏"
+          }
+        },
+        {
+          "path": "profile",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "个人资料"
+          }
+        },
+        {
+          "path": "edit-profile",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "编辑资料"
+          }
+        },
+        {
+          "path": "settings",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "设置"
+          }
+        },
+        {
+          "path": "account-security",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "账户安全"
+          }
+        },
+        {
+          "path": "change-password",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "修改密码"
+          }
+        },
+        {
+          "path": "change-mobile",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "更换手机号"
+          }
+        },
+        {
+          "path": "user-agreement",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "用户协议"
+          }
+        },
+        {
+          "path": "privacy-policy",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "隐私政策"
+          }
+        },
+        {
+          "path": "about",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "关于我们"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/common",
+      "pages": [
+        {
+          "path": "law",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "法律法规"
+          }
+        },
+        {
+          "path": "emergency",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "应急救助"
+          }
+        },
+        {
+          "path": "notification",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "通知"
+          }
+        },
+        {
+          "path": "search",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "搜索"
+          }
+        }
+      ]
+    },
+    {
+      "root": "subpackages/science",
+      "pages": [
+        {
+          "path": "biodiversity",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "生物多样性"
+          }
+        },
+        {
+          "path": "poaching",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "打击捕猎"
+          }
+        },
+        {
+          "path": "public-participation",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "公众参与"
+          }
+        },
+        {
+          "path": "values",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "价值观"
+          }
+        }
+      ]
+    }
+  ]
 }

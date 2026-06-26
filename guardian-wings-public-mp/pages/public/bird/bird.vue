@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <view class="page">
     <!-- 搜索栏 -->
     <view class="search-section">
@@ -401,11 +401,11 @@ export default {
     // ── 跳转详情 ──
     goDetail(bird) {
       this.addToHistory(bird)
-      uni.navigateTo({ url: `/pages/public/bird/bird-detail?id=${bird._id}` })
+      uni.navigateTo({ url: `/subpackages/bird/bird-detail?id=${bird._id}` })
     },
 
     goDetailById(id) {
-      uni.navigateTo({ url: `/pages/public/bird/bird-detail?id=${id}` })
+      uni.navigateTo({ url: `/subpackages/bird/bird-detail?id=${id}` })
     },
 
     // ── 历史记录（本地存储） ──
