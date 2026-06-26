@@ -1,0 +1,13 @@
+{
+  "triggers": [
+    {
+      "name": "daily-news-crawler",
+      "type": "timer",
+      "config": {
+        "cronExpression": "0 0 8 * * *",
+        "enable": true,
+        "description": "每日早上8点执行新闻爬虫任务"
+      }
+    }
+  ]
+}

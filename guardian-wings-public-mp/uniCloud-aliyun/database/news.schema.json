@@ -1,0 +1,124 @@
+{
+  "bsonType": "object",
+  "required": ["title", "content"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "新闻唯一 ID，自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "标题",
+      "description": "新闻标题",
+      "minLength": 2,
+      "maxLength": 200,
+      "errorMessage": "标题长度应为 2-200 个字符"
+    },
+    "content": {
+      "bsonType": "string",
+      "title": "正文 HTML",
+      "description": "新闻全文 HTML，详情页直接展示"
+    },
+    "contentText": {
+      "bsonType": "string",
+      "title": "正文纯文本",
+      "description": "用于全文检索和非 HTML 展示"
+    },
+    "contentBlocks": {
+      "bsonType": "array",
+      "title": "正文段落",
+      "description": "按段落拆分后的正文数组",
+      "items": {
+        "bsonType": "string"
+      }
+    },
+    "summary": {
+      "bsonType": "string",
+      "title": "摘要",
+      "description": "新闻列表摘要",
+      "maxLength": 300
+    },
+    "source": {
+      "bsonType": "string",
+      "title": "来源",
+      "description": "新闻来源媒体，例如新华网、中国新闻网",
+      "maxLength": 100
+    },
+    "link": {
+      "bsonType": "string",
+      "title": "原文链接",
+      "description": "新闻原始详情页地址"
+    },
+    "time": {
+      "bsonType": "string",
+      "title": "发布日期",
+      "description": "用于前端展示的日期字符串，格式 YYYY-MM-DD",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "errorMessage": "时间格式应为 YYYY-MM-DD"
+    },
+    "publishTime": {
+      "bsonType": "timestamp",
+      "title": "发布时间戳",
+      "description": "原始发布时间时间戳"
+    },
+    "cover": {
+      "bsonType": "string",
+      "title": "封面图",
+      "description": "新闻封面图 URL 或 fileID"
+    },
+    "tag": {
+      "bsonType": "string",
+      "title": "标签",
+      "description": "新闻分类标签",
+      "enum": ["新闻", "科普", "通知", "活动"],
+      "defaultValue": "新闻"
+    },
+    "tagType": {
+      "bsonType": "string",
+      "title": "标签类型",
+      "description": "前端样式使用的标签类型值"
+    },
+    "viewCount": {
+      "bsonType": "int",
+      "title": "阅读量",
+      "description": "新闻被浏览次数",
+      "minimum": 0,
+      "defaultValue": 0
+    },
+    "paragraphCount": {
+      "bsonType": "int",
+      "title": "段落数",
+      "description": "正文段落数量",
+      "minimum": 0
+    },
+    "contentLength": {
+      "bsonType": "int",
+      "title": "正文长度",
+      "description": "正文纯文本长度",
+      "minimum": 0
+    },
+    "extractionStatus": {
+      "bsonType": "string",
+      "title": "抽取状态",
+      "description": "用于区分正文抽取质量"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "创建时间",
+      "description": "后台录入时间，自动填充",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "更新时间",
+      "description": "新闻更新时间"
+    }
+  }
+}

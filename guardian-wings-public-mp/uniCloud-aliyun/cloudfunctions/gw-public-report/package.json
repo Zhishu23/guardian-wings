@@ -1,0 +1,6 @@
+{
+  "name": "gw-public-report",
+  "version": "1.0.0",
+  "description": "翼路平安公众端上报云函数",
+  "main": "index.js"
+}

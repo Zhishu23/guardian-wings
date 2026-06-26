@@ -1,0 +1,68 @@
+{
+  "bsonType": "object",
+  "required": ["title", "articleNo", "content", "category"],
+  "permission": {
+    "read": true,
+    "create": "auth.role.indexOf('admin') > -1",
+    "update": "auth.role.indexOf('admin') > -1",
+    "delete": "auth.role.indexOf('admin') > -1"
+  },
+  "properties": {
+    "_id": {
+      "description": "条文唯一ID，自动生成"
+    },
+    "title": {
+      "bsonType": "string",
+      "title": "法律名称",
+      "description": "所属法律全称，如：中华人民共和国野生动物保护法",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "articleNo": {
+      "bsonType": "string",
+      "title": "条文号",
+      "description": "具体条款编号，如：第二十条、第四十五条",
+      "maxLength": 20
+    },
+    "content": {
+      "bsonType": "string",
+      "title": "条文内容",
+      "description": "法律条文原文内容"
+    },
+    "keywords": {
+      "bsonType": "array",
+      "title": "关键词",
+      "description": "用于搜索匹配的关键词标签，如：非法狩猎、保护动物、罚款",
+      "items": {
+        "bsonType": "string",
+        "maxLength": 20
+      }
+    },
+    "penalty": {
+      "bsonType": "string",
+      "title": "处罚措施",
+      "description": "违反本条款的处罚内容摘要",
+      "maxLength": 500
+    },
+    "category": {
+      "bsonType": "string",
+      "title": "法规分类",
+      "description": "法律类别",
+      "enum": ["刑法", "野生动物保护法", "地方法规", "行政法规", "其他"],
+      "errorMessage": "法规分类不合法"
+    },
+    "effectiveDate": {
+      "bsonType": "string",
+      "title": "施行日期",
+      "description": "法规施行日期，格式：YYYY-MM-DD",
+      "maxLength": 12
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "录入时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}

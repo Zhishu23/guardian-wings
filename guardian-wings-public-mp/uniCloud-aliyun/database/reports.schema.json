@@ -1,0 +1,127 @@
+{
+  "bsonType": "object",
+  "required": ["type", "location", "time", "description"],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": false
+  },
+  "properties": {
+    "_id": {
+      "description": "Report id"
+    },
+    "user_id": {
+      "bsonType": "string",
+      "title": "User id",
+      "description": "Public user id. Empty when anonymous."
+    },
+    "userId": {
+      "bsonType": "string",
+      "title": "Legacy user id",
+      "description": "Compatibility field for older records."
+    },
+    "type": {
+      "bsonType": "string",
+      "title": "Report type",
+      "enum": ["illegal_hunting", "illegal_trade", "habitat_destruction", "other"],
+      "errorMessage": "Invalid report type"
+    },
+    "location": {
+      "bsonType": "object",
+      "title": "Location",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "bsonType": "string",
+          "title": "Address",
+          "maxLength": 200
+        },
+        "name": {
+          "bsonType": "string",
+          "title": "Location name",
+          "maxLength": 200
+        },
+        "latitude": {
+          "bsonType": "double",
+          "title": "Latitude"
+        },
+        "longitude": {
+          "bsonType": "double",
+          "title": "Longitude"
+        },
+        "lat": {
+          "bsonType": "double",
+          "title": "Legacy latitude"
+        },
+        "lng": {
+          "bsonType": "double",
+          "title": "Legacy longitude"
+        }
+      }
+    },
+    "time": {
+      "bsonType": ["timestamp", "long", "int", "string"],
+      "title": "Event time"
+    },
+    "description": {
+      "bsonType": "string",
+      "title": "Description",
+      "minLength": 10,
+      "maxLength": 2000,
+      "errorMessage": "Description must be 10-2000 characters"
+    },
+    "images": {
+      "bsonType": "array",
+      "title": "Images",
+      "maxLength": 9,
+      "items": {
+        "bsonType": "string"
+      }
+    },
+    "is_anonymous": {
+      "bsonType": "bool",
+      "title": "Anonymous"
+    },
+    "isAnonymous": {
+      "bsonType": "bool",
+      "title": "Legacy anonymous"
+    },
+    "status": {
+      "bsonType": ["int", "string"],
+      "title": "Status",
+      "description": "0/pending, 1/resolved, 2/rejected",
+      "defaultValue": 0
+    },
+    "status_text": {
+      "bsonType": "string",
+      "title": "Status text",
+      "enum": ["pending", "processing", "resolved", "done", "rejected"]
+    },
+    "remark": {
+      "bsonType": "string",
+      "title": "Handling remark",
+      "maxLength": 500
+    },
+    "handler_id": {
+      "bsonType": "string",
+      "title": "Handler id"
+    },
+    "create_time": {
+      "bsonType": "timestamp",
+      "title": "Create time"
+    },
+    "update_time": {
+      "bsonType": "timestamp",
+      "title": "Update time"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "Legacy create time"
+    },
+    "updateTime": {
+      "bsonType": "timestamp",
+      "title": "Legacy update time"
+    }
+  }
+}

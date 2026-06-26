@@ -1,0 +1,34 @@
+{
+  "bsonType": "object",
+  "required": ["userId", "birdId"],
+  "permission": {
+    "read": "doc.userId == auth.uid",
+    "create": "auth.uid != null",
+    "update": false,
+    "delete": "doc.userId == auth.uid"
+  },
+  "properties": {
+    "_id": {
+      "description": "收藏记录唯一ID，自动生成"
+    },
+    "userId": {
+      "bsonType": "string",
+      "title": "用户ID",
+      "description": "关联 uni-id-users 表的 _id",
+      "foreignKey": "uni-id-users._id"
+    },
+    "birdId": {
+      "bsonType": "string",
+      "title": "鸟类ID",
+      "description": "关联 birds 表的 _id",
+      "foreignKey": "birds._id"
+    },
+    "createTime": {
+      "bsonType": "timestamp",
+      "title": "收藏时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    }
+  }
+}
